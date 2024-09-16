@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS "Message" (
   CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
 );
 """
-
 def init_db(settings: (AppSettings | EnvironmentSettings)) -> None:
     DATABASE_URL = f"dbname={settings.POSTGRES_DB} user={settings.POSTGRES_USER} password={settings.POSTGRES_PASSWORD} host={settings.POSTGRES_SERVER} port={settings.POSTGRES_PORT}"
     conn = None
@@ -91,24 +90,42 @@ def init_db(settings: (AppSettings | EnvironmentSettings)) -> None:
         
         cursor.execute(sql.SQL("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\""))
 
-        try:
-            cursor.execute(createTableUserQuery)
-            logger.info("USER table created successfully.")
-        except Exception as e:
-            logger.error(f"Error creating USER table: {e}")
+        # Function to check if a table exists
+        def table_exists(table_name: str) -> bool:
+            cursor.execute(sql.SQL("""
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_schema = 'public' 
+                    AND table_name = %s
+                );
+            """), [table_name])
+            return cursor.fetchone()[0]
 
-        other_table_queries = [
-            createTableViewQuery,
-            createTableLikesQuery,
-            createTableMessageQuery,
-        ]
-
-        for query in other_table_queries:
+        # Check if USER table exists before creating
+        if not table_exists("USER"):
             try:
-                cursor.execute(query)
-                logger.info(f"Table created successfully: {query}")
+                cursor.execute(createTableUserQuery)
+                logger.info("USER table created successfully.")
             except Exception as e:
-                logger.error(f"Error creating table '{query}': {e}")
+                logger.error(f"Error creating USER table: {e}")
+        else:
+            logger.info("USER table already exists.")
+
+        other_table_queries = {
+            "user_views": createTableViewQuery,
+            "user_likes": createTableLikesQuery,
+            "Message": createTableMessageQuery,
+        }
+
+        for table_name, query in other_table_queries.items():
+            if not table_exists(table_name):
+                try:
+                    cursor.execute(query)
+                    logger.info(f"Table '{table_name}' created successfully.")
+                except Exception as e:
+                    logger.error(f"Error creating table '{table_name}': {e}")
+            else:
+                logger.info(f"Table '{table_name}' already exists.")
 
     except Exception as e:
         logger.error(f"Error during database check or creation: {e}")

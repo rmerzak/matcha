@@ -20,6 +20,7 @@ services:
     env_file: docker-compose.env
     volumes:
       - db-data:/var/lib/postgresql/data    
+      - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
     container_name: backend
