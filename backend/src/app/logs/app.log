@@ -1,0 +1,735 @@
+2024-09-16 13:50:37,452 - app.core.setup - ERROR - Error during database check or creation: connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  password authentication failed for user "matcha"
+
+2024-09-16 13:51:00,908 - app.core.setup - ERROR - Error during database check or creation: connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  password authentication failed for user "matcha"
+
+2024-09-16 13:51:23,582 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 13:54:34,045 - app.core.setup - ERROR - Error during database check or creation: connection to server at "db" (172.20.0.2), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+2024-09-16 13:55:08,031 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 13:55:55,038 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 14:00:02,514 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 14:01:39,095 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 14:01:39,125 - app.core.setup - INFO - Table 'example_table' checked/created successfully.
+2024-09-16 14:02:14,275 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:04:46,585 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:20:16,231 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:20:25,252 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:20:41,810 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:25:29,090 - app.core.setup - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:32:19,568 - app.core.db.dbinit - ERROR - Error during database check or creation: name 'psycopg2' is not defined
+2024-09-16 15:32:39,343 - app.core.db.dbinit - ERROR - Error during database check or creation: name 'psycopg2' is not defined
+2024-09-16 15:32:52,056 - app.core.db.dbinit - ERROR - Error during database check or creation: name 'psycopg2' is not defined
+2024-09-16 15:33:19,436 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:33:19,440 - app.core.db.dbinit - ERROR - Error during database check or creation: name 'alterTableUserQuery' is not defined
+2024-09-16 15:33:30,911 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:33:30,922 - app.core.db.dbinit - ERROR - Error creating table '
+DROP TABLE IF EXISTS "USER" CASCADE; 
+CREATE TABLE IF NOT EXISTS "USER" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "username" VARCHAR(255) NOT NULL,
+  "first_name" VARCHAR(255),
+  "last_name" VARCHAR(255),
+  "email" VARCHAR(255) UNIQUE,
+  "password" VARCHAR(255),
+  "gender" VARCHAR(255),
+  "sexual_preferences" TEXT,
+  "interests" TEXT[],
+  "pictures" TEXT,
+  "fame_rating" NUMERIC,
+  "location" VARCHAR(255),
+  latitude NUMERIC,
+  latitude NUMERIC,
+  "address" VARCHAR(255),
+  "age" NUMERIC,
+  "bio" TEXT,
+  "is_verified" BOOLEAN DEFAULT FALSE,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "reset_password_expires" TIMESTAMP,
+  "reset_password_token" TEXT DEFAULT ''
+)': column "latitude" specified more than once
+
+2024-09-16 15:33:30,936 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:33:30,942 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:33:30,944 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:35:24,687 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:35:24,691 - app.core.db.dbinit - ERROR - Error creating table '
+DROP TABLE IF EXISTS "USER" CASCADE; 
+CREATE TABLE IF NOT EXISTS "USER" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "username" VARCHAR(255) NOT NULL,
+  "first_name" VARCHAR(255),
+  "last_name" VARCHAR(255),
+  "email" VARCHAR(255) UNIQUE,
+  "password" VARCHAR(255),
+  "gender" VARCHAR(255),
+  "sexual_preferences" TEXT,
+  "interests" TEXT[],
+  "pictures" TEXT,
+  "fame_rating" NUMERIC,
+  "location" VARCHAR(255),
+  latitude NUMERIC,
+  latitude NUMERIC,
+  "address" VARCHAR(255),
+  "age" NUMERIC,
+  "bio" TEXT,
+  "is_verified" BOOLEAN DEFAULT FALSE,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "reset_password_expires" TIMESTAMP,
+  "reset_password_token" TEXT DEFAULT ''
+)': column "latitude" specified more than once
+
+2024-09-16 15:35:24,695 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:35:24,697 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:35:24,699 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:37:54,340 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:37:54,394 - app.core.db.dbinit - ERROR - Error creating table '
+DROP TABLE IF EXISTS "USER" CASCADE; 
+CREATE TABLE IF NOT EXISTS "USER" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "username" VARCHAR(255) NOT NULL,
+  "first_name" VARCHAR(255),
+  "last_name" VARCHAR(255),
+  "email" VARCHAR(255) UNIQUE,
+  "password" VARCHAR(255),
+  "gender" VARCHAR(255),
+  "sexual_preferences" TEXT,
+  "interests" TEXT[],
+  "pictures" TEXT,
+  "fame_rating" NUMERIC,
+  "location" VARCHAR(255),
+  latitude NUMERIC,
+  latitude NUMERIC,
+  "address" VARCHAR(255),
+  "age" NUMERIC,
+  "bio" TEXT,
+  "is_verified" BOOLEAN DEFAULT FALSE,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "reset_password_expires" TIMESTAMP,
+  "reset_password_token" TEXT DEFAULT ''
+)': column "latitude" specified more than once
+
+2024-09-16 15:37:54,398 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:37:54,401 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:37:54,404 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:38:00,653 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:38:00,654 - app.core.db.dbinit - ERROR - Error creating table '
+DROP TABLE IF EXISTS "USER" CASCADE; 
+CREATE TABLE IF NOT EXISTS "USER" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "username" VARCHAR(255) NOT NULL,
+  "first_name" VARCHAR(255),
+  "last_name" VARCHAR(255),
+  "email" VARCHAR(255) UNIQUE,
+  "password" VARCHAR(255),
+  "gender" VARCHAR(255),
+  "sexual_preferences" TEXT,
+  "interests" TEXT[],
+  "pictures" TEXT,
+  "fame_rating" NUMERIC,
+  "location" VARCHAR(255),
+  latitude NUMERIC,
+  latitude NUMERIC,
+  "address" VARCHAR(255),
+  "age" NUMERIC,
+  "bio" TEXT,
+  "is_verified" BOOLEAN DEFAULT FALSE,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "reset_password_expires" TIMESTAMP,
+  "reset_password_token" TEXT DEFAULT ''
+)': column "latitude" specified more than once
+
+2024-09-16 15:38:00,656 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:38:00,659 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:38:00,662 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:39:09,616 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:39:09,617 - app.core.db.dbinit - ERROR - Error during database check or creation: name 'createTableMessageQuery' is not defined
+2024-09-16 15:39:20,852 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:39:20,853 - app.core.db.dbinit - ERROR - Error creating table '
+DROP TABLE IF EXISTS "USER" CASCADE; 
+CREATE TABLE IF NOT EXISTS "USER" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "username" VARCHAR(255) NOT NULL,
+  "first_name" VARCHAR(255),
+  "last_name" VARCHAR(255),
+  "email" VARCHAR(255) UNIQUE,
+  "password" VARCHAR(255),
+  "gender" VARCHAR(255),
+  "sexual_preferences" TEXT,
+  "interests" TEXT[],
+  "pictures" TEXT,
+  "fame_rating" NUMERIC,
+  "location" VARCHAR(255),
+  latitude NUMERIC,
+  latitude NUMERIC,
+  "address" VARCHAR(255),
+  "age" NUMERIC,
+  "bio" TEXT,
+  "is_verified" BOOLEAN DEFAULT FALSE,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "reset_password_expires" TIMESTAMP,
+  "reset_password_token" TEXT DEFAULT ''
+)': column "latitude" specified more than once
+
+2024-09-16 15:39:20,856 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:39:20,859 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+': function uuid_generate_v4() does not exist
+LINE 3:   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                            ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+2024-09-16 15:41:44,757 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:41:44,799 - app.core.db.dbinit - ERROR - Error creating table '
+DROP TABLE IF EXISTS "USER" CASCADE; 
+CREATE TABLE IF NOT EXISTS "USER" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "username" VARCHAR(255) NOT NULL,
+  "first_name" VARCHAR(255),
+  "last_name" VARCHAR(255),
+  "email" VARCHAR(255) UNIQUE,
+  "password" VARCHAR(255),
+  "gender" VARCHAR(255),
+  "sexual_preferences" TEXT,
+  "interests" TEXT[],
+  "pictures" TEXT,
+  "fame_rating" NUMERIC,
+  "location" VARCHAR(255),
+  latitude NUMERIC,
+  latitude NUMERIC,
+  "address" VARCHAR(255),
+  "age" NUMERIC,
+  "bio" TEXT,
+  "is_verified" BOOLEAN DEFAULT FALSE,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "reset_password_expires" TIMESTAMP,
+  "reset_password_token" TEXT DEFAULT ''
+)': column "latitude" specified more than once
+
+2024-09-16 15:41:44,817 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);': relation "USER" does not exist
+
+2024-09-16 15:41:44,821 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+': relation "USER" does not exist
+
+2024-09-16 15:41:44,827 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+': relation "USER" does not exist
+
+2024-09-16 15:43:18,466 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:43:18,472 - app.core.db.dbinit - ERROR - Error creating USER table: column "latitude" specified more than once
+
+2024-09-16 15:43:18,476 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);': relation "USER" does not exist
+
+2024-09-16 15:43:18,488 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+': relation "USER" does not exist
+
+2024-09-16 15:43:18,495 - app.core.db.dbinit - ERROR - Error creating table '
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+': relation "USER" does not exist
+
+2024-09-16 15:43:54,068 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:43:54,072 - app.core.db.dbinit - ERROR - Error creating USER table: column "latitude" specified more than once
+
+2024-09-16 15:44:18,089 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:44:18,101 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:44:29,497 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:44:29,514 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:44:29,521 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:44:29,526 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:44:29,531 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:45:48,137 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:45:48,156 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:45:48,159 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:45:48,161 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:45:48,162 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:45:57,032 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:45:57,043 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:45:57,046 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:45:57,048 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:45:57,049 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:47:05,990 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:47:06,001 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:47:06,004 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:47:06,005 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:47:06,007 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:47:21,752 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:47:21,759 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:47:21,760 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:47:21,761 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:47:21,763 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:48:44,418 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:48:44,426 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:48:44,428 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:48:44,429 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:48:44,430 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:52:58,439 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:52:58,453 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:52:58,455 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:52:58,456 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:52:58,457 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:53:23,677 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 15:53:23,699 - app.core.db.dbinit - INFO - USER table created successfully.
+2024-09-16 15:53:23,708 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_views" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "viewer_id" UUID,
+  "viewed_id" UUID,
+  "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "USER" ("id")
+);
+2024-09-16 15:53:23,709 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "user_likes" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "liker_id" UUID,
+  "liked_id" UUID,
+  "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 15:53:23,710 - app.core.db.dbinit - INFO - Table created successfully: 
+CREATE TABLE IF NOT EXISTS "Message" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "sender_id" UUID,
+  "receiver_id" UUID,
+  "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "content" TEXT,
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "USER" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "USER" ("id")
+);
+
+2024-09-16 16:21:56,056 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 16:21:56,069 - app.core.db.dbinit - INFO - USER table already exists.
+2024-09-16 16:21:56,080 - app.core.db.dbinit - INFO - Table 'user_views' already exists.
+2024-09-16 16:21:56,082 - app.core.db.dbinit - INFO - Table 'user_likes' already exists.
+2024-09-16 16:21:56,083 - app.core.db.dbinit - INFO - Table 'Message' already exists.
+2024-09-16 16:22:23,167 - app.core.db.dbinit - INFO - Database 'pacsdb' already exists.
+2024-09-16 16:22:23,178 - app.core.db.dbinit - INFO - USER table already exists.
+2024-09-16 16:22:23,180 - app.core.db.dbinit - INFO - Table 'user_views' already exists.
+2024-09-16 16:22:23,182 - app.core.db.dbinit - INFO - Table 'user_likes' already exists.
+2024-09-16 16:22:23,183 - app.core.db.dbinit - INFO - Table 'Message' already exists.
+2024-09-16 16:45:31,492 - app.core.setup - INFO - Successfully connected to the database.
+2024-09-16 16:45:43,331 - app.core.setup - INFO - Successfully connected to the database.
+2024-09-16 16:45:57,371 - app.core.setup - INFO - Successfully connected to the database.
+2024-09-16 16:58:49,863 - app.core.setup - INFO - Successfully connected to the database.
+2024-09-16 17:31:48,028 - app.core.setup - INFO - Successfully connected to the database.
+2024-09-16 17:32:05,811 - app.core.setup - INFO - Successfully connected to the database.
