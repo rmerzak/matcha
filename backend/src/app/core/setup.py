@@ -2,15 +2,23 @@ from typing import Any
 from fastapi import APIRouter, Depends, FastAPI
 import anyio
 import fastapi
+import psycopg2
 from .config import (
     AppSettings,
     EnvironmentSettings,
     EnvironmentOption,
     settings,
 )
+from app.core.logger import logging
+from .db.dbinit import init_db
+
+logger = logging.getLogger(__name__)
+
+
 async def set_threadpool_tokens(number_of_tokens: int = 100) -> None:
     limiter = anyio.to_thread.current_default_thread_limiter()
     limiter.total_tokens = number_of_tokens
+
 
 def create_application(
     router: APIRouter,
@@ -21,24 +29,17 @@ def create_application(
     create_tables_on_start: bool = True,
     **kwargs: Any,
 ) -> FastAPI:
-    #DATABASE_URL = f"postgresql+psycopg2://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_SERVER}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
-    #engine = create_engine(DATABASE_URL)
-
+    DATABASE_URL = f"dbname={settings.POSTGRES_DB} user={settings.POSTGRES_USER} password={settings.POSTGRES_PASSWORD} host={settings.POSTGRES_SERVER} port={settings.POSTGRES_PORT}"
+    init_db(settings)
     application = FastAPI(**kwargs)
 
-    # --- application created ---
     application.include_router(router)
-
     application.add_event_handler("startup", set_threadpool_tokens)
     
-    # if isinstance(settings, DatabaseSettings) and create_tables_on_start:
-    #     application.add_event_handler("startup", create_tables)
-
     if isinstance(settings, EnvironmentSettings):
         docs_router = APIRouter()
 
         if settings.ENVIRONMENT != EnvironmentOption.PRODUCTION or settings.ENVIRONMENT != EnvironmentOption.DEVELOPMENT:
-            
             if settings.ENVIRONMENT != EnvironmentOption.LOCAL:
                 docs_router = APIRouter(dependencies=[Depends(get_current_superuser)])
                 
@@ -58,4 +59,3 @@ def create_application(
             application.include_router(docs_router)
 
     return application
-
