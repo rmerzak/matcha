@@ -30,14 +30,14 @@ def create_application(
     create_tables_on_start: bool = True,
     **kwargs: Any,
 ) -> FastAPI:
-    DATABASE_URL = f"dbname={settings.POSTGRES_DB} user={settings.POSTGRES_USER} password={settings.POSTGRES_PASSWORD} host={settings.POSTGRES_SERVER} port={settings.POSTGRES_PORT}"
-    try:
-        conn = psycopg2.connect(DATABASE_URL)
-        conn.close()
-        logger.info("Successfully connected to the database.")
-    except Exception as e:
-        logger.error(f"Error connecting to the database: {e}")
-        raise e
+    # DATABASE_URL = f"dbname={settings.POSTGRES_DB} user={settings.POSTGRES_USER} password={settings.POSTGRES_PASSWORD} host={settings.POSTGRES_SERVER} port={settings.POSTGRES_PORT}"
+    # try:
+    #     conn = psycopg2.connect(DATABASE_URL)
+    #     conn.close()
+    #     logger.info("Successfully connected to the database.")
+    # except Exception as e:
+    #     logger.error(f"Error connecting to the database: {e}")
+    #     raise e
     application = FastAPI(**kwargs)
 
     application.include_router(router)

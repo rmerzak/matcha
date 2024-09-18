@@ -135,3 +135,11 @@ def init_db(settings: (AppSettings | EnvironmentSettings)) -> None:
             if cursor:
                 cursor.close()
             conn.close()
+
+
+from databases import Database
+
+db_conn_string = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_SERVER}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
+
+
+database = Database(db_conn_string, min_size=5, max_size=20)
