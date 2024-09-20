@@ -32,3 +32,6 @@ class UserCreate(BaseModel):
     last_name: Optional[str] = Field(None, max_length=255)
     email: Optional[EmailStr] = Field(None, unique=True, max_length=255)
     password: Optional[str] = Field(None, max_length=255)
+
+class UserCreateInternal(UserCreate):
+    pass

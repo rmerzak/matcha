@@ -39,12 +39,38 @@ class PostgresSettings(DatabaseSettings):
     POSTGRES_URI: str = f"{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
     POSTGRES_URL: str | None = config("POSTGRES_URL", default=None)
 
+class CryptSettings(BaseSettings):
+    SECRET_KEY: str = config("SECRET_KEY")
+    ALGORITHM: str = config("ALGORITHM", default="HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = config("ACCESS_TOKEN_EXPIRE_MINUTES", default=30)
+    REFRESH_TOKEN_EXPIRE_DAYS: int = config("REFRESH_TOKEN_EXPIRE_DAYS", default=7)
+    EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS: int = config("EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS", default=12)
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = config("PASSWORD_RESET_TOKEN_EXPIRE_MINUTES", default=30)
+
 class EnvironmentOption(Enum):
     LOCAL = "local"
     DEVELOPMENT = "development"
     STAGING = "staging"
     PRODUCTION = "production"
 
+class EmailTemplates:
+    EMAIL_TEMPLATES_ENV = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=template_path))
+    EMAIL_TEMPLATES = {
+        "verify_email": "verify_email_template.html",
+        "reset_password": "reset_password_template.html",
+    }
+
+
+class ExternalSettings(BaseSettings):
+    FRONT_URL: str = config("FRONT_URL", default="http://localhost:3000")
+    EMAIL_SENDER: str = config("EMAIL_SENDER", default="smtp.gmail.com")
+    SMTP_HOST: str = config("SMTP_HOST", default="6379")
+    SMTP_USERNAME: str = config("SMTP_USERNAME", default="Abdou")
+    SMTP_PASSWORD: str = config("SMTP_PASSWORD", default="your app password")
+
+    @property
+    def Categories(self):
+        return ModelCategoriesEnum
 
 class EnvironmentSettings(BaseSettings):
     ENVIRONMENT: EnvironmentOption = config("ENVIRONMENT", default="local")
@@ -56,6 +82,9 @@ class Settings(
     TestSettings,
     PostgresSettings,
     EnvironmentSettings,
+    CryptSettings,
+    ExternalSettings,
+    EmailTemplates,
 ):
     pass
 
