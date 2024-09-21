@@ -68,39 +68,39 @@ CREATE TABLE IF NOT EXISTS "Message" (
   CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "users" ("id")
 );
 
-INSERT INTO "users" (
-    "username", 
-    "first_name", 
-    "last_name", 
-    "email", 
-    "password", 
-    "gender", 
-    "sexual_preferences", 
-    "interests", 
-    "pictures", 
-    "fame_rating", 
-    "location", 
-    "latitude", 
-    "address", 
-    "age", 
-    "bio", 
-    "is_verified"
-) 
-VALUES (
-    'john_doe',            -- username
-    'John',                -- first_name
-    'Doe',                 -- last_name
-    'johndoe@example.com', -- email
-    'password123',         -- password (hashed in practice)
-    'Male',                -- gender
-    'Women',               -- sexual_preferences
-    ARRAY['music', 'coding'],  -- interests (array)
-    'path_to_picture.jpg', -- pictures
-    50,                    -- fame_rating
-    'New York',            -- location
-    40.7128,               -- latitude
-    '123 Example St',      -- address
-    30,                    -- age
-    'A brief bio here',    -- bio
-    TRUE                   -- is_verified
-);
+-- INSERT INTO "users" (
+--     "username", 
+--     "first_name", 
+--     "last_name", 
+--     "email", 
+--     "password", 
+--     "gender", 
+--     "sexual_preferences", 
+--     "interests", 
+--     "pictures", 
+--     "fame_rating", 
+--     "location", 
+--     "latitude", 
+--     "address", 
+--     "age", 
+--     "bio", 
+--     "is_verified"
+-- ) 
+-- VALUES (
+--     'john_doe',            -- username
+--     'John',                -- first_name
+--     'Doe',                 -- last_name
+--     'johndoe@example.com', -- email
+--     'password123',         -- password (hashed in practice)
+--     'Male',                -- gender
+--     'Women',               -- sexual_preferences
+--     ARRAY['music', 'coding'],  -- interests (array)
+--     'path_to_picture.jpg', -- pictures
+--     50,                    -- fame_rating
+--     'New York',            -- location
+--     40.7128,               -- latitude
+--     '123 Example St',      -- address
+--     30,                    -- age
+--     'A brief bio here',    -- bio
+--     TRUE                   -- is_verified
+-- );

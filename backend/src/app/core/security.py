@@ -7,6 +7,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import jwt
+from app.crud.users_crud import get_user_by_username
+from typing import Any
 EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS = settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -20,18 +22,6 @@ def get_password_hash(password: str) -> str:
 async def verify_password(plain_password: str, hashed_password: str) -> bool:
     correct_password: bool = bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
     return correct_password
-
-def generate_email_verification_token(email: str, expires_delta: timedelta | None = None)-> str:
-    if expires_delta:
-        expire = datetime.now(UTC).replace(tzinfo=None) + expires_delta
-    else:
-        expire = datetime.now(UTC).replace(tzinfo=None) + timedelta(hours=EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS)
-    to_encode = {"sub": email}
-    to_encode.update({"exp": expire, "utility": "EMAIL_VERIFICATION"})
-
-    encoded_jwt: str = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    print("dadada",encoded_jwt)
-    return encoded_jwt
 
 async def send_email(email, body, subject):
     sender_email = f"{settings.EMAIL_SENDER}"
@@ -61,3 +51,39 @@ def verify_token(token: str):
         return payload
     except e:
         return None
+
+def generate_email_verification_token(email: str, expires_delta: timedelta | None = None)-> str:
+    if expires_delta:
+        expire = datetime.now(UTC).replace(tzinfo=None) + expires_delta
+    else:
+        expire = datetime.now(UTC).replace(tzinfo=None) + timedelta(hours=EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS)
+    to_encode = {"sub": email}
+    to_encode.update({"exp": expire, "utility": "EMAIL_VERIFICATION"})
+
+    encoded_jwt: str = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    print("dadada",encoded_jwt)
+    return encoded_jwt
+
+async def createAccessToken(data: dict[str:Any], tokenType :str ,expireDate: timedelta | None = None) -> str:
+    to_encode = data.copy()
+    if (expireDate):
+        expire = datetime.now(UTC).replace(tzinfo=None) + expireDate
+    else:
+        if tokenType == "REFRESH_TOKEN":
+            expireDate = timedelta(days = settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        elif tokenType == "EMAIL_VERIFICATION":
+            expireDate = timedelta(hours = settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS)
+        expire = datetime.now(UTC).replace(tzinfo=None) + expireDate
+    to_encode.update({"exp":expire})
+
+    encoded_jwt : str = jwt.encode(to_encode,SECRET_KEY,algorithm=ALGORITHM)
+    
+    return encoded_jwt
+
+async def authenticate_user(username: str, password: str):
+    user = await get_user_by_username(username)
+    if not user:
+        return False
+    if not await verify_password(password, user["password"]):
+        return False
+    return user

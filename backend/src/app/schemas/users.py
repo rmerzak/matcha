@@ -35,3 +35,7 @@ class UserCreate(BaseModel):
 
 class UserCreateInternal(UserCreate):
     pass
+
+class UserLogin(BaseModel):
+    username: str
+    password: str

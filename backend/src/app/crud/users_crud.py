@@ -37,3 +37,10 @@ async def create_user_internal(user:UserCreateInternal):
     # data = await database.execute(query=query, values=values)
     data = await database.fetch_one(query=query, values=values)
     return {**data} if data else None
+
+async def update_user_verification(email: str):
+    query = "UPDATE users SET is_verified = TRUE WHERE email = :email RETURNING username, email, first_name, last_name;"
+    values = {"email": email}
+
+    data = await database.execute(query=query, values=values)
+    return data
