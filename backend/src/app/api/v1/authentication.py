@@ -1,28 +1,26 @@
 import fastapi
 from app.schemas.users import UserCreate, UserLogin
-from fastapi import Request, Response
+from app.schemas.token import ValidateToken
+from fastapi import Request, Response, Depends
 from app.core.security import verify_token, createAccessToken, authenticate_user
 from app.core.config import settings
 from datetime import timedelta
 front_url_prefix = settings.FRONT_URL
-
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
 
 router = fastapi.APIRouter(tags=["auth"])
 
-@router.get("/tests")
-async def test():
-    data = await get_all_users()
-    return {"data": data}
+
+
 
 @router.post("/login", status_code=201)
 async def login(request: Request,response:Response, user: UserLogin):
     existing_user  = await authenticate_user(user.username, user.password)
     if not existing_user:
         return {"message": "Invalid credentials"}
-    if not existing_user["is_verified"]:
-        return {"message": "Email not verified"}
+    # if not existing_user["is_verified"]:
+    #     return {"message": "Email not verified"}
     
     access_token = await createAccessToken({"sub": existing_user['email'], "utility": "ACCESS_TOKEN"}, "ACCESS_TOKEN", timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
     
@@ -34,3 +32,11 @@ async def login(request: Request,response:Response, user: UserLogin):
     )
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/verifyToken")
+async def verify_token_api(request: Request, token: ValidateToken):
+    payload = await verify_token(token.token)
+    if not payload or payload["utility"] != token.utility:
+        return {"message": "Invalid token"}
+    return payload

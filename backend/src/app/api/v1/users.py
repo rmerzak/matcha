@@ -1,5 +1,4 @@
 import fastapi
-router = fastapi.APIRouter(tags=["users"])
 from app.crud.users_crud import get_all_users, get_user_by_email, get_user_by_username, create_user_internal, update_user_verification
 from app.schemas.users import UserCreate, UserCreateInternal
 from fastapi import Request, Response
@@ -10,7 +9,7 @@ front_url_prefix = settings.FRONT_URL
 
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
-
+router = fastapi.APIRouter(tags=["users"])
 @router.get("/test")
 async def test():
     data = await get_all_users()
@@ -69,7 +68,7 @@ async def resend_email_verification(request: Request, email: str):
 
 @router.get("/verifyEmail")
 async def verify_email(response: Response, request: Request, token: str):
-    payload = verify_token(token)
+    payload = await verify_token(token)
     if not payload or payload["utility"] != "EMAIL_VERIFICATION":
         return {"message": "Invalid token"}
     email = payload["sub"]
@@ -93,4 +92,26 @@ async def verify_email(response: Response, request: Request, token: str):
 
     return {"access_token": accessToken, "token_type": "bearer"}
 
+@router.post("/requestPasswordReset")
+async def request_password_reset(request: Request, email: str):
+    user = await get_user_by_email(email)
+    if not user:
+        return {"message": "User not found"}
+    reset_token = await createAccessToken({"sub": user['email'], "utility": "PASSWORD_RESET"}, "ACCESS_TOKEN", timedelta(minutes=settings.PASSWORD_RESET_TOKEN_EXPIRE_MINUTES))
+    template = template_env.get_template(settings.EMAIL_TEMPLATES["reset_password"])
+    reset_link = f"{front_url_prefix}/resetPassword?token={reset_token}"
+    body = template.render(
+        username=user["username"],
+        email=user["email"],
+        reset_link=reset_link,
+    )
+    await send_email(email=user["email"], body=body, subject="Password Reset")
+    return {"message": "Password reset email sent"}
 
+@router.post("/resetPassword")
+async def reset_password(request: Request, new_password: str):
+    user = await get_user_by_email(email)
+    if not user:
+        return {"message": "User not found"}
+    updated_user = await update_user_password(email, new_password)
+    return {"message": "Password updated successfully"}

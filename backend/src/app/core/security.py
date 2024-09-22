@@ -8,7 +8,9 @@ from email.mime.text import MIMEText
 import smtplib
 import jwt
 from app.crud.users_crud import get_user_by_username
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Any
+from fastapi import HTTPException, Request
 EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS = settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -45,11 +47,11 @@ async def send_email(email, body, subject):
         # You might want to handle the exception based on your application's requirements
         print(f"Failed to send verification email: {str(e)}")
 
-def verify_token(token: str):
+async def verify_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except e:
+    except jwt.exceptions.InvalidTokenError as e:
         return None
 
 def generate_email_verification_token(email: str, expires_delta: timedelta | None = None)-> str:
@@ -87,3 +89,29 @@ async def authenticate_user(username: str, password: str):
     if not await verify_password(password, user["password"]):
         return False
     return user
+
+
+class JWTBearer(HTTPBearer):
+    def __init__(self, auto_error: bool = True):
+        super(JWTBearer, self).__init__(auto_error=auto_error)
+    async def __call__(self, request: Request):
+        credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
+        if credentials:
+            if not credentials.scheme == "Bearer":
+                raise HTTPException(status_code=403, detail="Invalid authentication scheme.")
+            if not self.verify_jwt(credentials.credentials):
+                raise HTTPException(status_code=403, detail="Invalid token or expired token.")
+            return credentials.credentials
+        else:
+            raise HTTPException(status_code=403, detail="Invalid authorization code.")
+    def verify_jwt(self, jwt_token: str):
+        is_token_valid: bool = False
+        try:
+            payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=403, detail="Token has expired")
+        except jwt.JWTError:
+            raise HTTPException(status_code=403, detail="Invalid token")
+        if payload:
+            is_token_valid = True
+        return is_token_valid
