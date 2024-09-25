@@ -4,7 +4,11 @@ from app.schemas.token import ValidateToken
 from fastapi import Request, Response, Depends
 from app.core.security import verify_token, createAccessToken, authenticate_user
 from app.core.config import settings
+from app.services.auth_service import AuthService
+from app.core.container import  Container
+from dependency_injector.wiring import Provide
 from datetime import timedelta
+from app.core.middleware import inject
 front_url_prefix = settings.FRONT_URL
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
@@ -12,6 +16,11 @@ from app.core.responce import error_response, success_response
 
 router = fastapi.APIRouter(tags=["auth"])
 
+
+@router.post("/test_register", status_code=201)
+@inject
+def register(request: Request,  service: AuthService = Depends(Provide[Container.auth_service])):
+    return service.test()
 
 
 
