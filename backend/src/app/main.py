@@ -22,11 +22,11 @@ container = Container()
 
 @app.on_event("startup")
 async def startup():
-    container.wire(modules=["app.api.v1.authentication"])
     await database.connect()
+    container.wire(modules=["app.api.v1.authentication"])
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    container.unwire()
     await database.disconnect()
+    container.unwire()

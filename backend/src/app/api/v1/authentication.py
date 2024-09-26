@@ -19,8 +19,10 @@ router = fastapi.APIRouter(tags=["auth"])
 
 @router.post("/test_register", status_code=201)
 @inject
-def register(request: Request,  service: AuthService = Depends(Provide[Container.auth_service])):
-    return service.test()
+async def register(request: Request,  service: AuthService = Depends(Provide[Container.auth_service])):
+    print("i m here")
+    result = await service.test()
+    return result
 
 
 
