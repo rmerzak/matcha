@@ -5,12 +5,10 @@ from app.schemas.users import UserCreateInternal
 
 class UserRepository(BaseRepository):
     def __init__(self, db):
-        super().__init__()
+        super().__init__(db)
         self.db = db
 
-
     async def get_all_users(self):
-        await self.db.connect()
         query = "SELECT * FROM users;"
         print(query)
         return await self.fetch_all(query)

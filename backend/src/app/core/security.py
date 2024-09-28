@@ -7,7 +7,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import jwt
-from app.crud.users_crud import get_user_by_username
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Any
 from fastapi import HTTPException, Request
@@ -44,7 +43,6 @@ async def send_email(email, body, subject):
             server.login(smtp_username, smtp_password)
             server.sendmail(sender_email, email, message.as_string())
     except Exception as e:
-        # You might want to handle the exception based on your application's requirements
         print(f"Failed to send verification email: {str(e)}")
 
 async def verify_token(token: str):
@@ -63,7 +61,6 @@ def generate_email_verification_token(email: str, expires_delta: timedelta | Non
     to_encode.update({"exp": expire, "utility": "EMAIL_VERIFICATION"})
 
     encoded_jwt: str = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    print("dadada",encoded_jwt)
     return encoded_jwt
 
 async def createAccessToken(data: dict[str:Any], tokenType :str ,expireDate: timedelta | None = None) -> str:
@@ -81,14 +78,6 @@ async def createAccessToken(data: dict[str:Any], tokenType :str ,expireDate: tim
     encoded_jwt : str = jwt.encode(to_encode,SECRET_KEY,algorithm=ALGORITHM)
     
     return encoded_jwt
-
-async def authenticate_user(username: str, password: str):
-    user = await get_user_by_username(username)
-    if not user:
-        return False
-    if not await verify_password(password, user["password"]):
-        return False
-    return user
 
 
 class JWTBearer(HTTPBearer):

@@ -20,13 +20,13 @@ app.add_middleware(
 )
 container = Container()
 
+
 @app.on_event("startup")
 async def startup():
-    await database.connect()
+    await container.db().connect()
     container.wire(modules=["app.api.v1.authentication"])
-
 
 @app.on_event("shutdown")
 async def shutdown():
-    await database.disconnect()
+    await container.db().disconnect()
     container.unwire()

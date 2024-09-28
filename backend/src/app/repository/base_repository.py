@@ -1,14 +1,7 @@
-from app.core.db.dbinit import database
 
 class BaseRepository:
-    def __init__(self):
-        self.db = database
-    
-    async def connect(self):
-        await self.db.connect()
-    async def close_scoped_session(self):
-        await self.db.disconnect()
-
+    def __init__(self, db):
+        self.db = db
     async def fetch_all(self, query: str, values: dict = None):
         return await self.db.fetch_all(query=query, values=values)
 

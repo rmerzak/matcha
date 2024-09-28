@@ -10,7 +10,6 @@ from .config import (
     settings,
 )
 from app.core.logger import logging
-from .db.dbinit import init_db
 from psycopg2 import sql
 
 logger = logging.getLogger(__name__)
