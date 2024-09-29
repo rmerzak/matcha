@@ -17,6 +17,8 @@ class AuthServiceImp(BaseService, IAuthService):
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
         super().__init__(user_repository)
+    async def close_scoped_session(self):
+        await self.user_repository.close_session()
 
     async def login(self, user: UserLogin, response: Response):
         existing_user = await self.user_repository.get_user_by_username(user.username)

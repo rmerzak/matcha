@@ -14,7 +14,7 @@ from app.core.responce import error_response, success_response
 from app.core.security import JWTBearer
 from app.services.auth_interface import IAuthService
 
-router = fastapi.APIRouter(tags=["auth"])
+router = fastapi.APIRouter(tags=["auth"], prefix="/auth")
 
 
 

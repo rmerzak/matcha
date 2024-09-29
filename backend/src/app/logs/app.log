@@ -1351,3 +1351,40 @@ CREATE TABLE IF NOT EXISTS "Message" (
 2024-09-28 18:44:58,118 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2024-09-28 18:45:25,234 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2024-09-28 18:45:26,217 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:22:20,079 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:51:47,064 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:51:48,612 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:53:03,878 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:53:04,892 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:53:45,112 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:53:54,803 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:54:49,365 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:54:50,361 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:58:25,088 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:58:26,094 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:58:47,273 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:58:48,256 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:59:36,126 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:59:37,079 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:59:56,127 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 15:59:57,129 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:00:06,855 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:00:25,090 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:01:23,888 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:01:24,840 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:01:34,467 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:01:35,392 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:01:37,976 - app.core.responce - ERROR - Error: User already exists, Message: User with this username already exists, Details: {}
+2024-09-29 16:01:40,456 - app.core.responce - ERROR - Error: User already exists, Message: User with this username already exists, Details: {}
+2024-09-29 16:01:55,881 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:01:56,865 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:01:59,906 - app.core.responce - ERROR - Error: User already exists, Message: User with this username already exists, Details: {}
+2024-09-29 16:04:38,235 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:04:39,251 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:04:46,248 - app.core.responce - ERROR - Error: User already exists, Message: User with this username already exists, Details: {}
+2024-09-29 16:04:46,256 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:05:04,660 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:05:11,997 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:05:49,022 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:06:10,899 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-09-29 16:06:11,896 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb

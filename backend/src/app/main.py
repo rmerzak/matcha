@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from .api import router
 from .core.config import settings
 from .core.setup import create_application
-from .core.db.dbinit import database
 from app.core.container import Container
 
 app = create_application(router=router, settings=settings)

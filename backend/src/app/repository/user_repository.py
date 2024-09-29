@@ -44,3 +44,5 @@ class UserRepository(BaseRepository):
             RETURNING username, email, first_name, last_name;
         """
         return await self.execute(query=query, values={"email": email})
+    async def close_session(self):
+        await self.db.disconnect()

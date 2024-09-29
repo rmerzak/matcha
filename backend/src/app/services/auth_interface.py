@@ -26,3 +26,6 @@ class IAuthService(ABC):
     @abstractmethod
     async def verify_token(self, token: str):
         pass
+    @abstractmethod
+    async def close_scoped_session():
+        pass
