@@ -38,6 +38,7 @@ databases="^0.9.0"
 pyjwt="^2.8.0"
 dependency_injector="^4.42.0"
 cloudinary="^1.41.0"
+authentik_client="^2024.8.3-1728649738"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

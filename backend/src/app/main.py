@@ -8,7 +8,7 @@ from app.core.container import Container
 app = create_application(router=router, settings=settings)
 
 # origins = ["*"] 
-origins = ["http://localhost:3000"] 
+origins = ["http://localhost:3000","http://localhost:9000"] 
 
 app.add_middleware(
     CORSMiddleware,
