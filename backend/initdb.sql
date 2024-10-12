@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "gender" VARCHAR(255),
   "sexual_preferences" TEXT,
   "interests" TEXT[],
-  "pictures" TEXT,
+  "pictures" TEXT[5],
   "fame_rating" NUMERIC,
   "location" VARCHAR(255),
   "latitude" NUMERIC,
@@ -32,9 +32,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "bio" TEXT,
   "is_verified" BOOLEAN DEFAULT FALSE,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  "reset_password_expires" TIMESTAMP,
-  "reset_password_token" TEXT DEFAULT ''
+  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create the "user_views" table if it does not exist

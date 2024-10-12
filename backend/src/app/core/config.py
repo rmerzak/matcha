@@ -39,6 +39,10 @@ class PostgresSettings(DatabaseSettings):
     POSTGRES_URI: str = f"{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
     POSTGRES_URL: str | None = config("POSTGRES_URL", default=None)
 
+class CloadinarySettings(BaseSettings):
+    CLOUDINARY_CLOUD_NAME: str = config("CLOUDINARY_CLOUD_NAME")
+    CLOUDINARY_API_KEY: str = config("CLOUDINARY_API_KEY")
+    CLOUDINARY_API_SECRET: str = config("CLOUDINARY_API_SECRET")
 class CryptSettings(BaseSettings):
     SECRET_KEY: str = config("SECRET_KEY")
     ALGORITHM: str = config("ALGORITHM", default="HS256")
@@ -85,6 +89,7 @@ class Settings(
     CryptSettings,
     ExternalSettings,
     EmailTemplates,
+    CloadinarySettings,
 ):
     pass
 

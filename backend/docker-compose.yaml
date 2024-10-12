@@ -23,7 +23,7 @@ services:
       - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
-    container_name: backend
+    container_name: backendd
     build:
       context: ./
       dockerfile: Dockerfile
