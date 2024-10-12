@@ -12,15 +12,9 @@ from app.services.user_interface import IUserService
 from app.core.container import Container
 from dependency_injector.wiring import Provide
 from app.core.middleware import inject
-import authentik_client
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
 router = fastapi.APIRouter(tags=["users"], prefix="/users")
-from app.core.authentik import Authentik
-# configuration = authentik_client.Configuration(
-#     host = "http://localhost:9000/api/v3",
-#     access_token = "j95F0vduAPPm2dPCVdSD9mZ816TAhJCGR13q678I2aWA9yfIbE7bPK37Tt0J"
-# )
 
 
 @router.put("/update-profile")
@@ -39,10 +33,3 @@ async def update_profile(
         interests_list = []
     result = await service.update_profile(profile_data, profile_picture, additional_pictures)
     return result
-
-authentik = Authentik()
-
-@router.get("/profile")
-async def get_profile():
-    groups = authentik.fetchGroupList()
-    return {"message":"profile"}

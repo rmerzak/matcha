@@ -5,45 +5,32 @@ from authentik_client.models.flow import Flow
 from authentik_client.models.flow_designation_enum import FlowDesignationEnum
 from authentik_client.models.invitation import Invitation
 from authentik_client.models.invitation_request import InvitationRequest
+from app.core.config import settings
+from urllib.parse import urlparse
 
 # from user import HomelabUser
 
-
 class Authentik:
 	def __init__(self):
+		parsed_url = urlparse('http://10.13.6.1:9000/api/v3')
+		scheme = parsed_url.scheme
+		host = parsed_url.netloc
+		if ':' in host:
+			host, port = host.split(':')
+		else:
+			port = '443' if scheme == 'http' else '80'
 		self.conf = ac.Configuration(
-            host = "http://localhost:9000/api/v3",
-            access_token = "fQCwJuB3CRAbp0uOuv0uknsfwrbC1wO1dkQAeMLUchKvnXQOjCA55yJGVdjQ"
+			host = f"{scheme}://{host}:{port}/api/v3",
+			access_token = "OGBWvskQ6Fawz883ry7EFFdjRwSUYPO03nLX0RTfzmZ7FnaTKZf3Xw76uoco"
 		)
-
-		# set api key
-		self.conf.api_key['authentik'] = "fQCwJuB3CRAbp0uOuv0uknsfwrbC1wO1dkQAeMLUchKvnXQOjCA55yJGVdjQ"
-
-
+		print(self.conf)
+		self.conf.api_key['authentik'] = "OGBWvskQ6Fawz883ry7EFFdjRwSUYPO03nLX0RTfzmZ7FnaTKZf3Xw76uoco"
 		APIClient = ac.ApiClient(self.conf)
-
-		# create API objects for each API classification
-		# admin = ac.AdminApi(APIClient)
-		# authenticators = ac.AuthenticatorsApi(APIClient)
 		self.core = ac.CoreApi(APIClient)
-		# crypto = ac.CryptoApi(APIClient)
-		# enterprise = ac.EnterpriseApi(APIClient)
-		# events = ac.EventsApi(APIClient)
 		self.flows = ac.FlowsApi(APIClient)
-		# managed = ac.ManagedApi(APIClient)
-		# oauth2 = ac.Oauth2Api(APIClient)
-		# outposts = ac.OutpostsApi(APIClient)
-		# policies = ac.PoliciesApi(APIClient)
-		# propertyMappings = ac.PropertymappingsApi(APIClient)
-		# providers = ac.ProvidersApi(APIClient)
-		# RAC = ac.RacApi(APIClient)
-		# RBAC = ac.RbacApi(APIClient)
-		# root = ac.RootApi(APIClient)
-		# schema = ac.SchemaApi(APIClient)
-		# sources = ac.SourcesApi(APIClient)
+		self.admin = ac.AdminApi(APIClient)
 		self.stages = ac.StagesApi(APIClient)
-		# tenants = ac.TenantsApi(APIClient)
-	
+
 	def fetchGroupList(self) -> list[str]:
 		# grab results section of the raw ouput
 		raw = self.core.core_groups_list().results
@@ -52,6 +39,10 @@ class Authentik:
 		groups = [g.name for g in raw]
 		# print(groups)
 		return groups
+	def fetchAdmins(self):
+		# grab results section of the raw ouput
+		raw = self.admin.admin_apps_list()
+		return raw
 
 
 

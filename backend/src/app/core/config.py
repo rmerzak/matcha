@@ -79,7 +79,9 @@ class ExternalSettings(BaseSettings):
 class EnvironmentSettings(BaseSettings):
     ENVIRONMENT: EnvironmentOption = config("ENVIRONMENT", default="local")
 
-
+class AuthentikSettings(BaseSettings):
+    AUTHENTIK_HOST: str = config("AUTHENTIK_HOST", default="http://localhost:9000/api/v3")
+    AUTHENTIK_ACCESS_TOKEN: str = config("AUTHENTIK_TOKEN", default="fQCwJuB3CRAbp0uOuv0uknsfwrbC1wO1dkQAeMLUchKvnXQOjCA55yJGVdjQ")
 
 class Settings(
     AppSettings,
@@ -90,6 +92,7 @@ class Settings(
     ExternalSettings,
     EmailTemplates,
     CloadinarySettings,
+    AuthentikSettings,
 ):
     pass
 
