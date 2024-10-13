@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 class Authentik:
 	def __init__(self):
-		parsed_url = urlparse('http://10.13.6.1:9000/api/v3')
+		parsed_url = urlparse('http://10.13.11.10:9000/api/v3')
 		scheme = parsed_url.scheme
 		host = parsed_url.netloc
 		if ':' in host:
@@ -21,10 +21,10 @@ class Authentik:
 			port = '443' if scheme == 'http' else '80'
 		self.conf = ac.Configuration(
 			host = f"{scheme}://{host}:{port}/api/v3",
-			access_token = "OGBWvskQ6Fawz883ry7EFFdjRwSUYPO03nLX0RTfzmZ7FnaTKZf3Xw76uoco"
+			access_token = "wN8eSZASPvjrp5CB2bRZD7CHs9RXvvp6epiEzW2Y1EpYcyiWgBCZ8QKc1WP2"
 		)
 		print(self.conf)
-		self.conf.api_key['authentik'] = "OGBWvskQ6Fawz883ry7EFFdjRwSUYPO03nLX0RTfzmZ7FnaTKZf3Xw76uoco"
+		self.conf.api_key['authentik'] = "wN8eSZASPvjrp5CB2bRZD7CHs9RXvvp6epiEzW2Y1EpYcyiWgBCZ8QKc1WP2"
 		APIClient = ac.ApiClient(self.conf)
 		self.core = ac.CoreApi(APIClient)
 		self.flows = ac.FlowsApi(APIClient)

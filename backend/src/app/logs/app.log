@@ -1516,3 +1516,66 @@ CREATE TABLE IF NOT EXISTS "Message" (
 2024-09-30 19:39:37,534 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2024-10-06 16:51:43,886 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2024-10-11 19:04:10,377 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:20:02,228 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:33:53,493 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:34:04,783 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:34:11,393 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f57c60e23d0>: Failed to resolve '127.0.0.0.0' ([Errno -2] Name or service not known)")': /api/v3/admin/apps/
+2024-10-13 11:34:11,395 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f57c592d1d0>: Failed to resolve '127.0.0.0.0' ([Errno -2] Name or service not known)")': /api/v3/admin/apps/
+2024-10-13 11:34:11,396 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f57c5955d50>: Failed to resolve '127.0.0.0.0' ([Errno -2] Name or service not known)")': /api/v3/admin/apps/
+2024-10-13 11:34:20,026 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:34:30,261 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:34:30,271 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f179d090190>: Failed to resolve '127.0.0.0.1' ([Errno -2] Name or service not known)")': /api/v3/admin/apps/
+2024-10-13 11:34:30,274 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f179d0906d0>: Failed to resolve '127.0.0.0.1' ([Errno -2] Name or service not known)")': /api/v3/admin/apps/
+2024-10-13 11:34:30,275 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f179d090e10>: Failed to resolve '127.0.0.0.1' ([Errno -2] Name or service not known)")': /api/v3/admin/apps/
+2024-10-13 11:34:35,860 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:34:46,098 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:34:46,107 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f274ab43dd0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/v3/admin/apps/
+2024-10-13 11:34:46,108 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f274b2be210>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/v3/admin/apps/
+2024-10-13 11:34:46,112 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f274ab44bd0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/v3/admin/apps/
+2024-10-13 11:36:44,962 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:36:55,373 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:37:08,879 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:37:19,365 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:38:55,469 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:39:06,206 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:41:20,035 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f2ae4f30310>, 'Connection to 172.20.0.5 timed out. (connect timeout=None)')': /api/v3/admin/apps/
+2024-10-13 11:43:31,015 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f2ae4f30950>, 'Connection to 172.20.0.5 timed out. (connect timeout=None)')': /api/v3/admin/apps/
+2024-10-13 11:45:41,971 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f2ae4f310d0>, 'Connection to 172.20.0.5 timed out. (connect timeout=None)')': /api/v3/admin/apps/
+2024-10-13 11:47:31,616 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 11:51:06,419 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:13:45,839 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:24:57,611 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:25:09,497 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:25:39,671 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:25:59,659 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:26:44,651 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:26:55,480 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:27:02,533 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:27:12,988 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:28:06,238 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:28:23,479 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:29:24,054 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:29:34,608 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:30:09,646 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:30:20,068 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:30:59,046 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:31:09,285 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:33:14,048 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:33:24,554 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:33:52,234 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:34:02,632 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:35:25,435 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:35:35,827 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:37:08,592 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:37:18,848 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:37:47,365 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:37:57,759 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:40:41,241 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:40:51,787 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:42:44,687 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:42:55,119 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:43:03,250 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:43:13,657 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:43:58,717 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 14:44:09,351 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-10-13 15:00:18,391 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
