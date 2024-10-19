@@ -13,7 +13,8 @@ def inject(func):
             return result
         else:
             try:
-                await injected_services[-1].close_scoped_session()
+                # await injected_services[-1].close_scoped_session()
+                print("Closing session")
             except Exception as e:
                 print(e)
 
