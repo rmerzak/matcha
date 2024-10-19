@@ -1,8 +1,7 @@
 import { useState } from "react";
 
-type Props = {};
 
-function SignUpForm({}: Props) {
+export default function SignUpForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +14,8 @@ function SignUpForm({}: Props) {
   const signup = () => {
     alert("Signup");
   };
+
+
 
   return (
     <form
@@ -234,4 +235,4 @@ function SignUpForm({}: Props) {
   );
 }
 
-export default SignUpForm;
+

@@ -2,9 +2,8 @@ import { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
 
-type Props = {};
 
-function AuthPage({}: Props) {
+function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
