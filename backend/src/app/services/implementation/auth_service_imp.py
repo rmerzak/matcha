@@ -45,7 +45,7 @@ class AuthServiceImp(BaseService, IAuthService):
 
         return success_response({
             "message": "Login successful", 
-            "data": {"access_token": access_token, "token_type": "bearer"}
+            "result": {"access_token": access_token, "token_type": "bearer"}
         }, status_code=200)
 
     async def register(self, user):
@@ -74,7 +74,7 @@ class AuthServiceImp(BaseService, IAuthService):
     
         await send_email(email=user_internal.email, body=body, subject="Email Verification")
 
-        return success_response({"message": "User created successfully", "data": created_user_dict}, status_code=status.HTTP_201_CREATED)
+        return success_response({"message": "User created successfully", "result": created_user_dict}, status_code=status.HTTP_201_CREATED)
 
     async def resend_email_verification(self, email: str):
         user = await self.user_repository.get_user_by_email(email)
@@ -113,7 +113,7 @@ class AuthServiceImp(BaseService, IAuthService):
             key="refresh_token", value=refreshToken, httponly=True, secure=True, samesite="Lax", max_age=max_age
         )
 
-        return success_response({"message": "Email verified successfully", "data": {"access_token": accessToken, "token_type": "bearer"}}, status_code=status.HTTP_200_OK)
+        return success_response({"message": "Email verified successfully", "result": {"access_token": accessToken, "token_type": "bearer"}}, status_code=status.HTTP_200_OK)
 
     async def request_password_reset(self, email: str):
         user = await self.user_repository.get_user_by_email(email)
@@ -138,4 +138,4 @@ class AuthServiceImp(BaseService, IAuthService):
         payload = await verify_token(token)
         if not payload or payload["utility"] != token.utility:
             return error_response("Invalid token", "Invalid or expired token", status_code=status.HTTP_400_BAD_REQUEST)
-        return success_response({"message": "Token verified successfully", "data": payload}, status_code=status.HTTP_200_OK)
+        return success_response({"message": "Token verified successfully", "result": payload}, status_code=status.HTTP_200_OK)
