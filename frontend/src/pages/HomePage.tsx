@@ -1,10 +1,13 @@
-import React from 'react'
 
 type Props = {}
 
 function HomePage({}: Props) {
   return (
-	<div>HomePage</div>
+	<div>HomePage
+
+
+		<button>logout</button>
+	</div>
   )
 }
 

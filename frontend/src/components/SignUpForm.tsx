@@ -1,53 +1,24 @@
 import { useState } from "react";
-
+import useAuthStore from "../store/useAuthStore";
 
 export default function SignUpForm() {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [password, setPassword] = useState("");
-  const [gender, setGender] = useState("");
-  const [age, setAge] = useState("");
-  const [genderPreference, setGenderPreference] = useState("");
-
-  const loading = false;
-
-  const signup = () => {
-    alert("Signup");
-  };
 
 
+    const { signup, loading } = useAuthStore()
 
   return (
     <form
       className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
-        signup();
+        signup({email, username, last_name: lastName, first_name: firstName, password});
       }}
     >
-      {/* NAME */}
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Name
-        </label>
-        <div className="mt-1">
-          <input
-            type="text"
-            id="name"
-            name="name"
-            autoComplete="name"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md
-			shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 
-			focus:border-blue-500 sm:text-sm"
-          />
-        </div>
-      </div>
       {/* EMAIL  */}
       <div>
         <label
@@ -71,6 +42,79 @@ export default function SignUpForm() {
           />
         </div>
       </div>
+
+      {/* USERNAME */}
+      <div>
+        <label
+          htmlFor="username"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Username
+        </label>
+        <div className="mt-1">
+          <input
+            type="text"
+            id="username"
+            name="username"
+            autoComplete="username"
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md
+			shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 
+			focus:border-blue-500 sm:text-sm"
+          />
+        </div>
+      </div>
+
+      {/* LASTNAME */}
+      <div>
+        <label
+          htmlFor="lastname"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Last name
+        </label>
+        <div className="mt-1">
+          <input
+            type="text"
+            id="lastname"
+            name="lastname"
+            autoComplete="lastname"
+            required
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md
+			shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 
+			focus:border-blue-500 sm:text-sm"
+          />
+        </div>
+      </div>
+
+      {/* FIRSTNAME */}
+      <div>
+        <label
+          htmlFor="firstname"
+          className="block text-sm font-medium text-gray-700"
+        >
+          First name
+        </label>
+        <div className="mt-1">
+          <input
+            type="text"
+            id="firstname"
+            name="firstname"
+            autoComplete="firstname"
+            required
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md
+			shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 
+			focus:border-blue-500 sm:text-sm"
+          />
+        </div>
+      </div>
+
       {/* PASSWORD  */}
       <div>
         <label
@@ -95,129 +139,6 @@ export default function SignUpForm() {
         </div>
       </div>
 
-      {/* AGE  */}
-      <div>
-        <label
-          htmlFor="age"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Age
-        </label>
-        <div className="mt-1">
-          <input
-            type="number"
-            id="age"
-            name="age"
-            autoComplete="age"
-            required
-            value={age}
-            min={18}
-            max={120}
-            onChange={(e) => setAge(e.target.value)}
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md
-			shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 
-			focus:border-blue-500 sm:text-sm"
-          />
-        </div>
-      </div>
-      {/* GENDER */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Your Gender
-        </label>
-        <div className="mt-2 flex gap-2">
-          <div className="flex items-center">
-            <input
-              id="male"
-              name="gender"
-              type="checkbox"
-              checked={gender === "male"}
-              onChange={() => setGender("male")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="male" className="ml-2 block text-sm text-gray-900">
-              Male
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="female"
-              name="gender"
-              type="checkbox"
-              checked={gender === "female"}
-              onChange={() => setGender("female")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="female"
-              className="ml-2 block text-sm text-gray-900"
-            >
-              Female
-            </label>
-          </div>
-        </div>
-      </div>
-
-      {/* GENDER PREFERENCE */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Prefer Me
-        </label>
-        <div className="mt-2 space-y-2">
-          <div className="flex items-center">
-            <input
-              id="prefer-male"
-              name="gender-preference"
-              type="radio"
-              value="male"
-              checked={genderPreference === "male"}
-              onChange={(e) => setGenderPreference(e.target.value)}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-            />
-            <label
-              htmlFor="prefer-male"
-              className="ml-2 block text-sm text-gray-900"
-            >
-              Male
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="prefer-female"
-              name="gender-preference"
-              type="radio"
-              value="female"
-              checked={genderPreference === "female"}
-              onChange={(e) => setGenderPreference(e.target.value)}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-            />
-            <label
-              htmlFor="prefer-female"
-              className="ml-2 block text-sm text-gray-900"
-            >
-              Female
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="prefer-both"
-              name="gender-preference"
-              type="radio"
-              value="both"
-              checked={genderPreference === "both"}
-              onChange={(e) => setGenderPreference(e.target.value)}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-            />
-            <label
-              htmlFor="prefer-both"
-              className="ml-2 block text-sm text-gray-900"
-            >
-              Both
-            </label>
-          </div>
-        </div>
-      </div>
-
       <div>
         <button
           type="submit"
@@ -234,5 +155,3 @@ export default function SignUpForm() {
     </form>
   );
 }
-
-
