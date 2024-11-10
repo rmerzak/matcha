@@ -12,9 +12,10 @@ from app.services.user_interface import IUserService
 from app.core.container import Container
 from dependency_injector.wiring import Provide
 from app.core.middleware import inject
+from app.schemas.users import User
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
-router = fastapi.APIRouter(tags=["users"], prefix="/users")
+router = fastapi.APIRouter(tags=["users"], prefix="/users", dependencies=[Depends(JWTBearer())])
 
 
 @router.put("/update-profile")
