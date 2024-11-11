@@ -6,17 +6,16 @@ import AuthPage from "./pages/AuthPage";
 import { Toaster } from "react-hot-toast";
 import useAuthStore from "./store/useAuthStore";
 import EmailVerification from "./pages/EmailVerification";
+import { useEffect } from "react";
 
 function App() {
-  const { authUser } = useAuthStore();
+  const { authUser, checkAuth, checkingAuth } = useAuthStore();
 
-  console.log(authUser)
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
-//   useEffect(() => {
-//     checkAuth();
-//   }, [checkAuth]);
-
-//   if (checkingAuth) return null
+  if (checkingAuth) return null
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">

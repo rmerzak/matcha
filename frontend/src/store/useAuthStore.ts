@@ -26,7 +26,7 @@ type AuthState = {
   } | null;
 };
 
-const useAuthStore = create<AuthState>((set, get) => ({
+const useAuthStore = create<AuthState>((set) => ({
   authUser: null,
   checkingAuth: true,
   loading: false,
@@ -44,18 +44,27 @@ const useAuthStore = create<AuthState>((set, get) => ({
         params: { token },
       });
       if (response.status === 200) {
-        set({ status: "success" });
         toast.success("Email verified successfully! You can now log in.");
         const jwt = response.data.data.result.access_token;
-        console.log(jwt);
-		const userData = get().userData;
-        console.log("userData:", userData);
         localStorage.setItem("jwt", jwt);
+        set({ status: "success" });
+        const config = {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        };
+        try {
+        	const res = await axiosInstance.get("/auth/me", config);
+        	const email = res.data.data.result.email
+			set({authUser: email})
+        } catch (error) {
+        	console.error("/me error:", error);
+        }
       }
     } catch (error: any) {
-      // console.error("Verification error:", error);
+      console.error("Verification error:", error);
       set({ status: "error" });
-      toast.error(error.response.data.message || "Email verification failed");
+      toast.error(error.response.data.detail || "Email verification failed");
     }
   },
 
@@ -63,16 +72,15 @@ const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ loading: true });
       const res = await axiosInstance.post("/auth/register", data);
-	  const { email, first_name, last_name, username } = res.data.data.result;
-	  set({
-		userData: {
-		  email,
-		  first_name,
-		  last_name,
-		  username,
-		},
-	  });
-	  set({authUser: username})
+      const { email, first_name, last_name, username } = res.data.data.result;
+      set({
+        userData: {
+          email,
+          first_name,
+          last_name,
+          username,
+        },
+      });
       toast.success(
         "Registration successful! Please check your email to verify your account.",
         {
@@ -80,7 +88,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data.message || "Something went wrong");
+      toast.error(error.response.data.detail || "Something went wrong");
     } finally {
       set({ loading: false });
     }
@@ -88,12 +96,24 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
   checkAuth: async () => {
     try {
-      const res = await axiosInstance.post("/auth/verifyToken");
-      console.log(res.data);
-      set({ authUser: res.data.user });
+      const token = localStorage.getItem("jwt");
+      if (!token) return;
+      //   const config = {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   };
+      const body = {
+        token: token,
+        utility: "ACCESS_TOKEN",
+      };
+      set({ checkingAuth: true });
+      const res = await axiosInstance.post("/auth/verifyToken", body);
+      const email = res.data.data.result.user_email;
+      set({ authUser: email });
     } catch (error) {
       set({ authUser: null });
-      console.log(error);
+      console.log("error", error);
     } finally {
       set({ checkingAuth: false });
     }

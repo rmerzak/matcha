@@ -6,11 +6,10 @@ import useAuthStore from "../store/useAuthStore";
 const EmailVerification = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { status, verifyEmail, authUser } = useAuthStore();
+  const { status, verifyEmail } = useAuthStore();
 
   useEffect(() => {
     verifyEmail(searchParams.get("token"));
-	console.log("from the useeffect", authUser)
   }, [searchParams, navigate]);
 
   const renderContent = () => {
@@ -26,7 +25,7 @@ const EmailVerification = () => {
           </>
         );
       case "success":
-		// setTimeout(() => navigate('/auth'), 5000);
+		setTimeout(() => navigate('/auth'), 5000);
         return (
           <>
             <h2 className="text-2xl font-bold text-green-600 mb-4">
@@ -39,7 +38,7 @@ const EmailVerification = () => {
           </>
         );
       case "error":
-		// setTimeout(() => navigate('/auth'), 5000);
+		setTimeout(() => navigate('/auth'), 5000);
         return (
           <>
             <h2 className="text-2xl font-bold text-red-600 mb-4">
