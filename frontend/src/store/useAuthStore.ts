@@ -15,6 +15,11 @@ type AuthState = {
     email: string;
     password: string;
   }) => Promise<void>;
+  signIn: (data: {
+    username: string;
+    password: string;
+  }) => Promise<void>;
+  signOut: () => void;
   status: VerificationStatus;
   verifyEmail: (token: string | null) => Promise<void>;
   checkAuth: () => Promise<void>;
@@ -32,6 +37,26 @@ const useAuthStore = create<AuthState>((set) => ({
   loading: false,
   status: "verifying",
   userData: null,
+
+
+  signIn: async (data) => {
+    try {
+      set({ loading: true });
+      const res = await axiosInstance.post("/auth/login", data);
+	  const jwt = res.data.data.result.access_token;
+      localStorage.setItem("jwt", jwt);
+
+    } catch (error: any) {
+      toast.error(error.response.data.detail || "Something went wrong");
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  signOut: () => {
+    localStorage.removeItem("jwt");
+    set({ authUser: null });
+  },
 
   verifyEmail: async (token) => {
     try {
@@ -54,11 +79,11 @@ const useAuthStore = create<AuthState>((set) => ({
           },
         };
         try {
-        	const res = await axiosInstance.get("/auth/me", config);
-        	const email = res.data.data.result.email
-			set({authUser: email})
+          const res = await axiosInstance.get("/auth/me", config);
+          const email = res.data.data.result.email;
+          set({ authUser: email });
         } catch (error) {
-        	console.error("/me error:", error);
+          console.error("/me error:", error);
         }
       }
     } catch (error: any) {
@@ -112,8 +137,8 @@ const useAuthStore = create<AuthState>((set) => ({
       const email = res.data.data.result.user_email;
       set({ authUser: email });
     } catch (error) {
+      localStorage.removeItem("jwt");
       set({ authUser: null });
-      console.log("error", error);
     } finally {
       set({ checkingAuth: false });
     }

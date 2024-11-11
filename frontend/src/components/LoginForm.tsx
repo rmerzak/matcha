@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useAuthStore from "../store/useAuthStore";
 
 type Props = {};
 
@@ -6,10 +7,17 @@ function LoginForm({}: Props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const loading = false;
+  const { checkAuth, signIn, loading } = useAuthStore();
 
   return (
-    <form className="space-y-6">
+    <form
+      className="space-y-6"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await signIn({ username, password });
+		checkAuth();
+      }}
+    >
       <div>
         <label
           htmlFor="username"
