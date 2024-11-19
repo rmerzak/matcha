@@ -106,7 +106,7 @@ async def request_password_reset(
             detail="Failed to request password reset"
         )
 
-@router.post("/resetPassword", dependencies=[Depends(JWTBearer())], status_code=status.HTTP_200_OK)
+@router.post("/resetPassword", status_code=status.HTTP_200_OK)
 @inject
 async def reset_password(
     request: Request, 

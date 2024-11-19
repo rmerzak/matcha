@@ -64,6 +64,17 @@ class UserRepository(BaseRepository):
             return await self.execute(query=query, values={"email": email})
         except Exception as e:
             return {"error": "An error occurred while updating user verification status" + str(e)}
+    async def update_user_password(self, email: str, password: str):
+        try:
+            query = """
+                UPDATE users 
+                SET password = :password 
+                WHERE email = :email 
+                RETURNING username, email, first_name, last_name;
+            """
+            return await self.execute(query=query, values={"email": email, "password": password})
+        except Exception as e:
+            return {"error": "An error occurred while updating user password" + str(e)}
     async def update_profile(
         self, 
         profile_data: ProfileUpdate, 

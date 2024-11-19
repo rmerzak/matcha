@@ -174,6 +174,29 @@ class AuthServiceImp(BaseService, IAuthService):
                 detail="Failed to send password reset email"
             )
 
+    async def reset_password(self, token: str, new_password: str):
+        try:
+            payload = await verify_token(token)
+            if not payload or payload["utility"] != "PASSWORD_RESET":
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+
+            email = payload["sub"]
+            user = await self.user_repository.get_user_by_email(email)
+            if not user:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User with this email not found")
+
+            hashed_password = get_password_hash(new_password)
+            print(hashed_password)
+            await self.user_repository.update_user_password(email, hashed_password)
+            return success_response({"message": "Password reset successfully"}, status_code=status.HTTP_200_OK)
+
+        except HTTPException as he:
+            raise he
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to reset password"
+            )
     async def verify_token(self, token: TokenVerifyRequest):
         try:
             token_dict = token.dict()
