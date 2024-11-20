@@ -4,9 +4,9 @@ from .api import router
 from .core.config import settings
 from .core.setup import create_application
 from app.core.container import Container
-
+from .websocket.router import websocket_router
 app = create_application(router=router, settings=settings)
-
+app.include_router(websocket_router)
 # origins = ["*"] 
 origins = ["http://localhost:3000"] 
 
