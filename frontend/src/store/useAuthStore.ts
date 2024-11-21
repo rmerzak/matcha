@@ -15,13 +15,9 @@ type AuthState = {
     email: string;
     password: string;
   }) => Promise<void>;
-  signIn: (data: {
-    username: string;
-    password: string;
-  }) => Promise<void>;
+  signIn: (data: { username: string; password: string }) => Promise<void>;
   signOut: () => void;
   status: VerificationStatus;
-  verifyEmail: (token: string | null) => Promise<void>;
   checkAuth: () => Promise<void>;
   userData: {
     email: string;
@@ -29,6 +25,9 @@ type AuthState = {
     last_name: string;
     username: string;
   } | null;
+  verifyEmail: (token: string | null) => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  resetPassword: (new_password: string, token: string | null) => Promise<void>;
 };
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -38,14 +37,59 @@ const useAuthStore = create<AuthState>((set) => ({
   status: "verifying",
   userData: null,
 
+  resetPassword: async (new_password, token) => {
+    try {
+      if (!token) {
+        set({ status: "error" });
+        toast.error("Invalid verification link");
+        return;
+      }
+      set({ loading: true });
+      const response = await axiosInstance.post("/auth/resetPassword", null, {
+        params: { new_password, token },
+      });
+      if (response.status === 200) {
+        toast.success(
+          "Password successfully updated. You can now log in with your new password.",
+          {
+            duration: 5000, // Duration in milliseconds (5 seconds)
+          }
+        );
+        set({ status: "success" });
+      }
+    } catch (error: any) {
+      set({ status: "error" });
+      toast.error(error.response.data.detail || "Password reset failed");
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  requestPasswordReset: async (email) => {
+    try {
+      set({ loading: true });
+      await axiosInstance.post("/auth/requestPasswordReset", null, {
+        params: { email },
+      });
+      toast.success(
+        "Password reset email sent successfully! Check your inbox.",
+        {
+          duration: 6000, // Duration in milliseconds (6 seconds)
+        }
+      );
+    } catch (error: any) {
+      toast.error(error.response.data.detail || "Something went wrong");
+    } finally {
+      set({ loading: false });
+    }
+  },
 
   signIn: async (data) => {
     try {
       set({ loading: true });
       const res = await axiosInstance.post("/auth/login", data);
-	  const jwt = res.data.data.result.access_token;
+      const jwt = res.data.data.result.access_token;
       localStorage.setItem("jwt", jwt);
-
     } catch (error: any) {
       toast.error(error.response.data.detail || "Something went wrong");
     } finally {
@@ -87,7 +131,6 @@ const useAuthStore = create<AuthState>((set) => ({
         }
       }
     } catch (error: any) {
-      console.error("Verification error:", error);
       set({ status: "error" });
       toast.error(error.response.data.detail || "Email verification failed");
     }
