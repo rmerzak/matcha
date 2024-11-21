@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import useAuthStore from "./store/useAuthStore";
 import EmailVerification from "./pages/EmailVerification";
 import { useEffect } from "react";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -37,6 +38,7 @@ function App() {
           element={authUser ? <ChatPage /> : <Navigate to={"/auth"} />}
         />
 		<Route path="/verifyEmail" element={<EmailVerification />} />
+		<Route path="/resetPassword" element={<ResetPassword />} />
       </Routes>
 
       <Toaster />

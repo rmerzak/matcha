@@ -1,40 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuthStore from "../store/useAuthStore";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type Props = {};
 
-function ForgotPassForm({}: Props) {
-  const [email, setEmail] = useState("");
+function ResetPassForm({}: Props) {
+  const [searchParams] = useSearchParams();
+  const [newPassword, setNewPassword] = useState("");
+  const navigate = useNavigate();
 
-  const { requestPasswordReset, loading } = useAuthStore();
+  const { resetPassword, loading, status } = useAuthStore();
+
+  useEffect(() => {
+    if (status == "success") {
+      setTimeout(() => navigate("/auth"), 1000);
+    }
+  });
 
   return (
     <form
       className="space-y-6"
       onSubmit={async (e) => {
         e.preventDefault();
-		await requestPasswordReset(email);
+        await resetPassword(newPassword, searchParams.get("token"));
       }}
     >
-      <p className="mt-2 text-sm text-center text-gray-600">
-        We'll email you a link to reset your passwrod 
-      </p>
       <div>
         <label
-          htmlFor="email"
+          htmlFor="password"
           className="block text-sm font-medium text-gray-700"
         >
-          Email
+          New Password
         </label>
         <div className="mt-1">
           <input
-            type="email"
-            id="email"
-            name="email"
-            autoComplete="email"
+            type="password"
+            id="password"
+            name="password"
+            autoComplete="current-password"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md
 			shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 
 			focus:border-blue-500 sm:text-sm"
@@ -52,10 +58,10 @@ function ForgotPassForm({}: Props) {
     }`}
         disabled={loading}
       >
-        {loading ? "Sending email..." : "Send email"}
+        {loading ? "Saving..." : "Save"}
       </button>
     </form>
   );
 }
 
-export default ForgotPassForm;
+export default ResetPassForm;
