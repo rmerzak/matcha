@@ -16,10 +16,17 @@ class UserRepository(BaseRepository):
 
     async def get_user_by_email(self, email: str):
         try:
-            query = "SELECT * FROM users WHERE email = :email"
+            query = """
+                SELECT id, username, first_name, last_name, email, gender, 
+                    sexual_preferences, interests, pictures, fame_rating, 
+                    location, latitude, address, age, bio, is_verified
+                FROM users 
+                WHERE email = :email
+            """
             return await self.fetch_one(query=query, values={"email": email})
         except Exception as e:
-            return {"error": "An error occurred while fetching user by email" + str(e)}
+            return {"error": "An error occurred while fetching user by email: " + str(e)}
+
 
     async def get_user_by_username(self, username: str):
         try:
@@ -57,6 +64,17 @@ class UserRepository(BaseRepository):
             return await self.execute(query=query, values={"email": email})
         except Exception as e:
             return {"error": "An error occurred while updating user verification status" + str(e)}
+    async def update_user_password(self, email: str, password: str):
+        try:
+            query = """
+                UPDATE users 
+                SET password = :password 
+                WHERE email = :email 
+                RETURNING username, email, first_name, last_name;
+            """
+            return await self.execute(query=query, values={"email": email, "password": password})
+        except Exception as e:
+            return {"error": "An error occurred while updating user password" + str(e)}
     async def update_profile(
         self, 
         profile_data: ProfileUpdate, 
