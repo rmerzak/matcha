@@ -6,7 +6,7 @@ from typing import List
 
 class IUserService(ABC):
     @abstractmethod
-    async def update_profile(self, profile_data: ProfileUpdate, profile_picture: UploadFile = File(...), additional_pictures: List[UploadFile] = File([])):
+    async def update_profile(self, profile_data: ProfileUpdate, email: str, profile_picture: UploadFile = File(...), additional_pictures: List[UploadFile] = File([])):
         pass
     @abstractmethod
     async def close_scoped_session():

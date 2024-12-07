@@ -78,12 +78,28 @@ class UserRepository(BaseRepository):
     async def update_profile(
         self, 
         profile_data: ProfileUpdate, 
+        email: str,
         profile_picture_url: str, 
-        additional_pictures_urls: List[str]):
+        additional_pictures_urls: List[str]
+        ):
         try:
-            print("ssssss",profile_data)
-            print("ssssss",profile_data.interests)
-            query = """
+            # Ensure interests is a list
+            interests_list = profile_data.interests.split(',') if profile_data.interests else []
+            
+            # Ensure profile_picture_url and additional_pictures_urls are lists
+            profile_picture_urls = [profile_picture_url] if profile_picture_url else []
+            additional_pictures_urls = additional_pictures_urls or []
+        
+            values = {
+                "gender": profile_data.gender,
+                "sexual_preferences": profile_data.sexual_preferences,
+                "bio": profile_data.bio,
+                "interests": interests_list,
+                "pictures": profile_picture_urls + additional_pictures_urls,
+                "email": email
+            }
+        
+            result = await self.execute(query="""
                 UPDATE users  SET 
                     gender = :gender,
                     sexual_preferences = :sexual_preferences,
@@ -93,20 +109,15 @@ class UserRepository(BaseRepository):
                     updated_at = CURRENT_TIMESTAMP
                 WHERE email = :email
                 RETURNING username, email, first_name, last_name, gender, sexual_preferences, bio, interests, pictures;
-            """
-        
-            values = {
-                "gender": profile_data.gender,
-                "sexual_preferences": profile_data.sexual_preferences,
-                "bio": profile_data.bio,
-                "interests": [profile_data.interests],
-                "pictures": [profile_picture_url] + additional_pictures_urls,
-                "email": profile_data.email
-            }
-        
-            return await self.execute(query=query, values=values)
+            """, values=values)
+            
+            # Ensure the result is not None
+            if not result:
+                return {"error": "No rows were updated"}
+            
+            return result
         except Exception as e:
             print(e)
-            return {"error": "An error occurred while updating profile" + str(e)}
+            return {"error": f"An error occurred while updating profile: {str(e)}"}
     async def close_session(self):
         await self.db.disconnect()

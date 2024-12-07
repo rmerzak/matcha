@@ -23,3 +23,19 @@ async def get_current_user(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to get user"
         )
+
+@inject
+async def get_current_user_info(
+    token: str = Depends(JWTBearer()),
+    service: IAuthService = Depends(Provide[Container.auth_service])
+) :
+    try:
+        user = await service.get_me_info(token)
+        return user
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to get user"
+        )

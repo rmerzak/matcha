@@ -29,6 +29,9 @@ class IAuthService(ABC):
     @abstractmethod
     async def get_me(self, token: str):
         pass
+    @abstractmethod
+    async def get_me_info(self, token: str):
+        pass
 
     @abstractmethod
     async def close_scoped_session():

@@ -242,9 +242,30 @@ class AuthServiceImp(BaseService, IAuthService):
             if not user:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
             user_dict = dict(user)
+            return user_dict
 
             
-            return success_response({"message": "User retrieved successfully", "result": user_dict}, status_code=status.HTTP_200_OK)
+            # return success_response({"message": "User retrieved successfully", "result": user_dict}, status_code=status.HTTP_200_OK)
+
+        except HTTPException as he:
+            raise he
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to get user"
+            )
+    async def get_me_info(self, token: str):
+        try:
+            payload = await verify_token(token)
+            if not payload:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+            
+            email = payload["sub"]
+            user = await self.user_repository.get_user_by_email(email)
+            if not user:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+            user_dict = dict(user)
+            return user_dict
 
         except HTTPException as he:
             raise he

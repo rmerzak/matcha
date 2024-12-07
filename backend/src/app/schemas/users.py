@@ -52,8 +52,7 @@ class UserLogin(BaseModel):
     password: str
 
 class ProfileUpdate(BaseModel):
-    gender: Optional[Gender]
-    sexual_preferences: Optional[SexualPreference]
-    bio: Optional[str]
-    interests: Optional[str]
-    email: str
+    gender: Optional[Gender] = None
+    sexual_preferences: Optional[SexualPreference] = None
+    bio: Optional[str] = None
+    interests: Optional[str] = None
