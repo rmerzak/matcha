@@ -46,7 +46,7 @@ class CloadinarySettings(BaseSettings):
 class CryptSettings(BaseSettings):
     SECRET_KEY: str = config("SECRET_KEY")
     ALGORITHM: str = config("ALGORITHM", default="HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = config("ACCESS_TOKEN_EXPIRE_MINUTES", default=30)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = config("ACCESS_TOKEN_EXPIRE_MINUTES", default=300)
     REFRESH_TOKEN_EXPIRE_DAYS: int = config("REFRESH_TOKEN_EXPIRE_DAYS", default=7)
     EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS: int = config("EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS", default=12)
     PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = config("PASSWORD_RESET_TOKEN_EXPIRE_MINUTES", default=30)

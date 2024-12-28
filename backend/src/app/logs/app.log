@@ -1516,3 +1516,95 @@ CREATE TABLE IF NOT EXISTS "Message" (
 2024-09-30 19:39:37,534 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2024-10-06 16:51:43,886 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2024-10-11 19:04:10,377 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 15:03:37,521 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:12:05,548 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:17:09,986 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:17:11,410 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:23:19,805 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:23:21,115 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:25:59,672 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:26:00,789 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:29:35,415 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:29:36,575 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:30:43,490 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:30:44,625 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:31:30,573 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:31:31,706 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:33:19,013 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:33:20,542 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:34:00,576 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:43:49,802 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:50:11,341 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 16:54:30,295 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:30:58,467 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:31:00,795 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:31:59,807 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:46:51,606 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:47:17,086 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:47:18,228 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:50:19,717 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:50:20,919 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:51:38,689 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:51:40,014 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:51:40,029 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:51:41,157 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:51:55,375 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:51:56,499 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:53:33,201 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:53:54,595 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:56:34,563 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:56:35,754 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:56:56,366 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:56:57,572 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:57:29,273 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:57:32,956 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:58:15,779 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:58:17,063 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:59:31,379 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:59:32,662 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 17:59:35,246 - app.core.responce - ERROR - Error: An error occurred, Message: 1 validation error for SuccessResponse
+message
+  Input should be a valid string [type=string_type, input_value={'error': "An error occur...rameter named 'viewer'"}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type, Details: {}
+2024-12-21 17:59:56,542 - app.core.responce - ERROR - Error: An error occurred, Message: 1 validation error for SuccessResponse
+message
+  Input should be a valid string [type=string_type, input_value={'error': "An error occur...rameter named 'viewer'"}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type, Details: {}
+2024-12-21 18:00:24,595 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:00:25,809 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:00:27,634 - app.core.responce - ERROR - Error: An error occurred, Message: 1 validation error for SuccessResponse
+message
+  Input should be a valid string [type=string_type, input_value={'error': "An error occur...rameter named 'viewer'"}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type, Details: {}
+2024-12-21 18:00:40,150 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:00:41,289 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:00:44,852 - app.core.responce - ERROR - Error: An error occurred, Message: 1 validation error for SuccessResponse
+message
+  Input should be a valid string [type=string_type, input_value={'error': "An error occur...rameter named 'viewer'"}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type, Details: {}
+2024-12-21 18:00:59,136 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:01:00,274 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:01:03,818 - app.core.responce - ERROR - Error: An error occurred, Message: 1 validation error for SuccessResponse
+message
+  Input should be a valid string [type=string_type, input_value={'error': "An error occur...rameter named 'viewer'"}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type, Details: {}
+2024-12-21 18:01:54,076 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:01:55,269 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:16:53,352 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:16:54,583 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:19:17,173 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:20:48,878 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:21:02,405 - app.core.responce - ERROR - Error: Invalid data, Message: User does not exist, Details: {}
+2024-12-21 18:22:14,614 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:22:15,805 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:22:17,145 - app.core.responce - ERROR - Error: Invalid data, Message: User does not exist, Details: {}
+2024-12-21 18:22:56,452 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:22:57,599 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:23:01,491 - app.core.responce - ERROR - Error: Invalid data, Message: User does not exist, Details: {}
+2024-12-21 18:24:47,081 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:25:05,285 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:25:15,745 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:25:16,893 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:27:17,807 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:27:19,084 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2024-12-21 18:27:23,500 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb

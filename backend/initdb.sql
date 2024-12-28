@@ -36,34 +36,34 @@ CREATE TABLE IF NOT EXISTS "users" (
 );
 
 -- Create the "user_views" table if it does not exist
-CREATE TABLE IF NOT EXISTS "user_views" (
+CREATE TABLE IF NOT EXISTS "views" (
   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  "viewer_id" UUID,
-  "viewed_id" UUID,
+  "viewer" UUID,
+  "viewed" UUID,
   "view_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_viewer_id FOREIGN KEY ("viewer_id") REFERENCES "users" ("id"),
-  CONSTRAINT fk_viewed_id FOREIGN KEY ("viewed_id") REFERENCES "users" ("id")
+  CONSTRAINT fk_viewer FOREIGN KEY ("viewer") REFERENCES "users" ("id"),
+  CONSTRAINT fk_viewed FOREIGN KEY ("viewed") REFERENCES "users" ("id")
 );
 
 -- Create the "user_likes" table if it does not exist
-CREATE TABLE IF NOT EXISTS "user_likes" (
+CREATE TABLE IF NOT EXISTS "likes" (
   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  "liker_id" UUID,
-  "liked_id" UUID,
+  "liker" UUID,
+  "liked" UUID,
   "like_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_liker_id FOREIGN KEY ("liker_id") REFERENCES "users" ("id"),
-  CONSTRAINT fk_liked_id FOREIGN KEY ("liked_id") REFERENCES "users" ("id")
+  CONSTRAINT fk_liker FOREIGN KEY ("liker") REFERENCES "users" ("id"),
+  CONSTRAINT fk_liked FOREIGN KEY ("liked") REFERENCES "users" ("id")
 );
 
 -- Create the "Message" table if it does not exist
 CREATE TABLE IF NOT EXISTS "Message" (
   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  "sender_id" UUID,
-  "receiver_id" UUID,
+  "sender" UUID,
+  "receiver" UUID,
   "time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "content" TEXT,
-  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "users" ("id"),
-  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver_id") REFERENCES "users" ("id")
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender") REFERENCES "users" ("id"),
+  CONSTRAINT fk_receiver_id FOREIGN KEY ("receiver") REFERENCES "users" ("id")
 );
 
 -- INSERT INTO "users" (

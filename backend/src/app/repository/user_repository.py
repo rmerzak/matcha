@@ -27,6 +27,19 @@ class UserRepository(BaseRepository):
         except Exception as e:
             return {"error": "An error occurred while fetching user by email: " + str(e)}
 
+    async def get_user_by_id(self, user_id: str):
+        try:
+            print(user_id)
+            query = """
+                SELECT username, first_name, last_name, email
+                FROM users 
+                WHERE id = :user_id
+            """
+            return await self.fetch_one(query=query, values={"user_id": user_id})
+        except Exception as e:
+            return {"error": "An error occurred while fetching user by id" + str(e)}
+            
+
 
     async def get_user_by_username(self, username: str):
         try:
