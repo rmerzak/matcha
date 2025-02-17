@@ -1,9 +1,7 @@
 
-type Props = {}
-
-function ChatPage({}: Props) {
+const ChatPage = () => {
   return (
-	<div>ChatPage</div>
+    <div>ChatPage</div>
   )
 }
 
