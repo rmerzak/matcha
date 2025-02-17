@@ -8,6 +8,7 @@ import useAuthStore from "./store/useAuthStore";
 import EmailVerification from "./pages/EmailVerification";
 import { useEffect } from "react";
 import ResetPassword from "./pages/ResetPassword";
+import FillProfilePage from "./pages/FillProfilePage";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -28,6 +29,10 @@ function App() {
         <Route
           path="/auth"
           element={!authUser ? <AuthPage /> : <Navigate to={"/"} />}
+        />
+        <Route
+          path="/fill-profile"
+          element={authUser ? <FillProfilePage /> : <Navigate to={"/auth"} />}
         />
         <Route
           path="/profile/"

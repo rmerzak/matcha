@@ -5,7 +5,7 @@ import { useUserStore } from "../store/useUserStore";
 
 type Props = {};
 
-function ProfilePage({}: Props) {
+function FillProfilePage({}: Props) {
   const { authUser } = useAuthStore();
 
   // const [name, setName] = useState(authUser.name || "");
@@ -44,6 +44,7 @@ function ProfilePage({}: Props) {
   };
 
   console.log(image);
+  console.log(authUser)
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -51,7 +52,7 @@ function ProfilePage({}: Props) {
       <div className="flex-grow flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Your Profile
+            Fill your Profile
           </h2>
         </div>
 
@@ -218,4 +219,4 @@ function ProfilePage({}: Props) {
   );
 }
 
-export default ProfilePage;
+export default FillProfilePage;

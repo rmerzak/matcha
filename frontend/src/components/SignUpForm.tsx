@@ -9,14 +9,14 @@ export default function SignUpForm() {
   const [password, setPassword] = useState("");
 
 
-    const { signup, loading } = useAuthStore()
+    const { signUp, loading } = useAuthStore()
 
   return (
     <form
       className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
-        signup({email, username, last_name: lastName, first_name: firstName, password});
+        signUp({email, username, last_name: lastName, first_name: firstName, password});
       }}
     >
       {/* EMAIL  */}

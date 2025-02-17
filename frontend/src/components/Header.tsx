@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { LogOut, Menu, User } from "lucide-react";
 
 export const Header = () => {
-  const { authUser, signOut, userData } = useAuthStore();
+  const { authUser, signOut } = useAuthStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -40,11 +40,11 @@ export const Header = () => {
                   className="flex items-center space-x-2 focus:outline-none"
                 >
                   <img
-                    src={userData?.username || "/avatar.png"}
+                    src={authUser?.image || "/avatar.png"}
                     className="h-10 w-10 object-cover rounded-full border-2 border-white"
                     alt="User image"
                   />
-                  <span className="text-white font-medium">{authUser}</span>
+                  <span className="text-white font-medium">{authUser.username}</span>
                 </button>
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
