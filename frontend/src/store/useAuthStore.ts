@@ -9,6 +9,11 @@ type AuthUserType = {
   email: string;
   firstName: string;
   lastName: string;
+  gender?: string | undefined;
+  sexualPreferences?: string | undefined;
+  bio?: string | undefined;
+  interests?: string[] | undefined;
+  images?: string[] | undefined;
   image?: string | null;
 };
 
@@ -159,13 +164,18 @@ const useAuthStore = create<AuthState>((set) => ({
         },
       };
       const response = await axiosInstance.get("/auth/me", config);
-      const { email, first_name, last_name, username } = response.data;
+      const { email, first_name, last_name, username, gender, bio, sexual_preferences, interests, pictures } = response.data;
       set({
         authUser: {
           username,
           email,
           firstName: first_name,
           lastName: last_name,
+          gender,
+          sexualPreferences: sexual_preferences,
+          bio,
+          interests,
+          images: pictures
         },
       });
     } catch (error) {

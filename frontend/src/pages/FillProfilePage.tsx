@@ -8,28 +8,26 @@ type Props = {};
 function FillProfilePage({}: Props) {
   const { authUser } = useAuthStore();
 
-  // const [name, setName] = useState(authUser.name || "");
   // const [bio, setBio] = useState(authUser.bio || "");
-  // const [age, setAge] = useState(authUser.age || "");
   // const [gender, setGender] = useState(authUser.gender || "");
   // const [genderPreference, setGenderPreference] = useState(authUser.genderPreference || []);
   // const [image, setImage] = useState(authUser.image || "");
 
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
-  const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [genderPreference, setGenderPreference] = useState("");
+  const [bio, setBio] = useState("");
+  const [interests, setInterests] = useState([]);
   const [image, setImage] = useState<string | ArrayBuffer | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // const {loading, updateProfile} = useUserStore()
 
-  // const handleSubmit = (e: any) => {
-  //   e.preventDefault();
-  //   updateProfile({name, bio, age, gender, genderPreference, image})
-  // }
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    // updateProfile({name, bio, age, gender, genderPreference, image})
+    console.log({gender, genderPreference, bio})
+  }
 
   const handleImageChange = (e: any) => {
     const file = e.target.files[0];
@@ -44,7 +42,7 @@ function FillProfilePage({}: Props) {
   };
 
   console.log(image);
-  console.log(authUser)
+  console.log(authUser);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -59,51 +57,9 @@ function FillProfilePage({}: Props) {
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
             <form
-              onSubmit={() => console.log("handleSubmit")}
+              onSubmit={handleSubmit}
               className="space-y-6"
             >
-              {/* NAME */}
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-                  />
-                </div>
-              </div>
-              {/* AGE */}
-              <div>
-                <label
-                  htmlFor="age"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Age
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    required
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-                  />
-                </div>
-              </div>
               {/* GENDER */}
               <div>
                 <span className="block text-sm font-medium text-gray-700 mb-2">
@@ -113,6 +69,7 @@ function FillProfilePage({}: Props) {
                   {["Male", "Female"].map((option) => (
                     <label key={option} className="inline-flex items-center">
                       <input
+                        required
                         type="radio"
                         className="form-radio text-pink-600"
                         name="gender"
@@ -168,6 +125,17 @@ function FillProfilePage({}: Props) {
                   />
                 </div>
               </div>
+              {/* INTERESTS */}
+              <div>
+              <label
+                  htmlFor="Interests"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Interests
+                </label>
+                <div></div>
+
+              </div>
               {/* IMAGE */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -192,6 +160,7 @@ function FillProfilePage({}: Props) {
                   />
                 </div>
               </div>
+              
               {image && (
                 <div className="mt-4">
                   <img

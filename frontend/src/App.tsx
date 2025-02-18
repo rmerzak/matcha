@@ -6,7 +6,7 @@ import AuthPage from "./pages/AuthPage";
 import { Toaster } from "react-hot-toast";
 import useAuthStore from "./store/useAuthStore";
 import EmailVerification from "./pages/EmailVerification";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import ResetPassword from "./pages/ResetPassword";
 import FillProfilePage from "./pages/FillProfilePage";
 
@@ -17,14 +17,22 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  if (checkingAuth) return null
+  if (checkingAuth) return null;
+  if (authUser && !authUser.gender) {
+    return (
+    <div>
+      <Navigate to={"/fill-profile"} replace />
+      <FillProfilePage />
+    </div>
+    );
+  }
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
       <Routes>
         <Route
           path="/"
-          element={authUser ? <HomePage /> : <Navigate to={"/auth"} />}
+          element={authUser ? <HomePage /> : <Navigate to="/auth" />}
         />
         <Route
           path="/auth"
@@ -42,8 +50,8 @@ function App() {
           path="/chat/:id"
           element={authUser ? <ChatPage /> : <Navigate to={"/auth"} />}
         />
-		<Route path="/verifyEmail" element={<EmailVerification />} />
-		<Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/verifyEmail" element={<EmailVerification />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
       </Routes>
 
       <Toaster />
