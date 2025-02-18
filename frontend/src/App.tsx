@@ -6,7 +6,7 @@ import AuthPage from "./pages/AuthPage";
 import { Toaster } from "react-hot-toast";
 import useAuthStore from "./store/useAuthStore";
 import EmailVerification from "./pages/EmailVerification";
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 import ResetPassword from "./pages/ResetPassword";
 import FillProfilePage from "./pages/FillProfilePage";
 
