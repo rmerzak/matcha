@@ -19,7 +19,7 @@ function FillProfilePage({}: Props) {
   const [genderPreference, setGenderPreference] = useState("");
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<any>([]);
-  const [image, setImage] = useState<string | ArrayBuffer | null>(null);
+  const [pictures, setPictures] = useState<string[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -27,7 +27,18 @@ function FillProfilePage({}: Props) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    updateProfile({ gender, genderPreference, bio, interests, image });
+    updateProfile({ gender, genderPreference, bio, interests, pictures });
+  };
+
+  const addPicture = (newPicture: any) => {
+    const picturesToAdd = Array.isArray(newPicture) ? newPicture : [newPicture];
+    const canAdd = 5 - pictures.length;
+    if (canAdd > 0) {
+      const newPictures = picturesToAdd.slice(0, canAdd);
+      setPictures((prevPictures: any) => [...prevPictures, ...newPictures]);
+    } else {
+      console.warn("Cannot add more images; limit reached.");
+    }
   };
 
   const handleImageChange = (e: any) => {
@@ -35,7 +46,7 @@ function FillProfilePage({}: Props) {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
+        addPicture(reader.result);
       };
 
       reader.readAsDataURL(file);
@@ -232,86 +243,62 @@ function FillProfilePage({}: Props) {
                   />
                 </div>
               </div>
-              {/* IMAGE */}
+              {/* PICTURES */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Cover Image
+                  Pictures
                 </label>
-                <div className="mt-1 flex items-center flex-wrap">
+                <div className="mt-1 mb-1 flex items-center flex-wrap">
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
                     text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
-                    focus:ring-offset-2 focus:ring-pink-500"
+                    focus:ring-offset-2 focus:ring-purple-500 flex-col"
                   >
-                    Upload Image
+                    <span>Upload Picture</span>
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
-                    text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
-                    focus:ring-offset-2 focus:ring-pink-500"
-                  >
-                    Upload Image
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
-                    text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
-                    focus:ring-offset-2 focus:ring-pink-500"
-                  >
-                    Upload Image
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
-                    text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
-                    focus:ring-offset-2 focus:ring-pink-500"
-                  >
-                    Upload Image
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
-                    text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
-                    focus:ring-offset-2 focus:ring-pink-500"
-                  >
-                    Upload Image
-                  </button>
-
+                </div>
+                <div>
                   <input
                     type="file"
                     ref={fileInputRef}
                     accept="image/*"
                     className="hidden"
                     onChange={handleImageChange}
+                    multiple
+                    disabled={pictures.length >= 5}
                   />
                 </div>
+                <span className="ml-2 text-sm text-gray-400">
+                  Up to {5 - pictures.length} pictures
+                </span>
+                <p className="ml-2 text-sm text-gray-400">
+                  {pictures.length}/5 pictures uploaded.
+                </p>
               </div>
-
-              {image && (
-                <div className="mt-4">
+              <span className="text-sm ml-2 text-gray-400">
+                First one will be used as a profile picture
+              </span>
+              <div className="flex gap-2 flex-wrap">
+                {pictures.map((image: any, index: any) => (
                   <img
-                    src={image as string}
-                    alt="User Image"
-                    className="w-48 h-full object-cover rounded-md"
+                    key={index}
+                    src={image}
+                    alt={`Uploaded image ${index}`}
+                    className="w-24 h-full object-cover rounded-md"
                   />
-                </div>
-              )}
+                ))}
+              </div>
 
               <button
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md
               shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none 
               focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                disabled={false}
+                disabled={loading}
               >
-                {false ? "Saving..." : "Save"}
+                {loading ? "Saving..." : "Save"}
               </button>
             </form>
           </div>

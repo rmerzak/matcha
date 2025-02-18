@@ -13,8 +13,7 @@ type AuthUserType = {
   sexualPreferences?: string | undefined;
   bio?: string | undefined;
   interests?: string[] | undefined;
-  images?: string[] | undefined;
-  image?: string | null;
+  pictures?: string[] | undefined;
 };
 
 type SignUpDataType = {
@@ -175,7 +174,7 @@ const useAuthStore = create<AuthState>((set) => ({
           sexualPreferences: sexual_preferences,
           bio,
           interests,
-          images: pictures
+          pictures
         },
       });
     } catch (error) {
