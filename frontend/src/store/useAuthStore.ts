@@ -164,6 +164,7 @@ const useAuthStore = create<AuthState>((set) => ({
       };
       const response = await axiosInstance.get("/auth/me", config);
       const { email, first_name, last_name, username, gender, bio, sexual_preferences, interests, pictures } = response.data;
+      console.log(response.data)
       set({
         authUser: {
           username,

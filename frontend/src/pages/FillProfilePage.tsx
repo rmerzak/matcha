@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Header } from "../components/Header";
-import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
 import Select from "react-select";
 import clsx from "clsx";
@@ -8,12 +7,8 @@ import clsx from "clsx";
 type Props = {};
 
 function FillProfilePage({}: Props) {
-  const { authUser } = useAuthStore();
 
-  // const [bio, setBio] = useState(authUser.bio || "");
-  // const [gender, setGender] = useState(authUser.gender || "");
-  // const [genderPreference, setGenderPreference] = useState(authUser.genderPreference || []);
-  // const [image, setImage] = useState(authUser.image || "");
+  const { loading, updateProfile } = useUserStore();
 
   const [gender, setGender] = useState("");
   const [genderPreference, setGenderPreference] = useState("");
@@ -23,7 +18,6 @@ function FillProfilePage({}: Props) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { loading, updateProfile } = useUserStore();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
