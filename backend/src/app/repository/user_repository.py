@@ -97,12 +97,12 @@ class UserRepository(BaseRepository):
         ):
         try:
             # Ensure interests is a list
-            interests_list = profile_data.interests.split(',') if profile_data.interests else []
-            
+            interests_list = profile_data.interests if profile_data.interests else []
+
             # Ensure profile_picture_url and additional_pictures_urls are lists
             profile_picture_urls = [profile_picture_url] if profile_picture_url else []
             additional_pictures_urls = additional_pictures_urls or []
-        
+
             values = {
                 "gender": profile_data.gender,
                 "sexual_preferences": profile_data.sexual_preferences,

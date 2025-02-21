@@ -23,24 +23,17 @@ router = fastapi.APIRouter(tags=["users"], prefix="/users", dependencies=[Depend
 @router.put("/update-profile")
 @inject
 async def update_profile(
-    profile_data: ProfileUpdate = Depends(),
-    profile_picture: Optional[UploadFile] = File(None),
-    additional_pictures: List[UploadFile] = File([]),
+    profile_data: ProfileUpdate,
     service: IUserService = Depends(Provide[Container.user_service]),
     current_user: User = Depends(get_current_user_info)
 ):
     try:
-        # Process interests
-        interests_list = []
-        if profile_data.interests:
-            interests_list = [i.strip() for i in profile_data.interests.split(",")]
-        profile_data.interests = ",".join(interests_list)
 
         result = await service.update_profile(
             profile_data, 
             current_user['email'], 
-            profile_picture, 
-            additional_pictures
+            profile_data.profile_picture, 
+            profile_data.additional_pictures
         )
 
         return result

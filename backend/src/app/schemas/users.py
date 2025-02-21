@@ -1,5 +1,7 @@
 from typing import List, Optional
+from fastapi import File, UploadFile
 from pydantic import BaseModel, Field, EmailStr
+from fastapi import Form
 from uuid import UUID
 from datetime import datetime
 from enum import Enum
@@ -51,8 +53,10 @@ class UserLogin(BaseModel):
     username: str
     password: str
 
-class ProfileUpdate(BaseModel):
+class ProfileUpdate(BaseModel):    
     gender: Optional[Gender] = None
     sexual_preferences: Optional[SexualPreference] = None
     bio: Optional[str] = None
-    interests: Optional[str] = None
+    interests: Optional[List[str]] = Field(default=[])
+    profile_picture: Optional[UploadFile | None | str] = File(default=None)
+    additional_pictures: Optional[List[UploadFile] | None | List[str]] = File(default=[])
