@@ -3,13 +3,13 @@ import { Header } from "../components/Header";
 import { useUserStore } from "../store/useUserStore";
 import Select from "react-select";
 import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
 
 type Props = {};
 
 function FillProfilePage({}: Props) {
-
   const { loading, updateProfile } = useUserStore();
-
   const [gender, setGender] = useState("");
   const [genderPreference, setGenderPreference] = useState("");
   const [bio, setBio] = useState("");
@@ -18,11 +18,23 @@ function FillProfilePage({}: Props) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { checkAuth } = useAuthStore();
 
-  const handleSubmit = (e: any) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ gender, genderPreference, bio, interests, pictures });
-    updateProfile({ gender, genderPreference, bio, interests, pictures });
+    try {
+      const data =
+        genderPreference === ""
+          ? { gender, genderPreference: "both", bio, interests, pictures }
+          : { gender, genderPreference, bio, interests, pictures };
+      await updateProfile(data);
+      checkAuth();
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
   };
 
   const addPicture = (newPicture: any) => {
@@ -288,9 +300,11 @@ function FillProfilePage({}: Props) {
 
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md
-              shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none 
-              focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading
+                    ? "bg-purple-400 cursor-not-allowed"
+                    : "bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                }`}
                 disabled={loading}
               >
                 {loading ? "Saving..." : "Save"}

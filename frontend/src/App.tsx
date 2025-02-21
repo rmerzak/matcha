@@ -20,10 +20,10 @@ function App() {
   if (checkingAuth) return null;
   if (authUser && !authUser.gender) {
     return (
-    <div>
-      <Navigate to={"/fill-profile"} replace />
-      <FillProfilePage />
-    </div>
+      <div>
+        <Navigate to={"/fill-profile"} replace />
+        <FillProfilePage />
+      </div>
     );
   }
 
@@ -40,7 +40,13 @@ function App() {
         />
         <Route
           path="/fill-profile"
-          element={authUser ? <FillProfilePage /> : <Navigate to={"/auth"} />}
+          element={
+            !authUser?.gender ? (
+              <FillProfilePage />
+            ) : (
+              <Navigate to={"/profile"} />
+            )
+          }
         />
         <Route
           path="/profile/"

@@ -1708,3 +1708,4 @@ message
 2025-02-21 13:59:14,692 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2025-02-21 13:59:26,675 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
 2025-02-21 13:59:29,371 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-02-21 14:34:17,389 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
