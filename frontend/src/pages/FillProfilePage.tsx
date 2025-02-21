@@ -21,6 +21,7 @@ function FillProfilePage({}: Props) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    console.log({ gender, genderPreference, bio, interests, pictures });
     updateProfile({ gender, genderPreference, bio, interests, pictures });
   };
 

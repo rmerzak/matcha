@@ -31,7 +31,7 @@ export const useUserStore = create<UserStoreType>((set) => ({
             bio: data.bio,
             interests: data.interests
         }
-        console.log("/update-profile", profileUpdate);
+        // console.log("/update-profile", profileUpdate);
         try {
             set({loading: true})
             await axiosInstance.put("/users/update-profile", profileUpdate, config)
