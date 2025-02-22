@@ -29,6 +29,7 @@ async def get_current_user_info(
     token: str = Depends(JWTBearer()),
     service: IAuthService = Depends(Provide[Container.auth_service])
 ) :
+    print("get_current_user_info", token)
     try:
         user = await service.get_me_info(token)
         return user

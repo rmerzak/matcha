@@ -6,13 +6,14 @@ from app.services.implementation.auth_service_imp import AuthServiceImp
 from app.services.implementation.user_service_imp import UserServiceImp
 from app.services.implementation.user_views_imp import UserViewsServiceImp
 from app.services.cloudinary_service import CloudinaryService
-
+from app.services.implementation.socketio_manager_imp import SocketIOManagerImp
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
             "app.api.v1.authentication",
             "app.api.v1.users",
             "app.api.v1.views",
+            "app.websocket.socketio"
         ]
     )
 
@@ -26,3 +27,4 @@ class Container(containers.DeclarativeContainer):
     auth_service = providers.Factory(AuthServiceImp, user_repository=user_repository)
     user_service = providers.Factory(UserServiceImp, user_repository=user_repository, cloudinary_service=cloudinary)
     user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository)
+    socketio_manager = providers.Factory(SocketIOManagerImp, user_repository=user_repository, auth_service=auth_service)
