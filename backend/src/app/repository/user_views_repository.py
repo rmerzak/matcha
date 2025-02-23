@@ -8,14 +8,14 @@ class UserViewsRepository(BaseRepository):
     async def add_view(self, viewed: str, viewer_id: str):
         try:
             query = """
-                INSERT INTO user_views (viewed, viewer) 
-                VALUES (:viewed, :viewer_id) 
-                RETURNING viewed, viewer_id;
+                INSERT INTO views (viewed, viewer)
+                VALUES (:viewed, :viewer)
+                RETURNING id;
             """
             values = {
                 "viewed": viewed,
-                "viewer": viewer_id,
+                "viewer": viewer_id
             }
-            return await self.fetch_one(query=query, values=values)
+            return await self.execute(query=query, values=values)
         except Exception as e:
-            return {"error": "An error occurred while adding view" + str(e)}
+            raise e

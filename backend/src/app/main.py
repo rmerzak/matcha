@@ -20,7 +20,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-container = Container()
+container = Container(sio=sio)
 
 
 @app.on_event("startup")
