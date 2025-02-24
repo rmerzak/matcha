@@ -16,7 +16,7 @@ function HomePage() {
   console.log("User Profiles: ", userProfiles);
   return (
     <div
-      className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-purple-100 to bg-pink-100
+      className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100  to-blue-100
     overflow-hidden"
     >
       <Sidebar />

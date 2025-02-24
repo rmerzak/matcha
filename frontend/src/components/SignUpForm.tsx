@@ -16,7 +16,7 @@ export default function SignUpForm() {
       className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
-        signUp({email, username, lastName, firstName, password});
+        signUp({email, username, last_name: lastName, first_name: firstName, password});
       }}
     >
       {/* EMAIL  */}

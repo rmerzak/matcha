@@ -15,7 +15,7 @@ function ProfilePage({}: Props) {
   // const [genderPreference, setGenderPreference] = useState(authUser.genderPreference || []);
   // const [image, setImage] = useState(authUser.image || "");
 
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState(authUser?.firstName || "");
   const [bio, setBio] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -61,13 +61,34 @@ function ProfilePage({}: Props) {
               onSubmit={() => console.log("handleSubmit")}
               className="space-y-6"
             >
-              {/* NAME */}
+              {/* FIRST NAME */}
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  First name
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+              {/* LAST NAME */}
               <div>
                 <label
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Name
+                  Last name
                 </label>
                 <div className="mt-1">
                   <input
@@ -75,8 +96,8 @@ function ProfilePage({}: Props) {
                     id="name"
                     name="name"
                     required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
                 placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
                   />
