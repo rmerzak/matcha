@@ -15,6 +15,7 @@ function ProfilePage({}: Props) {
   // const [genderPreference, setGenderPreference] = useState(authUser.genderPreference || []);
   // const [image, setImage] = useState(authUser.image || "");
 
+  const [profilePicture, setProfilePicture] = useState(authUser?.pictures?.[0] || "./avatar.png");
   const [firstName, setFirstName] = useState(authUser?.firstName || "");
   const [bio, setBio] = useState("");
   const [age, setAge] = useState("");
@@ -48,7 +49,7 @@ function ProfilePage({}: Props) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex-grow flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex-grow flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Your Profile
@@ -61,6 +62,40 @@ function ProfilePage({}: Props) {
               onSubmit={() => console.log("handleSubmit")}
               className="space-y-6"
             >
+              {/* PROFILE PICTURE */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Profile picture
+                </label>
+                <img className="w-48 mx-auto rounded-full h-48 object-cover border-2 border-white" src={profilePicture} alt="profile picture" />
+                <div className="mt-1 flex items-center justify-center space-x-4">
+                <button
+                    type="button"
+                    onClick={() => setProfilePicture("./avatar.png")}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
+                    text-sm font-medium text-gray-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2
+                    focus:ring-offset-2 focus:ring-red-500"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
+                    text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
+                    focus:ring-offset-2 focus:ring-purple-500"
+                  >
+                    Upload new picture
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </div>
+              </div>
               {/* FIRST NAME */}
               <div>
                 <label

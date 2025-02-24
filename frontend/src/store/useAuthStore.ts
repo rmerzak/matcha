@@ -45,7 +45,6 @@ const useAuthStore = create<AuthState>((set) => ({
   status: "verifying",
 
   signUp: async (data) => {
-    console.log(data)
     try {
       set({ loading: true });
       await axiosInstance.post("/auth/register", data);
