@@ -1,15 +1,19 @@
 import { Divide, Heart, Loader, MessageCircle, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useMatchStore } from "../store/useMatchStore";
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const loading = false;
-  const matches = [{ _id: "1", name: "Jane Doe", image: undefined }];
 
+  const {getMyMatches, matches, loading} = useMatchStore()
+
+  useEffect(() => {
+    getMyMatches();
+  }, [getMyMatches])
   return (
     <>
       <div
