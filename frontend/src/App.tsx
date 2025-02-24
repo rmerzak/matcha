@@ -20,7 +20,7 @@ function App() {
   if (checkingAuth) return null;
   if (authUser && !authUser.gender) {
     return (
-      <div>
+      <div className="bg-red-500">
         <Navigate to={"/fill-profile"} replace />
         <FillProfilePage />
       </div>
@@ -32,29 +32,23 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={authUser ? <HomePage /> : <Navigate to="/auth" />}
+          element={authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />}
         />
         <Route
           path="/auth"
-          element={!authUser ? <AuthPage /> : <Navigate to={"/"} />}
+          element={!authUser ? <AuthPage /> : <Navigate replace={true} to={"/"} />}
         />
         <Route
           path="/fill-profile"
-          element={
-            !authUser?.gender ? (
-              <FillProfilePage />
-            ) : (
-              <Navigate to={"/profile"} />
-            )
-          }
+          element={authUser ? <FillProfilePage /> : <Navigate replace={true} to={"/auth"} />}
         />
         <Route
           path="/profile/"
-          element={authUser ? <ProfilePage /> : <Navigate to={"/auth"} />}
+          element={authUser ? <ProfilePage /> : <Navigate replace={true} to={"/auth"} />}
         />
         <Route
           path="/chat/:id"
-          element={authUser ? <ChatPage /> : <Navigate to={"/auth"} />}
+          element={authUser ? <ChatPage /> : <Navigate replace={true} to={"/auth"} />}
         />
         <Route path="/verifyEmail" element={<EmailVerification />} />
         <Route path="/resetPassword" element={<ResetPassword />} />

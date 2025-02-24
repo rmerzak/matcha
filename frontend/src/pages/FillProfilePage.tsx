@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Header } from "../components/Header";
 import { useUserStore } from "../store/useUserStore";
 import Select from "react-select";
@@ -9,6 +9,13 @@ import useAuthStore from "../store/useAuthStore";
 type Props = {};
 
 function FillProfilePage({}: Props) {
+  const navigate = useNavigate();
+  const { authUser, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    if (authUser?.gender) navigate("/profile", { replace: true });
+  }, []);
+
   const { loading, updateProfile } = useUserStore();
   const [gender, setGender] = useState("");
   const [genderPreference, setGenderPreference] = useState("");
@@ -17,10 +24,6 @@ function FillProfilePage({}: Props) {
   const [pictures, setPictures] = useState<string[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const { checkAuth } = useAuthStore();
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
