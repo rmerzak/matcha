@@ -165,6 +165,10 @@ const useAuthStore = create<AuthState>((set) => ({
       };
       const response = await axiosInstance.get("/auth/me", config);
       const { email, first_name, last_name, username, gender, bio, sexual_preferences, interests, pictures } = response.data;
+      const labledInterests = interests.map((interest: string) => ({
+        value: interest,
+        label: `#${interest}`,
+      }));
       set({
         authUser: {
           username,
@@ -174,7 +178,7 @@ const useAuthStore = create<AuthState>((set) => ({
           gender,
           sexualPreferences: sexual_preferences,
           bio,
-          interests,
+          interests: labledInterests,
           pictures
         },
       });

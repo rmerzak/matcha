@@ -15,7 +15,7 @@ function FillProfilePage({}: Props) {
   useEffect(() => {
     if (authUser?.gender) navigate("/profile", { replace: true });
   }, []);
-
+``
   const { loading, updateProfile } = useUserStore();
   const [gender, setGender] = useState("");
   const [genderPreference, setGenderPreference] = useState("");

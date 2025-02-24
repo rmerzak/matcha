@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { Header } from "../components/Header";
 import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
+import Select from "react-select";
+import clsx from "clsx";
 
 type Props = {};
 
@@ -20,10 +22,14 @@ function ProfilePage({}: Props) {
   >(authUser?.pictures?.[0] || "./avatar.png");
   const [firstName, setFirstName] = useState(authUser?.firstName || "");
   const [lastName, setLastName] = useState(authUser?.lastName || "");
+  const [email, setEmail] = useState(authUser?.email || "");
+  const [gender, setGender] = useState(authUser?.gender || "");
+  const [genderPreference, setGenderPreference] = useState(
+    authUser?.sexualPreferences || ""
+  );
+  const [bio, setBio] = useState(authUser?.bio || "");
+  const [interests, setInterests] = useState<any>(authUser?.interests || []);
 
-  const [bio, setBio] = useState("");
-  const [gender, setGender] = useState("");
-  const [genderPreference, setGenderPreference] = useState("");
   const [image, setImage] = useState<string | ArrayBuffer | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +40,6 @@ function ProfilePage({}: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log(profilePicture)
       const data = {};
       //   genderPreference === ""
       //     ? { gender, genderPreference: "both", bio, interests, pictures }
@@ -68,7 +73,46 @@ function ProfilePage({}: Props) {
     }
   };
 
-  console.log(image);
+  const options = [
+    { value: "vegan", label: "#vegan" },
+    { value: "geek", label: "#geek" },
+    { value: "piercing", label: "#piercing" },
+    { value: "cars", label: "#cars" },
+    { value: "movies", label: "#movies" },
+    { value: "books", label: "#books" },
+    { value: "music", label: "#music" },
+  ];
+
+  const controlStyles = {
+    base: "border rounded-lg bg-white hover:cursor-pointer",
+    focus: "ring-1 ring-purple-700",
+    nonFocus: "border-gray-300 hover:border-gray-400",
+  };
+  const placeholderStyles = "text-gray-500 pl-1 py-0.5 text-sm";
+  const selectInputStyles = "pl-1 py-0.5";
+  const valueContainerStyles = "p-1 gap-1";
+  const singleValueStyles = "leading-7 ml-1";
+  const multiValueStyles =
+    "bg-gray-100 rounded items-center py-0.5 pl-2 pr-1 gap-1.5";
+  const multiValueLabelStyles = "leading-6 py-0.5";
+  const multiValueRemoveStyles =
+    "border border-gray-200 bg-white hover:bg-red-50 hover:text-red-800 text-gray-500 hover:border-red-300 rounded-md";
+  const indicatorsContainerStyles = "p-1 gap-1";
+  const clearIndicatorStyles =
+    "text-gray-500 p-1 rounded-md hover:bg-red-50 hover:text-red-800";
+  const indicatorSeparatorStyles = "bg-gray-300";
+  const dropdownIndicatorStyles =
+    "p-1 hover:bg-gray-100 text-gray-500 rounded-md hover:text-black";
+  const menuStyles = "p-1 mt-2 border border-purple-200 bg-white rounded-lg";
+  const groupHeadingStyles = "ml-3 mt-2 mb-1 text-gray-500 text-sm";
+  const optionStyles = {
+    base: "hover:cursor-pointer px-3 py-2 rounded",
+    focus: "bg-gray-100 active:bg-gray-200",
+    selected:
+      "after:content-['✔'] after:ml-2 after:text-green-500 text-gray-500",
+  };
+  const noOptionsMessageStyles =
+    "text-gray-500 p-2 bg-gray-50 border border-dashed border-gray-200 rounded-sm";
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -82,10 +126,7 @@ function ProfilePage({}: Props) {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6"
-            >
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* PROFILE PICTURE */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -148,7 +189,7 @@ function ProfilePage({}: Props) {
               {/* LAST NAME */}
               <div>
                 <label
-                  htmlFor="name"
+                  htmlFor="lastName"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Last name
@@ -156,17 +197,38 @@ function ProfilePage({}: Props) {
                 <div className="mt-1">
                   <input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="lastName"
+                    name="lastName"
                     required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                   />
                 </div>
               </div>
-
+              {/* EMAIL  */}
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email address
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                  />
+                </div>
+              </div>
               {/* GENDER */}
               <div>
                 <span className="block text-sm font-medium text-gray-700 mb-2">
@@ -176,10 +238,14 @@ function ProfilePage({}: Props) {
                   {["Male", "Female"].map((option) => (
                     <label key={option} className="inline-flex items-center">
                       <input
+                        required
                         type="radio"
-                        className="form-radio text-pink-600"
+                        style={{
+                          accentColor: "#7E22CE",
+                        }}
                         name="gender"
                         value={option.toLocaleLowerCase()}
+                        checked={gender === option.toLowerCase()}
                         onChange={() => setGender(option.toLocaleLowerCase())}
                       />
                       <span className="ml-2">{option}</span>
@@ -197,7 +263,10 @@ function ProfilePage({}: Props) {
                     <label key={option} className="inline-flex items-center">
                       <input
                         type="checkbox"
-                        className="form-checkbox text-pink-600"
+                        style={{
+                          accentColor: "#7E22CE",
+                        }}
+                        className="form-checkbox"
                         checked={
                           genderPreference.toLowerCase() ===
                           option.toLowerCase()
@@ -215,7 +284,7 @@ function ProfilePage({}: Props) {
               <div>
                 <label
                   htmlFor="bio"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Bio
                 </label>
@@ -227,12 +296,77 @@ function ProfilePage({}: Props) {
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+              {/* INTERESTS */}
+              <div>
+                <span className="block text-sm font-medium text-gray-700 mb-2">
+                  Interests
+                </span>
+                <div>
+                  <Select
+                    isMulti
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
+                    unstyled
+                    styles={{
+                      input: (base) => ({
+                        ...base,
+                        "input:focus": {
+                          boxShadow: "none",
+                        },
+                      }),
+                      // On mobile, the label will truncate automatically, so we want to
+                      // override that behaviour.
+                      multiValueLabel: (base) => ({
+                        ...base,
+                        whiteSpace: "normal",
+                        overflow: "visible",
+                      }),
+                      control: (base) => ({
+                        ...base,
+                        transition: "none",
+                      }),
+                    }}
+                    classNames={{
+                      control: ({ isFocused }) =>
+                        clsx(
+                          isFocused
+                            ? controlStyles.focus
+                            : controlStyles.nonFocus,
+                          controlStyles.base
+                        ),
+                      placeholder: () => placeholderStyles,
+                      input: () => selectInputStyles,
+                      valueContainer: () => valueContainerStyles,
+                      singleValue: () => singleValueStyles,
+                      multiValue: () => multiValueStyles,
+                      multiValueLabel: () => multiValueLabelStyles,
+                      multiValueRemove: () => multiValueRemoveStyles,
+                      indicatorsContainer: () => indicatorsContainerStyles,
+                      clearIndicator: () => clearIndicatorStyles,
+                      indicatorSeparator: () => indicatorSeparatorStyles,
+                      dropdownIndicator: () => dropdownIndicatorStyles,
+                      menu: () => menuStyles,
+                      groupHeading: () => groupHeadingStyles,
+                      option: ({ isFocused, isSelected }) =>
+                        clsx(
+                          isFocused && optionStyles.focus,
+                          isSelected && optionStyles.selected,
+                          optionStyles.base
+                        ),
+                      noOptionsMessage: () => noOptionsMessageStyles,
+                    }}
+                    value={interests}
+                    onChange={setInterests}
+                    options={options}
                   />
                 </div>
               </div>
               {/* IMAGE */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Cover Image
                 </label>
@@ -263,7 +397,7 @@ function ProfilePage({}: Props) {
                     className="w-48 h-full object-cover rounded-md"
                   />
                 </div>
-              )}
+              )} */}
               <button
                 type="submit"
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
