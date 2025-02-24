@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ChatPage from "./pages/ChatPage";
-import ProfilePage from "./pages/ProfilePage";
 import AuthPage from "./pages/AuthPage";
 import { Toaster } from "react-hot-toast";
 import useAuthStore from "./store/useAuthStore";
@@ -9,6 +8,7 @@ import EmailVerification from "./pages/EmailVerification";
 import { useEffect } from "react";
 import ResetPassword from "./pages/ResetPassword";
 import FillProfilePage from "./pages/FillProfilePage";
+import EditProfilePage from "./pages/EditProfilePage";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -43,8 +43,8 @@ function App() {
           element={authUser ? <FillProfilePage /> : <Navigate replace={true} to={"/auth"} />}
         />
         <Route
-          path="/profile/"
-          element={authUser ? <ProfilePage /> : <Navigate replace={true} to={"/auth"} />}
+          path="/edit-profile/"
+          element={authUser ? <EditProfilePage /> : <Navigate replace={true} to={"/auth"} />}
         />
         <Route
           path="/chat/:id"

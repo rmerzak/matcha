@@ -7,7 +7,7 @@ import clsx from "clsx";
 
 type Props = {};
 
-function ProfilePage({}: Props) {
+function EditProfilePage({}: Props) {
   const { authUser } = useAuthStore();
 
   // const [name, setName] = useState(authUser.name || "");
@@ -120,7 +120,7 @@ function ProfilePage({}: Props) {
       <div className="flex-grow flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Your Profile
+            Edit Your Profile
           </h2>
         </div>
 
@@ -229,6 +229,72 @@ function ProfilePage({}: Props) {
                   />
                 </div>
               </div>
+              {/* INTERESTS */}
+              <div>
+                <span className="block text-sm font-medium text-gray-700 mb-2">
+                  Interests
+                </span>
+                <div>
+                  <Select
+                    // menuPlacement="top"
+                    isMulti
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
+                    unstyled
+                    styles={{
+                      input: (base) => ({
+                        ...base,
+                        "input:focus": {
+                          boxShadow: "none",
+                        },
+                      }),
+                      // On mobile, the label will truncate automatically, so we want to
+                      // override that behaviour.
+                      multiValueLabel: (base) => ({
+                        ...base,
+                        whiteSpace: "normal",
+                        overflow: "visible",
+                      }),
+                      control: (base) => ({
+                        ...base,
+                        transition: "none",
+                      }),
+                    }}
+                    classNames={{
+                      control: ({ isFocused }) =>
+                        clsx(
+                          isFocused
+                            ? controlStyles.focus
+                            : controlStyles.nonFocus,
+                          controlStyles.base
+                        ),
+                      placeholder: () => placeholderStyles,
+                      input: () => selectInputStyles,
+                      valueContainer: () => valueContainerStyles,
+                      singleValue: () => singleValueStyles,
+                      multiValue: () => multiValueStyles,
+                      multiValueLabel: () => multiValueLabelStyles,
+                      multiValueRemove: () => multiValueRemoveStyles,
+                      indicatorsContainer: () => indicatorsContainerStyles,
+                      clearIndicator: () => clearIndicatorStyles,
+                      indicatorSeparator: () => indicatorSeparatorStyles,
+                      dropdownIndicator: () => dropdownIndicatorStyles,
+                      menu: () => menuStyles,
+                      groupHeading: () => groupHeadingStyles,
+                      option: ({ isFocused, isSelected }) =>
+                        clsx(
+                          isFocused && optionStyles.focus,
+                          isSelected && optionStyles.selected,
+                          optionStyles.base
+                        ),
+                      noOptionsMessage: () => noOptionsMessageStyles,
+                    }}
+                    value={interests}
+                    onChange={setInterests}
+                    options={options}
+                  />
+                </div>
+              </div>
               {/* GENDER */}
               <div>
                 <span className="block text-sm font-medium text-gray-700 mb-2">
@@ -300,71 +366,6 @@ function ProfilePage({}: Props) {
                   />
                 </div>
               </div>
-              {/* INTERESTS */}
-              <div>
-                <span className="block text-sm font-medium text-gray-700 mb-2">
-                  Interests
-                </span>
-                <div>
-                  <Select
-                    isMulti
-                    closeMenuOnSelect={false}
-                    hideSelectedOptions={false}
-                    unstyled
-                    styles={{
-                      input: (base) => ({
-                        ...base,
-                        "input:focus": {
-                          boxShadow: "none",
-                        },
-                      }),
-                      // On mobile, the label will truncate automatically, so we want to
-                      // override that behaviour.
-                      multiValueLabel: (base) => ({
-                        ...base,
-                        whiteSpace: "normal",
-                        overflow: "visible",
-                      }),
-                      control: (base) => ({
-                        ...base,
-                        transition: "none",
-                      }),
-                    }}
-                    classNames={{
-                      control: ({ isFocused }) =>
-                        clsx(
-                          isFocused
-                            ? controlStyles.focus
-                            : controlStyles.nonFocus,
-                          controlStyles.base
-                        ),
-                      placeholder: () => placeholderStyles,
-                      input: () => selectInputStyles,
-                      valueContainer: () => valueContainerStyles,
-                      singleValue: () => singleValueStyles,
-                      multiValue: () => multiValueStyles,
-                      multiValueLabel: () => multiValueLabelStyles,
-                      multiValueRemove: () => multiValueRemoveStyles,
-                      indicatorsContainer: () => indicatorsContainerStyles,
-                      clearIndicator: () => clearIndicatorStyles,
-                      indicatorSeparator: () => indicatorSeparatorStyles,
-                      dropdownIndicator: () => dropdownIndicatorStyles,
-                      menu: () => menuStyles,
-                      groupHeading: () => groupHeadingStyles,
-                      option: ({ isFocused, isSelected }) =>
-                        clsx(
-                          isFocused && optionStyles.focus,
-                          isSelected && optionStyles.selected,
-                          optionStyles.base
-                        ),
-                      noOptionsMessage: () => noOptionsMessageStyles,
-                    }}
-                    value={interests}
-                    onChange={setInterests}
-                    options={options}
-                  />
-                </div>
-              </div>
               {/* IMAGE */}
               {/* <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -417,4 +418,4 @@ function ProfilePage({}: Props) {
   );
 }
 
-export default ProfilePage;
+export default EditProfilePage;
