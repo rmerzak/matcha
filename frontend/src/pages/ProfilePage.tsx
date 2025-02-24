@@ -15,24 +15,48 @@ function ProfilePage({}: Props) {
   // const [genderPreference, setGenderPreference] = useState(authUser.genderPreference || []);
   // const [image, setImage] = useState(authUser.image || "");
 
-  const [profilePicture, setProfilePicture] = useState(authUser?.pictures?.[0] || "./avatar.png");
+  const [profilePicture, setProfilePicture] = useState<
+    string | ArrayBuffer | null
+  >(authUser?.pictures?.[0] || "./avatar.png");
   const [firstName, setFirstName] = useState(authUser?.firstName || "");
+  const [lastName, setLastName] = useState(authUser?.lastName || "");
+
   const [bio, setBio] = useState("");
-  const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [genderPreference, setGenderPreference] = useState("");
   const [image, setImage] = useState<string | ArrayBuffer | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRefProfilePic = useRef<HTMLInputElement>(null);
 
-  // const {loading, updateProfile} = useUserStore()
+  const { loading, updateProfile } = useUserStore();
 
-  // const handleSubmit = (e: any) => {
-  //   e.preventDefault();
-  //   updateProfile({name, bio, age, gender, genderPreference, image})
-  // }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      console.log(profilePicture)
+      const data = {};
+      //   genderPreference === ""
+      //     ? { gender, genderPreference: "both", bio, interests, pictures }
+      //     : { gender, genderPreference, bio, interests, pictures };
+      await updateProfile(data);
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
+  };
+  const handleProfilePictureChange = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicture(reader.result);
+      };
 
-  const handleImageChange = (e: any) => {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePictureChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -59,7 +83,7 @@ function ProfilePage({}: Props) {
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
             <form
-              onSubmit={() => console.log("handleSubmit")}
+              onSubmit={handleSubmit}
               className="space-y-6"
             >
               {/* PROFILE PICTURE */}
@@ -67,9 +91,13 @@ function ProfilePage({}: Props) {
                 <label className="block text-sm font-medium text-gray-700">
                   Profile picture
                 </label>
-                <img className="w-48 mx-auto rounded-full h-48 object-cover border-2 border-white" src={profilePicture} alt="profile picture" />
+                <img
+                  className="w-48 mx-auto rounded-full h-48 object-cover border-2 border-white"
+                  src={profilePicture as string}
+                  alt="profile picture"
+                />
                 <div className="mt-1 flex items-center justify-center space-x-4">
-                <button
+                  <button
                     type="button"
                     onClick={() => setProfilePicture("./avatar.png")}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
@@ -80,7 +108,7 @@ function ProfilePage({}: Props) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => fileInputRefProfilePic.current?.click()}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
                     text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
                     focus:ring-offset-2 focus:ring-purple-500"
@@ -89,10 +117,10 @@ function ProfilePage({}: Props) {
                   </button>
                   <input
                     type="file"
-                    ref={fileInputRef}
+                    ref={fileInputRefProfilePic}
                     accept="image/*"
                     className="hidden"
-                    onChange={handleImageChange}
+                    onChange={handleProfilePictureChange}
                   />
                 </div>
               </div>
@@ -138,27 +166,7 @@ function ProfilePage({}: Props) {
                   />
                 </div>
               </div>
-              {/* AGE */}
-              <div>
-                <label
-                  htmlFor="age"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Age
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    required
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-                  />
-                </div>
-              </div>
+
               {/* GENDER */}
               <div>
                 <span className="block text-sm font-medium text-gray-700 mb-2">
@@ -243,7 +251,7 @@ function ProfilePage({}: Props) {
                     ref={fileInputRef}
                     accept="image/*"
                     className="hidden"
-                    onChange={handleImageChange}
+                    onChange={handlePictureChange}
                   />
                 </div>
               </div>
@@ -256,15 +264,16 @@ function ProfilePage({}: Props) {
                   />
                 </div>
               )}
-
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md
-              shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none 
-              focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-                disabled={false}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading
+                    ? "bg-purple-400 cursor-not-allowed"
+                    : "bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                }`}
+                disabled={loading}
               >
-                {false ? "Saving..." : "Save"}
+                {loading ? "Saving..." : "Save"}
               </button>
             </form>
           </div>
