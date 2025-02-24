@@ -21,7 +21,7 @@ function App() {
   if (authUser && !authUser.gender) {
     return (
       <div className="bg-red-500">
-        <Navigate to={"/fill-profile"} replace />
+        <Navigate to={"/fill-profile"} replace={true} />
         <FillProfilePage />
       </div>
     );

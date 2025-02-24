@@ -1,4 +1,4 @@
-import { Divide, Heart, Loader, MessageCircle, X } from "lucide-react";
+import { Heart, Loader, MessageCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMatchStore } from "../store/useMatchStore";
@@ -9,7 +9,7 @@ export const Sidebar = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
 
-  const {getMyMatches, matches, loading} = useMatchStore()
+  const {getMyMatches, matches, isLoadingMyMatches} = useMatchStore()
 
   useEffect(() => {
     getMyMatches();
@@ -35,7 +35,7 @@ export const Sidebar = () => {
             </button>
           </div>
           <div className="flex-grow overflow-y-auto p-4 z-10 relative">
-            {loading ? (
+            {isLoadingMyMatches ? (
               <LoadingState />
             ) : matches.length === 0 ? (
               <NoMatchesFound />
