@@ -164,25 +164,51 @@ const useAuthStore = create<AuthState>((set) => ({
         },
       };
       const response = await axiosInstance.get("/auth/me", config);
-      const { email, first_name, last_name, username, gender, bio, sexual_preferences, interests, pictures } = response.data;
-      const labledInterests = interests.map((interest: string) => ({
-        value: interest,
-        label: `#${interest}`,
-      }));
-      set({
-        authUser: {
-          username,
-          email,
-          firstName: first_name,
-          lastName: last_name,
-          gender,
-          sexualPreferences: sexual_preferences,
-          bio,
-          interests: labledInterests,
-          pictures
-        },
-      });
+      const {
+        email,
+        first_name,
+        last_name,
+        username,
+        gender,
+        bio,
+        sexual_preferences,
+        interests,
+        pictures,
+      } = response.data;
+      if (interests) {
+        const labledInterests = interests.map((interest: string) => ({
+          value: interest,
+          label: `#${interest}`,
+        }));
+        set({
+          authUser: {
+            username,
+            email,
+            firstName: first_name,
+            lastName: last_name,
+            gender,
+            sexualPreferences: sexual_preferences,
+            bio,
+            interests: labledInterests,
+            pictures,
+          },
+        });
+      } else {
+        set({
+          authUser: {
+            username,
+            email,
+            firstName: first_name,
+            lastName: last_name,
+            gender,
+            sexualPreferences: sexual_preferences,
+            bio,
+            pictures,
+          },
+        });
+      }
     } catch (error) {
+      console.log(error);
       localStorage.removeItem("jwt");
       set({ authUser: null });
     } finally {
