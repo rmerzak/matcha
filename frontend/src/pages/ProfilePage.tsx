@@ -1,4 +1,4 @@
-import { House, MapPin } from "lucide-react";
+import { Eye, House, MapPin, Users } from "lucide-react";
 import { Header } from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import useAuthStore from "../store/useAuthStore";
@@ -43,8 +43,8 @@ export default function ProfilePage() {
             
             <div>
                 <h2 className="font-bold text-lg">Analytics</h2>
-                <div className="flex text-gray-700 text-sm space-x-1">
-                  <House size={18} /> <span>31 profile views</span>
+                <div className="flex text-gray-700 text-sm space-x-1 items-center">
+                  <Users size={18} /> <span>31 profile views</span>
                 </div>
             </div>
           </div>
