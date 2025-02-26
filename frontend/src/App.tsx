@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import ResetPassword from "./pages/ResetPassword";
 import FillProfilePage from "./pages/FillProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -32,26 +33,61 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />}
+          element={
+            authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            authUser ? <ProfilePage /> : <Navigate replace={true} to="/auth" />
+          }
         />
         <Route
           path="/auth"
-          element={!authUser ? <AuthPage /> : <Navigate replace={true} to={"/"} />}
+          element={
+            !authUser ? <AuthPage /> : <Navigate replace={true} to={"/"} />
+          }
+        />
+        <Route
+          path="/"
+          element={
+            authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />
+          }
         />
         <Route
           path="/fill-profile"
-          element={authUser ? <FillProfilePage /> : <Navigate replace={true} to={"/auth"} />}
+          element={
+            authUser ? (
+              <FillProfilePage />
+            ) : (
+              <Navigate replace={true} to={"/auth"} />
+            )
+          }
         />
         <Route
           path="/edit-profile/"
-          element={authUser ? <EditProfilePage /> : <Navigate replace={true} to={"/auth"} />}
+          element={
+            authUser ? (
+              <EditProfilePage />
+            ) : (
+              <Navigate replace={true} to={"/auth"} />
+            )
+          }
         />
         <Route
           path="/chat/:id"
-          element={authUser ? <ChatPage /> : <Navigate replace={true} to={"/auth"} />}
+          element={
+            authUser ? <ChatPage /> : <Navigate replace={true} to={"/auth"} />
+          }
         />
         <Route path="/verifyEmail" element={<EmailVerification />} />
-        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route
+          path="/resetPassword"
+          element={
+            !authUser ? <ResetPassword /> : <Navigate replace={true} to={"/"} />
+          }
+        />
       </Routes>
 
       <Toaster />
