@@ -18,7 +18,7 @@ class UserRepository(BaseRepository):
         try:
             query = """
                 SELECT id, username, first_name, last_name, email, gender, 
-                    sexual_preferences, interests, pictures, fame_rating, 
+                    sexual_preferences, interests, pictures, profile_picture, fame_rating, 
                     location, latitude, address, age, bio, is_verified
                 FROM users 
                 WHERE email = :email
@@ -99,16 +99,17 @@ class UserRepository(BaseRepository):
             # Ensure interests is a list
             interests_list = profile_data.interests if profile_data.interests else []
 
-            # Ensure profile_picture_url and additional_pictures_urls are lists
-            profile_picture_urls = [profile_picture_url] if profile_picture_url else []
+            # # Ensure profile_picture_url and additional_pictures_urls are lists
+            # profile_picture_urls = [profile_picture_url] if profile_picture_url else []
             additional_pictures_urls = additional_pictures_urls or []
 
             values = {
                 "gender": profile_data.gender,
+                "profile_picture": profile_picture_url or None,
                 "sexual_preferences": profile_data.sexual_preferences,
                 "bio": profile_data.bio,
                 "interests": interests_list,
-                "pictures": profile_picture_urls + additional_pictures_urls,
+                "pictures": additional_pictures_urls,
                 "email": email
             }
         
@@ -117,6 +118,7 @@ class UserRepository(BaseRepository):
                     gender = :gender,
                     sexual_preferences = :sexual_preferences,
                     bio = :bio,
+                    profile_picture = :profile_picture,
                     pictures = :pictures,
                     interests = :interests,
                     updated_at = CURRENT_TIMESTAMP

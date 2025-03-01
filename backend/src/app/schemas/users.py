@@ -12,10 +12,10 @@ class Gender(str, Enum):
     OTHER = "other"
 
 class SexualPreference(str, Enum):
-    MALE = "male"
-    FEMALE = "female"
-    BOTH = "both"
-
+    HETEROSEXUAL = "heterosexual"
+    HOMOSEXUAL = "homosexual"
+    BISEXUAL = "bisexual"
+    OTHER = "other"
 class User(BaseModel):
     id: Optional[UUID] = Field(default=None)
     username: str = Field(..., max_length=255)
@@ -26,6 +26,7 @@ class User(BaseModel):
     gender: Optional[str] = Field(None, max_length=255)
     sexual_preferences: Optional[str]
     interests: Optional[List[str]]
+    profile_picture: Optional[str]
     pictures: Optional[str]
     fame_rating: Optional[float]
     location: Optional[str] = Field(None, max_length=255)
