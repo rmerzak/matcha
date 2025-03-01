@@ -3,6 +3,7 @@
 from app.repository.base_repository import BaseRepository
 from app.schemas.users import UserCreateInternal, ProfileUpdate
 from typing import List
+from app.core.db.database import DatabaseError
 
 class UserRepository(BaseRepository):
     def __init__(self, db):
@@ -88,51 +89,126 @@ class UserRepository(BaseRepository):
             return await self.execute(query=query, values={"email": email, "password": password})
         except Exception as e:
             return {"error": "An error occurred while updating user password" + str(e)}
+    
+    # async def update_profile(
+    #     self, 
+    #     profile_data: ProfileUpdate, 
+    #     email: str,
+    #     profile_picture_url: str, 
+    #     additional_pictures_urls: List[str]
+    #     ):
+    #     try:
+    #         # Ensure interests is a list
+    #         interests_list = profile_data.interests if profile_data.interests else []
+
+    #         # # Ensure profile_picture_url and additional_pictures_urls are lists
+    #         # profile_picture_urls = [profile_picture_url] if profile_picture_url else []
+    #         additional_pictures_urls = additional_pictures_urls or []
+    #         values = {
+    #             "gender": profile_data.gender,
+    #             "first_name": profile_data.first_name,
+    #             "last_name": profile_data.last_name,
+    #             "profile_picture": profile_picture_url,
+    #             "sexual_preferences": profile_data.sexual_preferences,
+    #             "bio": profile_data.bio,
+    #             "interests": interests_list,
+    #             "pictures": additional_pictures_urls,
+    #             "updated_email": profile_data.email,
+    #             "email": email 
+    #         }
+    #         print("values ==",values)
+        
+    #         result = await self.execute(query="""
+    #             UPDATE users  SET 
+    #                 gender = :gender,
+    #                 sexual_preferences = :sexual_preferences,
+    #                 first_name = :first_name,
+    #                 last_name = :last_name,
+    #                 email = :updated_email,
+    #                 bio = :bio,
+    #                 profile_picture = :profile_picture,
+    #                 pictures = :pictures,
+    #                 interests = :interests,
+    #                 updated_at = CURRENT_TIMESTAMP
+    #             WHERE email = :email
+    #             RETURNING username, email, first_name, last_name, gender, sexual_preferences, bio, interests, pictures;
+    #         """, values=values)
+            
+    #         # Ensure the result is not None
+    #         if not result:
+    #             return {"error": "No rows were updated"}
+            
+    #         return {"result":"ggg"}
+    #     except Exception as e:
+    #         print(e)
+    #         return {"error": f"An error occurred while updating profile: {str(e)}"}
+    
+
     async def update_profile(
         self, 
         profile_data: ProfileUpdate, 
         email: str,
         profile_picture_url: str, 
         additional_pictures_urls: List[str]
-        ):
+    ):
+        """
+        Update user profile with non-None fields only.
+        
+        Args:
+            profile_data: Pydantic model containing profile update fields
+            email: Current user email for identification
+            profile_picture_url: URL of the main profile picture
+            additional_pictures_urls: List of additional picture URLs
+            
+        Returns:
+            Updated user profile data
+        
+        Raises:
+            DatabaseError: If the database operation fails
+        """
         try:
-            # Ensure interests is a list
-            interests_list = profile_data.interests if profile_data.interests else []
-
-            # # Ensure profile_picture_url and additional_pictures_urls are lists
-            # profile_picture_urls = [profile_picture_url] if profile_picture_url else []
-            additional_pictures_urls = additional_pictures_urls or []
-
-            values = {
+            values = {"email": email}
+            
+            update_fields = []
+            
+            field_mapping = {
                 "gender": profile_data.gender,
-                "profile_picture": profile_picture_url or None,
+                "first_name": profile_data.first_name,
+                "last_name": profile_data.last_name,
+                "profile_picture": profile_picture_url,
                 "sexual_preferences": profile_data.sexual_preferences,
                 "bio": profile_data.bio,
-                "interests": interests_list,
-                "pictures": additional_pictures_urls,
-                "email": email
+                "interests": profile_data.interests if profile_data.interests else None,
+                "pictures": additional_pictures_urls if additional_pictures_urls else None,
+                "email": profile_data.email  # For the updated_email field
             }
-        
-            result = await self.execute(query="""
-                UPDATE users  SET 
-                    gender = :gender,
-                    sexual_preferences = :sexual_preferences,
-                    bio = :bio,
-                    profile_picture = :profile_picture,
-                    pictures = :pictures,
-                    interests = :interests,
-                    updated_at = CURRENT_TIMESTAMP
+            
+            for field, value in field_mapping.items():
+                if value is not None:
+                    if field == "email":
+                        values["updated_email"] = value
+                        update_fields.append("email = :updated_email")
+                    else:
+                        values[field] = value
+                        update_fields.append(f"{field} = :{field}")
+            
+            update_fields.append("updated_at = CURRENT_TIMESTAMP")
+            
+            if len(update_fields) <= 1:
+                return await self.get_user_by_email(email)
+                
+            query = f"""
+                UPDATE users 
+                SET {', '.join(update_fields)}
                 WHERE email = :email
-                RETURNING username, email, first_name, last_name, gender, sexual_preferences, bio, interests, pictures;
-            """, values=values)
+                RETURNING username, email, first_name, last_name, gender, 
+                        sexual_preferences, bio, interests, pictures;
+            """
             
-            # Ensure the result is not None
-            if not result:
-                return {"error": "No rows were updated"}
-            
+            result = await self.execute(query=query, values=values)
             return result
+            
         except Exception as e:
-            print(e)
-            return {"error": f"An error occurred while updating profile: {str(e)}"}
+            raise DatabaseError(f"Failed to update profile: {str(e)}")
     async def close_session(self):
         await self.db.disconnect()

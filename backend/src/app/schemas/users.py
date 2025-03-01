@@ -56,6 +56,9 @@ class UserLogin(BaseModel):
 
 class ProfileUpdate(BaseModel):    
     gender: Optional[Gender] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
     sexual_preferences: Optional[SexualPreference] = None
     bio: Optional[str] = None
     interests: Optional[List[str]] = Field(default=[])

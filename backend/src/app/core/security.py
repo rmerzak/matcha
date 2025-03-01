@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import jwt
+from jwt import PyJWTError
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Any
 from fastapi import HTTPException, Request
@@ -99,7 +100,7 @@ class JWTBearer(HTTPBearer):
             payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=403, detail="Token has expired")
-        except jwt.JWTError:
+        except PyJWTError:
             raise HTTPException(status_code=403, detail="Invalid token")
         if payload:
             is_token_valid = True
