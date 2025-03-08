@@ -8,7 +8,6 @@ class IUserViewsService(ABC):
     @abstractmethod
     async def add_view(self, viewed: str, viewer_id: str):
         pass
-    
     @abstractmethod
     async def close_scoped_session():
         pass

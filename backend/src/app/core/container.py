@@ -8,6 +8,7 @@ from app.services.implementation.user_views_imp import UserViewsServiceImp
 from app.services.cloudinary_service import CloudinaryService
 from app.services.implementation.socketio_manager_imp import SocketIOManagerImp
 class Container(containers.DeclarativeContainer):
+    sio = providers.Dependency()
     wiring_config = containers.WiringConfiguration(
         modules=[
             "app.api.v1.authentication",
@@ -23,8 +24,14 @@ class Container(containers.DeclarativeContainer):
 
     user_repository = providers.Factory(UserRepository, db=db)
     user_views_repository = providers.Factory(UserViewsRepository, db=db)
-    cloudinary = providers.Factory(CloudinaryService)
     auth_service = providers.Factory(AuthServiceImp, user_repository=user_repository)
+    socketio_manager = providers.Singleton(
+        SocketIOManagerImp,
+        user_repository=user_repository,
+        auth_service=auth_service,
+        sio=sio
+    )
+    cloudinary = providers.Factory(CloudinaryService)
     user_service = providers.Factory(UserServiceImp, user_repository=user_repository, cloudinary_service=cloudinary)
-    user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository)
-    socketio_manager = providers.Factory(SocketIOManagerImp, user_repository=user_repository, auth_service=auth_service)
+    user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository, socketio_manager=socketio_manager)
+    # socketio_manager = providers.Factory(SocketIOManagerImp, user_repository=user_repository, auth_service=auth_service, sio=sio)
