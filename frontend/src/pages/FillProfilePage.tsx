@@ -18,7 +18,7 @@ function FillProfilePage({}: Props) {
 ``
   const { loading, updateProfile } = useUserStore();
   const [gender, setGender] = useState("");
-  const [genderPreference, setGenderPreference] = useState("");
+  const [sexualPreference, setSexualPreference] = useState("bisexual");
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<any>([]);
   const [pictures, setPictures] = useState<string[]>([]);
@@ -28,11 +28,7 @@ function FillProfilePage({}: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data =
-        genderPreference === ""
-          ? { gender, genderPreference: "both", bio, interests, pictures }
-          : { gender, genderPreference, bio, interests, pictures };
-      await updateProfile(data);
+      await updateProfile({gender, sexualPreference, bio, interests, pictures });
       checkAuth();
       navigate("/", { replace: true });
     } catch (error) {
@@ -147,7 +143,7 @@ function FillProfilePage({}: Props) {
                   Gender Preference
                 </span>
                 <div className="flex space-x-4">
-                  {["Male", "Female", "Both"].map((option) => (
+                  {["heterosexual", "homosexual", "bisexual"].map((option) => (
                     <label key={option} className="inline-flex items-center">
                       <input
                         type="checkbox"
@@ -156,11 +152,11 @@ function FillProfilePage({}: Props) {
                         }}
                         className="form-checkbox"
                         checked={
-                          genderPreference.toLowerCase() ===
+                          sexualPreference.toLowerCase() ===
                           option.toLowerCase()
                         }
                         onChange={() =>
-                          setGenderPreference(option.toLowerCase())
+                          setSexualPreference(option.toLowerCase())
                         }
                       />
                       <span className="ml-2">{option}</span>

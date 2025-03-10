@@ -37,6 +37,8 @@ export const useUserStore = create<UserStoreType>((set) => ({
             profile_picture: profilePicture,
             additional_pictures: data.pictures.slice(1),
         }
+
+        console.log(profileUpdate)
         
         try {
             set({loading: true})

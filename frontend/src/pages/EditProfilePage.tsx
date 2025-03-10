@@ -11,13 +11,6 @@ type Props = {};
 function EditProfilePage({}: Props) {
   const { authUser } = useAuthStore();
 
-  // const [name, setName] = useState(authUser.name || "");
-  // const [bio, setBio] = useState(authUser.bio || "");
-  // const [age, setAge] = useState(authUser.age || "");
-  // const [gender, setGender] = useState(authUser.gender || "");
-  // const [genderPreference, setGenderPreference] = useState(authUser.genderPreference || []);
-  // const [image, setImage] = useState(authUser.image || "");
-
   const [profilePicture, setProfilePicture] = useState<
     string | ArrayBuffer | null
   >(authUser?.pictures?.[0] || "./avatar.png");
@@ -25,7 +18,7 @@ function EditProfilePage({}: Props) {
   const [lastName, setLastName] = useState(authUser?.lastName || "");
   const [email, setEmail] = useState(authUser?.email || "");
   const [gender, setGender] = useState(authUser?.gender || "");
-  const [genderPreference, setGenderPreference] = useState(
+  const [sexualPreference, setSexualPreference] = useState(
     authUser?.sexualPreferences || ""
   );
   const [bio, setBio] = useState(authUser?.bio || "");
@@ -41,11 +34,7 @@ function EditProfilePage({}: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = {};
-      //   genderPreference === ""
-      //     ? { gender, genderPreference: "both", bio, interests, pictures }
-      //     : { gender, genderPreference, bio, interests, pictures };
-      await updateProfile(data);
+      await updateProfile({ gender, sexualPreference, bio, interests, profilePicture });
     } catch (error) {
       console.error("Submission failed:", error);
     }
@@ -321,7 +310,7 @@ function EditProfilePage({}: Props) {
                   Gender Preference
                 </span>
                 <div className="flex space-x-4">
-                  {["Male", "Female", "Both"].map((option) => (
+                  {["heterosexual", "homosexual", "bisexual"].map((option) => (
                     <label key={option} className="inline-flex items-center">
                       <input
                         type="checkbox"
@@ -330,11 +319,11 @@ function EditProfilePage({}: Props) {
                         }}
                         className="form-checkbox"
                         checked={
-                          genderPreference.toLowerCase() ===
+                          sexualPreference.toLowerCase() ===
                           option.toLowerCase()
                         }
                         onChange={() =>
-                          setGenderPreference(option.toLowerCase())
+                          setSexualPreference(option.toLowerCase())
                         }
                       />
                       <span className="ml-2">{option}</span>
