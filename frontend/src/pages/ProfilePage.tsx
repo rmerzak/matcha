@@ -1,15 +1,18 @@
-import { Eye, House, MapPin, Users } from "lucide-react";
+import { Heart, House, MapPin, Users } from "lucide-react";
 import { Header } from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import useAuthStore from "../store/useAuthStore";
 import { Link } from "react-router-dom";
+import Analytics from "../components/Analytics";
+import Bio from "../components/Bio";
+import Interests from "../components/Interests";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex-grow flex flex-col justify-center py-10  px-4 sm:px-6 lg:px-8">
+      <div className="flex-grow flex flex-col py-10  px-4 sm:px-6 lg:px-8">
         <PageTitle title="Profile" />
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border-gray-200 space-y-2">
@@ -32,7 +35,8 @@ export default function ProfilePage() {
                   <MapPin size={18} /> <span>30 kilometers away</span>
                 </div>
               </div>
-              <Link to="/edit-profile"
+              <Link
+                to="/edit-profile"
                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
                     text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
                     focus:ring-offset-2 focus:ring-purple-500 self-start mt-2"
@@ -40,13 +44,9 @@ export default function ProfilePage() {
                 Edit Profile
               </Link>
             </div>
-            
-            <div>
-                <h2 className="font-bold text-lg">Analytics</h2>
-                <div className="flex text-gray-700 text-sm space-x-1 items-center">
-                  <Users size={18} /> <span>31 profile views</span>
-                </div>
-            </div>
+            <Analytics numberOfProfileViews={31} numberOfLikes={5} />
+            <Bio bio={authUser?.bio} />
+            <Interests interests={authUser?.interests as []} />
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ type AuthUserType = {
   gender?: string | undefined;
   sexualPreferences?: string | undefined;
   bio?: string | undefined;
-  interests?: string[] | undefined;
+  interests?: string[] | undefined | [];
   pictures?: string[] | undefined;
 };
 
@@ -208,7 +208,6 @@ const useAuthStore = create<AuthState>((set) => ({
         });
       }
     } catch (error) {
-      console.log(error);
       localStorage.removeItem("jwt");
       set({ authUser: null });
     } finally {
