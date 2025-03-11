@@ -9,11 +9,8 @@ import PageTitle from "../components/PageTitle";
 type Props = {};
 
 function EditProfilePage({}: Props) {
-  const { authUser } = useAuthStore();
+  const { authUser, checkAuth } = useAuthStore();
 
-  const [profilePicture, setProfilePicture] = useState<
-    string | ArrayBuffer | null
-  >(authUser?.pictures?.[0] || "./avatar.png");
   const [firstName, setFirstName] = useState(authUser?.firstName || "");
   const [lastName, setLastName] = useState(authUser?.lastName || "");
   const [email, setEmail] = useState(authUser?.email || "");
@@ -23,18 +20,32 @@ function EditProfilePage({}: Props) {
   );
   const [bio, setBio] = useState(authUser?.bio || "");
   const [interests, setInterests] = useState<any>(authUser?.interests || []);
+  const [profilePicture, setProfilePicture] = useState<
+    string | ArrayBuffer | null
+  >(authUser?.profilePicture || "./avatar.png" || "");
+  const [additionalPictures, setAdditionalPictures] = useState<string[]>(
+    authUser?.pictures || []
+  );
 
-  const [image, setImage] = useState<string | ArrayBuffer | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInputRefProfilePic = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { loading, updateProfile } = useUserStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateProfile({ gender, sexualPreference, bio, interests, profilePicture });
+      await updateProfile({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        gender,
+        sexual_preferences: sexualPreference,
+        bio,
+        interests: interests.map((interest: any) => (interest.value)),
+        profile_picture: profilePicture,
+        additional_pictures: additionalPictures,
+      });
     } catch (error) {
       console.error("Submission failed:", error);
     }
@@ -51,17 +62,6 @@ function EditProfilePage({}: Props) {
     }
   };
 
-  const handlePictureChange = (e: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
 
   const options = [
     { value: "vegan", label: "#vegan" },
@@ -104,10 +104,35 @@ function EditProfilePage({}: Props) {
   const noOptionsMessageStyles =
     "text-gray-500 p-2 bg-gray-50 border border-dashed border-gray-200 rounded-sm";
 
+  const addPicture = (newPicture: any) => {
+    const picturesToAdd = Array.isArray(newPicture) ? newPicture : [newPicture];
+    const canAdd = 5 - additionalPictures.length;
+    if (canAdd > 0) {
+      const newPictures = picturesToAdd.slice(0, canAdd);
+      setAdditionalPictures((prevPictures: any) => [
+        ...prevPictures,
+        ...newPictures,
+      ]);
+    } else {
+      console.warn("Cannot add more images; limit reached.");
+    }
+  };
+
+  const handleImageChange = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        addPicture(reader.result);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex-grow flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8">
+      <div className="flex-grow flex flex-col py-2 px-4 sm:px-6 lg:px-8">
         <PageTitle title="Edit Your Profile" />
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
@@ -119,13 +144,13 @@ function EditProfilePage({}: Props) {
                 </label>
                 <img
                   className="w-48 mx-auto rounded-full h-48 object-cover border-2 border-white"
-                  src={profilePicture as string}
+                  src={profilePicture as string || "./avatar.png"}
                   alt="profile picture"
                 />
                 <div className="mt-1 flex items-center justify-center space-x-4">
                   <button
                     type="button"
-                    onClick={() => setProfilePicture("./avatar.png")}
+                    onClick={() => setProfilePicture("")}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
                     text-sm font-medium text-gray-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2
                     focus:ring-offset-2 focus:ring-red-500"
@@ -304,10 +329,10 @@ function EditProfilePage({}: Props) {
                   ))}
                 </div>
               </div>
-              {/* GENDER PREFERENCE */}
+              {/* SEXUAL PREFERENCE */}
               <div>
                 <span className="block text-sm font-medium text-gray-700 mb-2">
-                  Gender Preference
+                  Sexual Preferences
                 </span>
                 <div className="flex space-x-4">
                   {["heterosexual", "homosexual", "bisexual"].map((option) => (
@@ -351,39 +376,53 @@ function EditProfilePage({}: Props) {
                   />
                 </div>
               </div>
-              {/* IMAGE */}
-              {/* <div>
+              {/* PICTURES */}
+              <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Cover Image
+                  Pictures
                 </label>
-                <div className="mt-1 flex items-center">
+                <div className="mt-1 mb-1 flex items-center flex-wrap">
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
                     text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
-                    focus:ring-offset-2 focus:ring-pink-500"
+                    focus:ring-offset-2 focus:ring-purple-500 flex-col"
                   >
-                    Upload Image
+                    <span>Upload Picture</span>
                   </button>
+                </div>
+                <div>
                   <input
                     type="file"
                     ref={fileInputRef}
                     accept="image/*"
                     className="hidden"
-                    onChange={handlePictureChange}
+                    onChange={handleImageChange}
+                    multiple
+                    disabled={additionalPictures.length >= 5}
                   />
                 </div>
+                <span className="ml-2 text-sm text-gray-400">
+                  Up to {5 - additionalPictures.length} pictures
+                </span>
+                <p className="ml-2 text-sm text-gray-400">
+                  {additionalPictures.length}/5 pictures uploaded.
+                </p>
               </div>
-              {image && (
-                <div className="mt-4">
+              <span className="text-sm ml-2 text-gray-400">
+                First one will be used as a profile picture
+              </span>
+              <div className="flex gap-2 flex-wrap">
+                {additionalPictures.map((image: any, index: any) => (
                   <img
-                    src={image as string}
-                    alt="User Image"
-                    className="w-48 h-full object-cover rounded-md"
+                    key={index}
+                    src={image}
+                    alt={`Uploaded image ${index}`}
+                    className="w-24 h-full object-cover rounded-md"
                   />
-                </div>
-              )} */}
+                ))}
+              </div>
               <button
                 type="submit"
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${

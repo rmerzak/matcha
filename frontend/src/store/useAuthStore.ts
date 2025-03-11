@@ -13,6 +13,7 @@ type AuthUserType = {
   sexualPreferences?: string | undefined;
   bio?: string | undefined;
   interests?: string[] | undefined | [];
+  profilePicture?: string | undefined;
   pictures?: string[] | undefined;
 };
 
@@ -173,6 +174,7 @@ const useAuthStore = create<AuthState>((set) => ({
         bio,
         sexual_preferences,
         interests,
+        profile_picture,
         pictures,
       } = response.data;
       if (interests) {
@@ -190,6 +192,7 @@ const useAuthStore = create<AuthState>((set) => ({
             sexualPreferences: sexual_preferences,
             bio,
             interests: labledInterests,
+            profilePicture: profile_picture,
             pictures,
           },
         });

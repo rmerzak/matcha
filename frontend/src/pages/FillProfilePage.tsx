@@ -15,7 +15,7 @@ function FillProfilePage({}: Props) {
   useEffect(() => {
     if (authUser?.gender) navigate("/profile", { replace: true });
   }, []);
-``
+  ``;
   const { loading, updateProfile } = useUserStore();
   const [gender, setGender] = useState("");
   const [sexualPreference, setSexualPreference] = useState("bisexual");
@@ -27,8 +27,17 @@ function FillProfilePage({}: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    let profilePicture = "";
+
     try {
-      await updateProfile({gender, sexualPreference, bio, interests, pictures });
+      await updateProfile({
+        gender,
+        sexual_preferences: sexualPreference,
+        bio,
+        interests: interests.map((interest: any) => (interest.value)),
+        profile_picture: profilePicture,
+        additional_pictures: pictures.slice(1)
+      });
       checkAuth();
       navigate("/", { replace: true });
     } catch (error) {

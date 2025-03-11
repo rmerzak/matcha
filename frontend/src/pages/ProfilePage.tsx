@@ -1,4 +1,4 @@
-import { Heart, House, MapPin, Users } from "lucide-react";
+import { House, MapPin } from "lucide-react";
 import { Header } from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import useAuthStore from "../store/useAuthStore";
@@ -12,13 +12,13 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex-grow flex flex-col py-10  px-4 sm:px-6 lg:px-8">
+      <div className="flex-grow flex flex-col py-2  px-4 sm:px-6 lg:px-8">
         <PageTitle title="Profile" />
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border-gray-200 space-y-2">
             <div className="flex justify-between">
               <img
-                src={authUser?.pictures?.[0]}
+                src={authUser?.profilePicture}
                 alt="Profile picture"
                 className=" object-cover border-2 border-white"
               />
