@@ -1,4 +1,4 @@
-import { House, MapPin } from "lucide-react";
+import { House, MapPin, Star } from "lucide-react";
 import { Header } from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import useAuthStore from "../store/useAuthStore";
@@ -32,8 +32,8 @@ export default function ProfilePage() {
                 <div className="flex text-gray-700 text-sm space-x-1">
                   <House size={18} /> <span>Lives in Alaska</span>
                 </div>
-                <div className="flex text-gray-700 text-sm space-x-1">
-                  <MapPin size={18} /> <span>30 kilometers away</span>
+                <div className="flex text-gray-700 text-sm space-x-1 mt-4">
+                  <Star size={18} /> <span>Fame rating: {6.6}</span>
                 </div>
               </div>
               <Link
