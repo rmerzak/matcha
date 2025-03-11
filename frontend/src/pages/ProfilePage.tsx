@@ -7,6 +7,7 @@ import Analytics from "../components/Analytics";
 import Bio from "../components/Bio";
 import Interests from "../components/Interests";
 import { users } from "../users";
+import HybridLocationComponent from "../components/HybridLocationComponent";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();
@@ -30,9 +31,9 @@ export default function ProfilePage() {
                   {authUser?.firstName} {authUser?.lastName}
                 </span>
                 <div className="flex text-gray-700 text-sm space-x-1">
-                  <House size={18} /> <span>Lives in Alaska</span>
+                  <MapPin size={18} /> <span>Lives in Alaska</span>
                 </div>
-                <div className="flex text-gray-700 text-sm space-x-1 mt-4">
+                <div className="flex text-gray-700 text-sm space-x-1 mt-3">
                   <Star size={18} /> <span>Fame rating: {6.6}</span>
                 </div>
               </div>
@@ -48,9 +49,11 @@ export default function ProfilePage() {
             <Analytics numberOfProfileViews={users.slice(0, 13).length} numberOfLikes={users.slice(0, 5).length} />
             <Bio bio={authUser?.bio} />
             <Interests interests={authUser?.interests as []} />
+            <HybridLocationComponent />
           </div>
         </div>
       </div>
     </div>
   );
 }
+
