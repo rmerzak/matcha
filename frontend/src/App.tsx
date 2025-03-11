@@ -12,6 +12,7 @@ import EditProfilePage from "./pages/EditProfilePage";
 import ProfilePage from "./pages/ProfilePage";
 import UsersPage from "./pages/UsersPage";
 import ProfileViewsPage from "./pages/analytics/ProfileViewsPage";
+import ProfileLikesPage from "./pages/analytics/ProfileLikesPage";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -48,7 +49,21 @@ function App() {
         <Route
           path="/analytics/profile-views"
           element={
-            authUser ? <ProfileViewsPage /> : <Navigate replace={true} to={"/auth"} />
+            authUser ? (
+              <ProfileViewsPage />
+            ) : (
+              <Navigate replace={true} to={"/auth"} />
+            )
+          }
+        />
+        <Route
+          path="/analytics/profile-likes"
+          element={
+            authUser ? (
+              <ProfileLikesPage />
+            ) : (
+              <Navigate replace={true} to={"/auth"} />
+            )
           }
         />
         <Route

@@ -45,7 +45,7 @@ export default function ProfilePage() {
                 Edit Profile
               </Link>
             </div>
-            <Analytics numberOfProfileViews={users.length} numberOfLikes={5} />
+            <Analytics numberOfProfileViews={users.slice(0, 13).length} numberOfLikes={users.slice(0, 5).length} />
             <Bio bio={authUser?.bio} />
             <Interests interests={authUser?.interests as []} />
           </div>
