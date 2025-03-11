@@ -28,6 +28,8 @@ function FillProfilePage({}: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let profilePicture = "";
+    if (pictures.length > 0)
+        profilePicture = pictures[0]
 
     try {
       await updateProfile({

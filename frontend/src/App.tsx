@@ -10,6 +10,8 @@ import ResetPassword from "./pages/ResetPassword";
 import FillProfilePage from "./pages/FillProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import ProfilePage from "./pages/ProfilePage";
+import UsersPage from "./pages/UsersPage";
+import ProfileViewsPage from "./pages/analytics/ProfileViewsPage";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -41,6 +43,12 @@ function App() {
           path="/profile"
           element={
             authUser ? <ProfilePage /> : <Navigate replace={true} to="/auth" />
+          }
+        />
+        <Route
+          path="/analytics/profile-views"
+          element={
+            authUser ? <ProfileViewsPage /> : <Navigate replace={true} to={"/auth"} />
           }
         />
         <Route
@@ -86,6 +94,12 @@ function App() {
           path="/resetPassword"
           element={
             !authUser ? <ResetPassword /> : <Navigate replace={true} to={"/"} />
+          }
+        />
+        <Route
+          path="/users/:username"
+          element={
+            authUser ? <UsersPage /> : <Navigate replace={true} to={"/auth"} />
           }
         />
       </Routes>

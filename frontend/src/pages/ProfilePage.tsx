@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Analytics from "../components/Analytics";
 import Bio from "../components/Bio";
 import Interests from "../components/Interests";
+import { users } from "../users";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();
@@ -44,7 +45,7 @@ export default function ProfilePage() {
                 Edit Profile
               </Link>
             </div>
-            <Analytics numberOfProfileViews={31} numberOfLikes={5} />
+            <Analytics numberOfProfileViews={users.length} numberOfLikes={5} />
             <Bio bio={authUser?.bio} />
             <Interests interests={authUser?.interests as []} />
           </div>

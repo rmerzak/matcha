@@ -9,7 +9,7 @@ import PageTitle from "../components/PageTitle";
 type Props = {};
 
 function EditProfilePage({}: Props) {
-  const { authUser, checkAuth } = useAuthStore();
+  const { authUser } = useAuthStore();
 
   const [firstName, setFirstName] = useState(authUser?.firstName || "");
   const [lastName, setLastName] = useState(authUser?.lastName || "");
@@ -42,7 +42,7 @@ function EditProfilePage({}: Props) {
         gender,
         sexual_preferences: sexualPreference,
         bio,
-        interests: interests.map((interest: any) => (interest.value)),
+        interests: interests.map((interest: any) => interest.value),
         profile_picture: profilePicture,
         additional_pictures: additionalPictures,
       });
@@ -61,7 +61,6 @@ function EditProfilePage({}: Props) {
       reader.readAsDataURL(file);
     }
   };
-
 
   const options = [
     { value: "vegan", label: "#vegan" },
@@ -106,7 +105,7 @@ function EditProfilePage({}: Props) {
 
   const addPicture = (newPicture: any) => {
     const picturesToAdd = Array.isArray(newPicture) ? newPicture : [newPicture];
-    const canAdd = 5 - additionalPictures.length;
+    const canAdd = 4 - additionalPictures.length;
     if (canAdd > 0) {
       const newPictures = picturesToAdd.slice(0, canAdd);
       setAdditionalPictures((prevPictures: any) => [
@@ -144,7 +143,7 @@ function EditProfilePage({}: Props) {
                 </label>
                 <img
                   className="w-48 mx-auto rounded-full h-48 object-cover border-2 border-white"
-                  src={profilePicture as string || "./avatar.png"}
+                  src={(profilePicture as string) || "./avatar.png"}
                   alt="profile picture"
                 />
                 <div className="mt-1 flex items-center justify-center space-x-4">
@@ -404,22 +403,19 @@ function EditProfilePage({}: Props) {
                   />
                 </div>
                 <span className="ml-2 text-sm text-gray-400">
-                  Up to {5 - additionalPictures.length} pictures
+                  Up to {4 - additionalPictures.length} pictures
                 </span>
                 <p className="ml-2 text-sm text-gray-400">
-                  {additionalPictures.length}/5 pictures uploaded.
+                  {additionalPictures.length}/4 pictures uploaded.
                 </p>
               </div>
-              <span className="text-sm ml-2 text-gray-400">
-                First one will be used as a profile picture
-              </span>
               <div className="flex gap-2 flex-wrap">
                 {additionalPictures.map((image: any, index: any) => (
                   <img
                     key={index}
                     src={image}
                     alt={`Uploaded image ${index}`}
-                    className="w-24 h-full object-cover rounded-md"
+                    className="w-40 h-full object-cover rounded-md"
                   />
                 ))}
               </div>
