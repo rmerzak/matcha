@@ -1,4 +1,4 @@
-import { House, MapPin, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Header } from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import useAuthStore from "../store/useAuthStore";
@@ -11,12 +11,13 @@ import HybridLocationComponent from "../components/HybridLocationComponent";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();
+  console.log(authUser?.pictures);
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <div className="flex-grow flex flex-col py-2  px-4 sm:px-6 lg:px-8">
         <PageTitle title="Profile" />
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border-gray-200 space-y-2">
             <div className="flex justify-between">
               <img
@@ -50,7 +51,19 @@ export default function ProfilePage() {
             />
             <Bio bio={authUser?.bio} />
             <Interests interests={authUser?.interests as []} />
-            {/* <HybridLocationComponent /> */}
+            <div className="flex flex-col space-y-1">
+              <h2 className="font-bold text-base">Pictures</h2>
+              <div className="flex gap-2 flex-wrap justify-center">
+                {authUser?.pictures?.map((picture, index) => (
+                  <img
+                    key={index}
+                    src={picture}
+                    className="w-60 h-full object-cover"
+                  />
+                ))}
+                
+              </div>
+            </div>
           </div>
         </div>
       </div>
