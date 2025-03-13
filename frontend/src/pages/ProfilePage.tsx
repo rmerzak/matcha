@@ -30,9 +30,7 @@ export default function ProfilePage() {
                 <span className="text-2xl font-bold mb-1">
                   {authUser?.firstName} {authUser?.lastName}
                 </span>
-                <div className="flex text-gray-700 text-sm space-x-1">
-                  <MapPin size={18} /> <span>Lives in Alaska</span>
-                </div>
+                <HybridLocationComponent />
                 <div className="flex text-gray-700 text-sm space-x-1 mt-3">
                   <Star size={18} /> <span>Fame rating: {6.6}</span>
                 </div>
@@ -46,14 +44,16 @@ export default function ProfilePage() {
                 Edit Profile
               </Link>
             </div>
-            <Analytics numberOfProfileViews={users.slice(0, 13).length} numberOfLikes={users.slice(0, 5).length} />
+            <Analytics
+              numberOfProfileViews={users.slice(0, 13).length}
+              numberOfLikes={users.slice(0, 5).length}
+            />
             <Bio bio={authUser?.bio} />
             <Interests interests={authUser?.interests as []} />
-            <HybridLocationComponent />
+            {/* <HybridLocationComponent /> */}
           </div>
         </div>
       </div>
     </div>
   );
 }
-

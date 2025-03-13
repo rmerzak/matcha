@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { MapPin, MapPinOff } from "lucide-react";
+import React, { useState, useEffect } from "react";
 
 // Define types for location data
 interface GpsLocation {
   latitude: number;
   longitude: number;
   country?: string;
-  city?: string
+  city?: string;
   neighborhood?: string;
-  method: 'GPS';
+  method: "GPS";
 }
 
 // Define the full ip-api.com response type
 interface IpApiResponse {
-  status: 'success' | 'fail';
+  status: "success" | "fail";
   message?: string; // Present if status is "fail"
   country: string;
   regionName: string;
@@ -29,7 +30,7 @@ interface IpLocation {
   country: string;
   lat: number;
   lon: number;
-  method: 'IP';
+  method: "IP";
 }
 
 type Location = GpsLocation | IpLocation;
@@ -43,7 +44,7 @@ const HybridLocationComponent: React.FC = () => {
       navigator.geolocation.getCurrentPosition(
         async (position: GeolocationPosition) => {
           const { latitude, longitude } = position.coords;
-          const gpsData: GpsLocation = { latitude, longitude, method: 'GPS' };
+          const gpsData: GpsLocation = { latitude, longitude, method: "GPS" };
           setLocation(gpsData);
 
           // Reverse geocode with Nominatim
@@ -52,13 +53,20 @@ const HybridLocationComponent: React.FC = () => {
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=18`
             );
             const data = await response.json();
-            console.log(data)
-            const country = data.address.country || 'Country not found';
-            const city = data.address.city || 'City not found';
-            const neighborhood = data.address.neighbourhood || data.address.suburb || data.address.quarter || 'Neighborhood not found';
-            setLocation((prev) => ({ ...prev, country, city, neighborhood } as GpsLocation));
+            console.log(data);
+            const country = data.address.country || "Country not found";
+            const city = data.address.city || "City not found";
+            const neighborhood =
+              data.address.neighbourhood ||
+              data.address.suburb ||
+              data.address.quarter ||
+              "Neighborhood not found";
+            setLocation(
+              (prev) =>
+                ({ ...prev, country, city, neighborhood } as GpsLocation)
+            );
           } catch (err) {
-            setError('Error fetching neighborhood from Nominatim');
+            setError("Error fetching neighborhood from Nominatim");
           }
         },
         (err: GeolocationPositionError) => {
@@ -68,17 +76,18 @@ const HybridLocationComponent: React.FC = () => {
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } else {
-      setError('Geolocation is not supported by this browser.');
+      setError("Geolocation is not supported by this browser.");
       getIpLocation();
     }
   };
 
   const getIpLocation = async () => {
     try {
-      const response = await fetch('http://ip-api.com/json/');
-      const data = await response.json() as IpApiResponse; // Type the raw response
-
-      if (data.status === 'success') {
+      // setError(null);
+      const response = await fetch("http://ip-api.com/json/");
+      const data = (await response.json()) as IpApiResponse; // Type the raw response
+      console.log(data);
+      if (data.status === "success") {
         // Map the response to IpLocation
         const ipLocation: IpLocation = {
           city: data.city,
@@ -86,14 +95,14 @@ const HybridLocationComponent: React.FC = () => {
           country: data.country,
           lat: data.lat,
           lon: data.lon,
-          method: 'IP',
+          method: "IP",
         };
         setLocation(ipLocation);
       } else {
-        setError(`IP geolocation failed: ${data.message || 'Unknown error'}`);
+        setError(`IP geolocation failed: ${data.message || "Unknown error"}`);
       }
     } catch (err) {
-      setError('Failed to fetch IP location');
+      setError("Failed to fetch IP location");
     }
   };
 
@@ -102,19 +111,26 @@ const HybridLocationComponent: React.FC = () => {
   }, []);
 
   return (
-    <div className="pt-6 flex flex-col gap-4">
+    <div className="flex text-gray-700 text-sm space-x-1">
       {error ? (
-        <p>Error: {error}</p>
+        // <p>Error: {error}</p>
+        <MapPinOff size={18} />
       ) : location ? (
         <>
-          <p>Method: {location.method}</p>
-          {location.method === 'GPS' ? (
+          {/* <p>Method: {location.method}</p> */}
+          {location.method === "GPS" ? (
             <>
-              <p>Latitude: {(location as GpsLocation).latitude}</p>
+              {/* <p>Latitude: {(location as GpsLocation).latitude}</p>
               <p>Longitude: {(location as GpsLocation).longitude}</p>
               <p>Country: {(location as GpsLocation).country || 'Loading...'}</p>
-              <p>City: {(location as GpsLocation).country || 'Loading...'}</p>
-              <p>Neighborhood: {(location as GpsLocation).neighborhood || 'Loading...'}</p>
+              <p>City: {(location as GpsLocation).city || 'Loading...'}</p>
+              <p>Neighborhood: {(location as GpsLocation).neighborhood || 'Loading...'}</p> */}
+              <MapPin size={18} />{" "}
+              <span>
+                {(location as GpsLocation).neighborhood}{", "}
+                {(location as GpsLocation).city}{", "}
+                {(location as GpsLocation).country || "Loading..."}
+              </span>
             </>
           ) : (
             <>
