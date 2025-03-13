@@ -8,6 +8,7 @@ import Bio from "../components/Bio";
 import Interests from "../components/Interests";
 import { users } from "../users";
 import HybridLocationComponent from "../components/HybridLocationComponent";
+import EditLocationComponent from "../components/EditLocationComponent";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();
@@ -51,7 +52,7 @@ export default function ProfilePage() {
             />
             <Bio bio={authUser?.bio} />
             <Interests interests={authUser?.interests as []} />
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-2">
               <h2 className="font-bold text-base">Pictures</h2>
               <div className="flex gap-2 flex-wrap justify-center">
                 {authUser?.pictures?.map((picture, index) => (
@@ -64,6 +65,7 @@ export default function ProfilePage() {
                 
               </div>
             </div>
+            <EditLocationComponent />
           </div>
         </div>
       </div>
