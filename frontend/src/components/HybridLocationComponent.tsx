@@ -4,14 +4,31 @@ import React, { useState, useEffect } from 'react';
 interface GpsLocation {
   latitude: number;
   longitude: number;
+  country?: string;
+  city?: string
+  neighborhood?: string;
   method: 'GPS';
 }
 
+// Define the full ip-api.com response type
+interface IpApiResponse {
+  status: 'success' | 'fail';
+  message?: string; // Present if status is "fail"
+  country: string;
+  regionName: string;
+  city: string;
+  lat: number;
+  lon: number;
+  [key: string]: any; // Allow extra fields (ip-api returns more, like "isp")
+}
+
+// Define the IpLocation type for state
 interface IpLocation {
   city: string;
-  region: string;
+  regionName: string;
   country: string;
-  loc: string; // e.g., "37.7749,-122.4194"
+  lat: number;
+  lon: number;
   method: 'IP';
 }
 
@@ -24,16 +41,28 @@ const HybridLocationComponent: React.FC = () => {
   const getGpsLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position: GeolocationPosition) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            method: 'GPS',
-          });
+        async (position: GeolocationPosition) => {
+          const { latitude, longitude } = position.coords;
+          const gpsData: GpsLocation = { latitude, longitude, method: 'GPS' };
+          setLocation(gpsData);
+
+          // Reverse geocode with Nominatim
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=18`
+            );
+            const data = await response.json();
+            console.log(data)
+            const country = data.address.country || 'Country not found';
+            const city = data.address.city || 'City not found';
+            const neighborhood = data.address.neighbourhood || data.address.suburb || data.address.quarter || 'Neighborhood not found';
+            setLocation((prev) => ({ ...prev, country, city, neighborhood } as GpsLocation));
+          } catch (err) {
+            setError('Error fetching neighborhood from Nominatim');
+          }
         },
         (err: GeolocationPositionError) => {
           setError(`GPS Error: ${err.message}`);
-          // Fallback to IP if GPS denied
           getIpLocation();
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -46,18 +75,23 @@ const HybridLocationComponent: React.FC = () => {
 
   const getIpLocation = async () => {
     try {
-        console.log("getIpLocation();")
-      const response = await fetch('https://ipinfo.io/json?token=e95cd1398f9562');
-      const data: IpLocation = await response.json();
-      console.log(data)
-      setLocation({
-        city: data.city,
-        region: data.region,
-        country: data.country,
-        loc: data.loc,
-        method: 'IP',
-      });
-      setError(null)
+      const response = await fetch('http://ip-api.com/json/');
+      const data = await response.json() as IpApiResponse; // Type the raw response
+
+      if (data.status === 'success') {
+        // Map the response to IpLocation
+        const ipLocation: IpLocation = {
+          city: data.city,
+          regionName: data.regionName,
+          country: data.country,
+          lat: data.lat,
+          lon: data.lon,
+          method: 'IP',
+        };
+        setLocation(ipLocation);
+      } else {
+        setError(`IP geolocation failed: ${data.message || 'Unknown error'}`);
+      }
     } catch (err) {
       setError('Failed to fetch IP location');
     }
@@ -65,7 +99,6 @@ const HybridLocationComponent: React.FC = () => {
 
   useEffect(() => {
     getGpsLocation();
-    console.log(location?.method)
   }, []);
 
   return (
@@ -79,13 +112,17 @@ const HybridLocationComponent: React.FC = () => {
             <>
               <p>Latitude: {(location as GpsLocation).latitude}</p>
               <p>Longitude: {(location as GpsLocation).longitude}</p>
+              <p>Country: {(location as GpsLocation).country || 'Loading...'}</p>
+              <p>City: {(location as GpsLocation).country || 'Loading...'}</p>
+              <p>Neighborhood: {(location as GpsLocation).neighborhood || 'Loading...'}</p>
             </>
           ) : (
             <>
               <p>City: {(location as IpLocation).city}</p>
-              <p>Region: {(location as IpLocation).region}</p>
+              <p>Region: {(location as IpLocation).regionName}</p>
               <p>Country: {(location as IpLocation).country}</p>
-              <p>Approx Coordinates: {(location as IpLocation).loc}</p>
+              <p>Approx Latitude: {(location as IpLocation).lat}</p>
+              <p>Approx Longitude: {(location as IpLocation).lon}</p>
             </>
           )}
         </>
