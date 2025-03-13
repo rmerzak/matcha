@@ -65,7 +65,7 @@ export default function ProfilePage() {
                 
               </div>
             </div>
-            <EditLocationComponent />
+            {/* <EditLocationComponent /> */}
           </div>
         </div>
       </div>
