@@ -44,7 +44,7 @@ const Suggestion = ({ user }: Props) => {
           to={`/users/${user.username}`}
           className=" px-4 py-2 rounded-full font-semibold
       text-sm bg-purple-500 hover:bg-purple-600 focus:outline-none focus:ring-2
-      focus:ring-offset-2 focus:ring-purple-500 text-center mt-3 text-white
+      focus:ring-offset-2 focus:ring-purple-500 text-center mt-3 text-white lg:max-w-32
       "
         >
           View profile

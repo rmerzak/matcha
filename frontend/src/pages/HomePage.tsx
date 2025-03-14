@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
-import { ChevronDown, Frown, MapPin, Star } from "lucide-react";
+import { ChevronDown, Frown, MapPin, Star, X } from "lucide-react";
 import { users } from "../users";
 import Suggestion from "../components/Suggestion";
 
@@ -14,6 +14,9 @@ function HomePage() {
     // getUserProfiles();
   }, [getUserProfiles]);
 
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleFilters = () => setIsOpen(!isOpen);
+
   return (
     <div
       className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100  to-blue-100
@@ -23,13 +26,39 @@ function HomePage() {
       <div className="flex flex-grow flex-col overflow-hidden">
         <Header />
         <div className="flex flex-col">
-          <button className="flex divide-x  divide-gray-400 justify-end border-b border-gray-400">
+          <div className="flex divide-x divide-gray-400 justify-end border-b border-gray-400">
             <div></div>
-            <div className="text-sm px-6 py-2 text-purple-700 flex items-center gap-1 font-semibold">
-              <span className="">Filters</span>
-              <ChevronDown className="size-3" />
+            <div
+              className={`
+        fixed inset-x-0 bottom-0 z-10 w-full h-5/6 bg-white shadow-md overflow-hidden transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0 z-20" : "translate-y-full"}
+        lg:hidden
+        `}
+            >
+              <div className="flex flex-col h-full ">
+                {/* Header */}
+                <div className="p-4 pb-[27px] border-b border-purple-200 flex justify-between items-center">
+                  <h2 className="text-xl font-bold text-purple-600">Filters</h2>
+                  <button
+                    className="lg:hidden p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={toggleFilters}
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+                <div className="flex-grow overflow-y-auto p-4 z-10 relative">
+                  test
+                </div>
+              </div>
             </div>
-          </button>
+            <button
+              onClick={toggleFilters}
+              className="text-sm px-6  py-2 text-purple-700 flex items-center gap-1 font-semibold"
+            >
+              <span className="">Filters</span>
+              <ChevronDown className={`${isOpen ? "rotate-180" : ""} transition-transform size-3`} />
+            </button>
+          </div>
           <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
             {users.length > 0 && !isLoadingUserProfiles && (
               <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
