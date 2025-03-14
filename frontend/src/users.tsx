@@ -1,4 +1,13 @@
-export const users = [
+export type User = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  profilePicture: string;
+  location: string;
+  interests: string[];
+}
+
+export const users: User[] = [
   {
     firstName: "Emma",
     lastName: "Johnson",

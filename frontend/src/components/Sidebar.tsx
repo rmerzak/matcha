@@ -19,11 +19,11 @@ export const Sidebar = () => {
       <div
         className={`
         fixed inset-y-0 left-0 z-10 w-64 bg-white shadow-md overflow-hidden transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        ${isOpen ? "translate-x-0 z-20" : "-translate-x-full"}
         lg:translate-x-0 lg:static lg:w-1/4
         `}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full ">
           {/* Header */}
           <div className="p-4 pb-[27px] border-b border-purple-200 flex justify-between items-center">
             <h2 className="text-xl font-bold text-purple-600">Matches</h2>
@@ -61,7 +61,7 @@ export const Sidebar = () => {
           </div>
         </div>
       </div>
-      <button className="lg:hidden fixed top-4 left-4 p-2 bg-purple-500 text-white rounded-md z-0"
+      <button className="lg:hidden fixed top-4 left-4 p-2 bg-purple-500 text-white rounded-md z-10"
       onClick={toggleSidebar}>
         <MessageCircle size={24} />
       </button>
