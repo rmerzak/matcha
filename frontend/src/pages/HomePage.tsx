@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
-import { ChevronDown, Frown, MapPin, Star, X } from "lucide-react";
+import { Frown } from "lucide-react";
 import { users } from "../users";
 import Suggestion from "../components/Suggestion";
+import Filters from "../components/Filters";
 
 function HomePage() {
   const { getUserProfiles, userProfiles, isLoadingUserProfiles } =
@@ -14,26 +15,7 @@ function HomePage() {
     // getUserProfiles();
   }, [getUserProfiles]);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleFilters = () => setIsOpen(!isOpen);
 
-  const sortByItems = [
-    "Age: Low to High",
-    "Age: Hight to Low",
-    "Location",
-    "Fame rating: Low to High",
-    "Fame rating: High to Low",
-    "Common tags",
-  ];
-
-  const [filter, setFilter] = useState("Age");
-  const filterItems = [
-    "Age",
-    "Location",
-    "Fame rating",
-    "Common tags",
-    "Sort by",
-  ];
 
   return (
     <div
@@ -44,90 +26,7 @@ function HomePage() {
       <div className="flex flex-grow flex-col overflow-hidden">
         <Header />
         <div className="flex flex-col">
-          <div
-            className="flex divide-x divide-gray-400 justify-end border-b border-gray-400
-          lg:hidden"
-          >
-            <div></div>
-            <div
-              className={`
-        fixed inset-x-0 bottom-0 z-10 w-full h-5/6 bg-white shadow-md overflow-hidden transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0 z-20" : "translate-y-full"}
-        lg:hidden
-        `}
-            >
-              <div className="flex flex-col h-full ">
-                {/* Header */}
-                <div className="p-4 border-b border-purple-200 flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-black">Filters</h2>
-                  <button
-                    className="lg:hidden p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
-                    onClick={toggleFilters}
-                  >
-                    <X size={24} />
-                  </button>
-                </div>
-                <div className="flex w-full">
-                  <div className="flex flex-col bg-[#f7fafa] flex-shrink-0 w-32 overflow-y-auto relative cursor-pointer">
-                    {filterItems.map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setFilter(item)}
-                        className="border-b border-[#e3e6e6] "
-                      >
-                        <div
-                          className={`${
-                            filter === item
-                              ? "border-l-purple-500 border-l-4"
-                              : ""
-                          }  py-2 px-3 flex flex-row items-center min-h-12 justify-between`}
-                        >
-                          <span>{item}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  <div
-                    className={`${
-                      filter === "Sort by" ? "block" : "hidden"
-                    } overflow-y-auto pt-3 w-full mb-0`}
-                  >
-                    <div className="mb-0">
-                      <div className="mx-3">
-                        <div className="overflow-auto">
-                          <div className="mb-2">
-                            <span className="flex flex-wrap">
-                              {sortByItems.map((item, index) => (
-                                <span
-                                  key={index}
-                                  className="border border-black p-2 rounded-lg w-fit mb-2 mr-2 "
-                                >
-                                  <div className="flex mb-0 items-center">
-                                    <span className="text-sm">{item}</span>
-                                  </div>
-                                </span>
-                              ))}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={toggleFilters}
-              className="text-sm px-6  py-2 text-purple-700 flex items-center gap-1 font-semibold"
-            >
-              <span className="">Filters</span>
-              <ChevronDown
-                className={`${
-                  isOpen ? "rotate-180" : ""
-                } transition-transform size-3`}
-              />
-            </button>
-          </div>
+          <Filters />
           <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
             {users.length > 0 && !isLoadingUserProfiles && (
               <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">

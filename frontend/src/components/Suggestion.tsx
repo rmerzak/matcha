@@ -3,7 +3,7 @@ import { User } from "../users";
 import { MapPin, Star } from "lucide-react";
 
 interface Props {
-    user: User;
+  user: User;
 }
 
 const Suggestion = ({ user }: Props) => {
@@ -52,6 +52,6 @@ const Suggestion = ({ user }: Props) => {
       </div>
     </div>
   );
-}
+};
 
-export default Suggestion
+export default Suggestion;
