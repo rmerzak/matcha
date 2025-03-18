@@ -1,6 +1,6 @@
 import fastapi
-from app.schemas.users import UserCreate, UserCreateInternal
-from fastapi import Request, Response, status, Depends, HTTPException, File, UploadFile
+from app.schemas.users import UserCreate, UserCreateInternal, UserSearchParams
+from fastapi import Request, Response, status, Depends, HTTPException, File, UploadFile, Query
 from app.core.security import get_password_hash, generate_email_verification_token, send_email, verify_token, createAccessToken
 from app.core.config import settings
 from datetime import timedelta
@@ -15,6 +15,7 @@ from app.core.middleware import inject
 from app.schemas.users import User
 from typing import Optional
 from app.core.dependencies import get_current_user_info
+from app.schemas.users import UserSortField, SortOrder
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
 router = fastapi.APIRouter(tags=["users"], prefix="/users", dependencies=[Depends(JWTBearer())])
@@ -39,4 +40,60 @@ async def update_profile(
         return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}
+
+@router.get("/search")
+@inject
+async def search_users(
+    age_min: Optional[int] = None,
+    age_max: Optional[int] = None,
+    fame_min: Optional[float] = None,
+    fame_max: Optional[float] = None,
+    common_tags: Optional[List[str]] = Query(None),
+    sort_by: Optional[UserSortField] = None,
+    sort_order: Optional[SortOrder] = SortOrder.ASC,
+    service: IUserService = Depends(Provide[Container.user_service]),
+    current_user: User = Depends(get_current_user_info)
+):
+    try:
+        search_params = UserSearchParams(
+            age_min=age_min,
+            age_max=age_max,
+            fame_min=fame_min,
+            fame_max=fame_max,
+            common_tags=common_tags or [],
+            sort_by=sort_by,
+            sort_order=sort_order
+        )
+        
+        result = await service.search_users(search_params)
+        return result
+    except Exception as e:
+        return {"error": str(e), "status_code": 500}
+
+@router.get("/{username}")
+@inject
+async def search_users_by_username(
+    username: str,
+    service: IUserService = Depends(Provide[Container.user_service]),
+    current_user: User = Depends(get_current_user_info)
+):
+    try:
+        result = await service.search_users_by_username(username)
+        return result
+    except Exception as e:
+        return {"error": str(e), "status_code": 500}
+
+@router.get("/id/{user_id}")
+@inject
+async def get_user_by_id(
+    user_id: str,
+    service: IUserService = Depends(Provide[Container.user_service]),
+    current_user: User = Depends(get_current_user_info)
+):
+    try:
+        result = await service.get_user_by_id(user_id)
+        return result
+    except Exception as e:
+        return {"error": str(e), "status_code": 500}
+
 

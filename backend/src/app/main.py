@@ -26,7 +26,7 @@ container = Container(sio=sio)
 @app.on_event("startup")
 async def startup():
     await container.db().connect()
-    container.wire(modules=["app.api.v1.authentication", "app.api.v1.users", "app.websocket.socketio"])
+    container.wire(modules=["app.api.v1.authentication", "app.api.v1.users", "app.websocket.socketio", "app.api.v1.likes"])
 
 @app.on_event("shutdown")
 async def shutdown():

@@ -1,5 +1,3 @@
-
-
 from app.repository.base_repository import BaseRepository
 from app.schemas.users import UserCreateInternal, ProfileUpdate
 from typing import List
@@ -30,15 +28,17 @@ class UserRepository(BaseRepository):
 
     async def get_user_by_id(self, user_id: str):
         try:
-            print(user_id)
             query = """
-                SELECT username, first_name, last_name, email
+                SELECT id, username, first_name, last_name, email, gender, 
+                    sexual_preferences, interests, pictures, profile_picture, fame_rating, 
+                    location, latitude, address, age, bio
                 FROM users 
                 WHERE id = :user_id
             """
-            return await self.fetch_one(query=query, values={"user_id": user_id})
+            result = await self.fetch_one(query=query, values={"user_id": user_id})
+            return dict(result) if result else None
         except Exception as e:
-            return {"error": "An error occurred while fetching user by id" + str(e)}
+            raise DatabaseError(f"Failed to fetch user by id: {str(e)}")
             
 
 
@@ -151,21 +151,6 @@ class UserRepository(BaseRepository):
         profile_picture_url: str, 
         additional_pictures_urls: List[str]
     ):
-        """
-        Update user profile with non-None fields only.
-        
-        Args:
-            profile_data: Pydantic model containing profile update fields
-            email: Current user email for identification
-            profile_picture_url: URL of the main profile picture
-            additional_pictures_urls: List of additional picture URLs
-            
-        Returns:
-            Updated user profile data
-        
-        Raises:
-            DatabaseError: If the database operation fails
-        """
         try:
             values = {"email": email}
             
@@ -212,3 +197,76 @@ class UserRepository(BaseRepository):
             raise DatabaseError(f"Failed to update profile: {str(e)}")
     async def close_session(self):
         await self.db.disconnect()
+
+    async def search_users(
+        self,
+        age_min: int = None,
+        age_max: int = None,
+        fame_min: float = None,
+        fame_max: float = None,
+        common_tags: List[str] = None,
+        sort_by: str = None,
+        sort_order: str = "asc"
+    ):
+        try:
+            conditions = ["1=1"]
+            values = {}
+            
+            if age_min is not None:
+                conditions.append("age >= :age_min")
+                values["age_min"] = age_min
+            
+            if age_max is not None:
+                conditions.append("age <= :age_max")
+                values["age_max"] = age_max
+            
+            if fame_min is not None:
+                conditions.append("fame_rating >= :fame_min")
+                values["fame_min"] = fame_min
+            
+            if fame_max is not None:
+                conditions.append("fame_rating <= :fame_max")
+                values["fame_max"] = fame_max
+            
+            if common_tags and len(common_tags) > 0:
+                conditions.append("interests && :common_tags")
+                values["common_tags"] = common_tags
+
+            order_clause = ""
+            if sort_by:
+                order_clause = f" ORDER BY {sort_by} {sort_order}"
+
+            query = f"""
+                SELECT id, username, first_name, last_name, email, gender, 
+                    sexual_preferences, interests, pictures, profile_picture, fame_rating, 
+                    location, latitude, address, age, bio
+                FROM users 
+                WHERE {' AND '.join(conditions)}
+                {order_clause}
+            """
+            
+            results = await self.fetch_all(query=query, values=values)
+            return [dict(row) for row in results]
+            
+        except Exception as e:
+            raise DatabaseError(f"Failed to search users: {str(e)}")
+
+    async def search_users_by_username(self, username_prefix: str):
+        try:
+            query = """
+                SELECT id, username, first_name, last_name, email, gender, 
+                    sexual_preferences, interests, pictures, profile_picture, fame_rating, 
+                    location, latitude, address, age, bio
+                FROM users 
+                WHERE username ILIKE :username_prefix
+                ORDER BY username ASC
+            """
+            
+            results = await self.fetch_all(
+                query=query, 
+                values={"username_prefix": f"{username_prefix}%"}
+            )
+            return [dict(row) for row in results]
+            
+        except Exception as e:
+            raise DatabaseError(f"Failed to search users by username: {str(e)}")
