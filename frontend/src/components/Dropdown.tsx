@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const options = [
   "Suggestions",
@@ -14,6 +14,8 @@ export default function Dropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Suggestions");
 
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
   const toggling = () => setIsOpen(!isOpen);
 
   const onOptionClicked = (value: any) => () => {
@@ -21,10 +23,24 @@ export default function Dropdown() {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutsie = (event: any) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutsie);
+
+    return () => document.removeEventListener("mousedown", handleClickOutsie);
+  }, []);
+
   return (
-    <div className="hidden text-sm  lg:hover:bg-purple-200 text-purple-700 items-center 
-    gap-1 font-semibold lg:inline-flex ">
-      <div className=" relative inline-flex">
+    <div
+      className="hidden text-sm  lg:hover:bg-purple-200 text-purple-700 items-center 
+    gap-1 font-semibold lg:inline-flex "
+    >
+      <div className=" relative inline-flex" ref={dropdownRef}>
         <button
           onClick={toggling}
           className="w-full rounded-l-md px-6 py-2  flex justify-center items-center gap-1"
@@ -44,7 +60,11 @@ export default function Dropdown() {
                   onClick={onOptionClicked(option)}
                   key={Math.random()}
                   className={`w-full px-4 py-1 text-xs text-black no-underline hover:bg-gray-100
-                  text-start ${option === selectedOption ? "border-2 border-purple-500 bg-purple-50" : ""}`}
+                  text-start ${
+                    option === selectedOption
+                      ? "border-2 border-purple-500 bg-purple-50"
+                      : ""
+                  }`}
                 >
                   {option}
                 </button>
