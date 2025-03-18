@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
@@ -6,16 +6,20 @@ import { Frown } from "lucide-react";
 import { users } from "../users";
 import Suggestion from "../components/Suggestion";
 import Filters from "../components/Filters";
+import AgeRangeSlider from "../components/AgeRangeSlider";
+import useAuthStore from "../store/useAuthStore";
+import SideFilters from "../components/SideFilters";
+
+
 
 function HomePage() {
   const { getUserProfiles, userProfiles, isLoadingUserProfiles } =
-    useMatchStore();
-
+  useMatchStore();
+  
+ 
   useEffect(() => {
     // getUserProfiles();
   }, [getUserProfiles]);
-
-
 
   return (
     <div
@@ -27,17 +31,22 @@ function HomePage() {
         <Header />
         <div className="flex flex-col">
           <Filters />
-          <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
-            {users.length > 0 && !isLoadingUserProfiles && (
-              <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
-                {users.slice(0, 19).map((user, index) => (
-                  <Suggestion user={user} key={index} />
-                ))}
-              </div>
-            )}
-            {users.length === 0 && !isLoadingUserProfiles && <NoMoreProfiles />}
-            {isLoadingUserProfiles && <LoadingUI />}
-          </main>
+          <div className="flex">
+            <SideFilters />
+            <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
+              {users.length > 0 && !isLoadingUserProfiles && (
+                <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
+                  {users.slice(0, 19).map((user, index) => (
+                    <Suggestion user={user} key={index} />
+                  ))}
+                </div>
+              )}
+              {users.length === 0 && !isLoadingUserProfiles && (
+                <NoMoreProfiles />
+              )}
+              {isLoadingUserProfiles && <LoadingUI />}
+            </main>
+          </div>
         </div>
       </div>
     </div>
