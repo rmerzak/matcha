@@ -2,6 +2,8 @@ import { ChevronDown, X } from "lucide-react";
 import { useState } from "react";
 import SortBy from "./SortBy";
 import AgeRangeSlider from "./AgeRangeSlider";
+import CommonTags from "./CommonTags";
+import Dropdown from "./Dropdown";
 
 function Filters() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,24 +19,26 @@ function Filters() {
     "Sort by",
   ];
 
-  const [rangeValues, setRangeValues] = useState({min: 18, max:80})
+  const [ageRangeValues, setAgeRangeValues] = useState({ min: 18, max: 80 });
+  const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
 
-  const handleRangeChange = (value: any) => {
-    setRangeValues(value)
-  }
+  const handleAgeRangeChange = (value: any) => {
+    setAgeRangeValues(value);
+  };
+
+  const handleFrRangeChange = (value: any) => {
+    setAgeRangeValues(value);
+  };
 
   return (
-    <div
-      className="flex divide-x divide-gray-400 justify-end border-b border-gray-400
-  lg:hidden"
-    >
+    <div className="flex divide-x divide-gray-400 justify-end border-b border-gray-400">
       <div></div>
       <div
-        className={`
-fixed inset-x-0 bottom-0 z-10 w-full h-5/6 bg-white shadow-md overflow-hidden transition-transform duration-300 ease-in-out
-${isOpen ? "translate-x-0 z-20" : "translate-y-full"}
-lg:hidden
-`}
+        className={`fixed inset-x-0 bottom-0 z-10 w-full h-5/6 bg-white shadow-md overflow-hidden 
+                        transition-transform duration-300 ease-in-out
+                         ${
+                           isOpen ? "translate-x-0 z-20" : "translate-y-full"
+                         } lg:hidden`}
       >
         <div className="flex flex-col h-full ">
           {/* Header */}
@@ -72,7 +76,21 @@ lg:hidden
                 <div className="mx-3">
                   <div className="overflow-auto">
                     <div className="mb-2">
-                      {filter === "Age" && <AgeRangeSlider min={18} max={80} onChange={handleRangeChange} />}
+                      {filter === "Age" && (
+                        <AgeRangeSlider
+                          min={18}
+                          max={80}
+                          onChange={handleAgeRangeChange}
+                        />
+                      )}
+                      {filter === "Fame rating" && (
+                        <AgeRangeSlider
+                          min={4}
+                          max={10}
+                          onChange={handleFrRangeChange}
+                        />
+                      )}
+                      {filter === "Common tags" && <CommonTags />}
                       {filter === "Sort by" && <SortBy />}
                     </div>
                   </div>
@@ -80,11 +98,19 @@ lg:hidden
               </div>
             </div>
           </div>
+          <div className="flex h-full items-end">
+            <div className="p-4 border-t w-full border-purple-200 text-sm justify-between flex">
+              <button className="p-3 border rounded-md">Clear Filter</button>
+              <button className="py-3 px-4 border rounded-lg text-white bg-purple-500">
+                Show results
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <button
         onClick={toggleFilters}
-        className="text-sm px-6  py-2 text-purple-700 flex items-center gap-1 font-semibold"
+        className="text-sm px-6  py-2 text-purple-700 flex items-center gap-1 font-semibold lg:hidden"
       >
         <span className="">Filters</span>
         <ChevronDown
@@ -93,6 +119,7 @@ lg:hidden
           } transition-transform size-3`}
         />
       </button>
+      <Dropdown />
     </div>
   );
 }
