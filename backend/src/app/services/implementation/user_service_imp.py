@@ -111,3 +111,35 @@ class UserServiceImp(BaseService, IUserService):
         except Exception as e:
             return error_response("An error occurred", str(e), status_code=500)
     
+    async def browse_profiles(
+        self,
+        user_id: str,
+        page: int = 1,
+        items_per_page: int = 10,
+        min_age: int = None,
+        max_age: int = None,
+        max_distance: int = None,
+        sort_by: str = None,
+        sort_order: str = "desc"
+    ):
+        try:
+            result = await self.user_repository.get_matching_profiles(
+                user_id=user_id,
+                page=page,
+                items_per_page=items_per_page,
+                min_age=min_age,
+                max_age=max_age,
+                max_distance=max_distance,
+                sort_by=sort_by,
+                sort_order=sort_order
+            )
+            
+            return success_response(
+                message="Matching profiles retrieved successfully",
+                data=result,
+                status_code=200
+            )
+            
+        except Exception as e:
+            return error_response("An error occurred", str(e), status_code=500)
+    
