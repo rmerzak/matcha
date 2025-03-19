@@ -28,3 +28,19 @@ async def add_view(
         return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}
+
+
+@router.get("/get-my-views")
+@inject
+async def get_my_views(
+    page: Optional[int] = 1,
+    item_per_page: Optional[int] = 10,
+    current_user: User = Depends(get_current_user_info),
+    service: IUserViewsService = Depends(Provide[Container.user_views_service]),
+):
+    try:
+        logger.info(f"User {current_user['username']} is getting their views")
+        result = await service.get_my_views(current_user['id'], page, item_per_page)
+        return result
+    except Exception as e:
+        return {"error": str(e), "status_code": 500}

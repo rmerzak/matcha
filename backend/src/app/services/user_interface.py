@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from fastapi import Response
-from app.schemas.users import ProfileUpdate
+from app.schemas.users import ProfileUpdate, UserSearchParams
 from fastapi import UploadFile, File
 from typing import List
 
@@ -10,4 +10,13 @@ class IUserService(ABC):
         pass
     @abstractmethod
     async def close_scoped_session():
+        pass
+    @abstractmethod
+    async def search_users(self, search_params: UserSearchParams):
+        pass
+    @abstractmethod
+    async def search_users_by_username(self, username: str):
+        pass
+    @abstractmethod
+    async def get_user_by_id(self, user_id: str):
         pass

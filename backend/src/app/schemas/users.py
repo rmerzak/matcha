@@ -64,3 +64,20 @@ class ProfileUpdate(BaseModel):
     interests: Optional[List[str]] = Field(default=[])
     profile_picture: Optional[UploadFile | None | str] = File(default=None)
     additional_pictures: Optional[List[UploadFile] | None | List[str]] = File(default=[])
+
+class UserSortField(str, Enum):
+    AGE = "age"
+    FAME = "fame_rating"
+
+class SortOrder(str, Enum):
+    ASC = "asc"
+    DESC = "desc"
+
+class UserSearchParams(BaseModel):
+    age_min: Optional[int] = Field(None, ge=18)
+    age_max: Optional[int] = Field(None, le=100)
+    fame_min: Optional[float] = Field(None, ge=0)
+    fame_max: Optional[float] = Field(None, le=5)
+    common_tags: Optional[List[str]] = []
+    sort_by: Optional[UserSortField] = Field(None)
+    sort_order: Optional[SortOrder] = Field(default=SortOrder.ASC)

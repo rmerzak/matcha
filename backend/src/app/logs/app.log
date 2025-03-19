@@ -2187,3 +2187,156 @@ TypeError: SocketIOManagerImp.__init__() missing 1 required positional argument:
 2025-02-22 17:20:16,074 - app.websocket.socketio - INFO - User authenticated: {'id': UUID('72861253-92cb-4e0c-b2d4-99b34173cbfe'), 'username': 'user', 'first_name': 'user', 'last_name': 'string', 'email': 'yayagi7646@codverts.com', 'gender': None, 'sexual_preferences': None, 'interests': None, 'pictures': None, 'fame_rating': None, 'location': None, 'latitude': None, 'address': None, 'age': None, 'bio': None, 'is_verified': True}
 2025-02-22 17:20:16,074 - app.websocket.socketio - INFO - User authenticated: {'id': UUID('72861253-92cb-4e0c-b2d4-99b34173cbfe'), 'username': 'user', 'first_name': 'user', 'last_name': 'string', 'email': 'yayagi7646@codverts.com', 'gender': None, 'sexual_preferences': None, 'interests': None, 'pictures': None, 'fame_rating': None, 'location': None, 'latitude': None, 'address': None, 'age': None, 'bio': None, 'is_verified': True}
 2025-02-22 17:20:23,418 - app.websocket.socketio - INFO - Message received - SID: HZXpOWU0RlaUlZUyAAAD, Data: wxcwxc
+2025-03-17 20:52:35,522 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 13:19:10,142 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:32:08,248 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:36:19,492 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:36:52,897 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:37:41,636 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:39:16,144 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:39:26,420 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:40:07,839 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:41:06,931 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:42:33,350 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:44:58,992 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:49:14,016 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:55:26,717 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:56:02,929 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:59:38,179 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 20:59:40,928 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:00:09,029 - app.core.responce - ERROR - Error: An error occurred, Message: 1 validation error for SuccessResponse
+message
+  Input should be a valid string [type=string_type, input_value=[<databases.backends.comm...ject at 0x71fc56d2b230>], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type, Details: {}
+2025-03-18 21:01:34,071 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:01:37,169 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:09:25,368 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:09:28,499 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:14:53,304 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:14:55,834 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:44:02,609 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:44:05,844 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:49:30,305 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:49:32,912 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:50:48,285 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:50:51,107 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:50:53,849 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:50:57,370 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:51:43,973 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:55:15,227 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:57:44,239 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:57:49,187 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:58:16,031 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:58:18,797 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:58:54,814 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:58:57,719 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:59:22,568 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:59:25,477 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:59:55,047 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 21:59:57,793 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:04:47,164 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:04:54,912 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:04:55,650 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:05:01,572 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:05:02,011 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:05:04,882 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:06:52,861 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:06:55,560 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:10:14,903 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:10:18,030 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:10:37,463 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:10:40,104 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:10:43,920 - app.api.v1.likes - ERROR - Error in add_like endpoint: 'dict' object has no attribute 'id'
+2025-03-18 22:10:43,921 - app.core.responce - ERROR - Error: Internal server error, Message: 'dict' object has no attribute 'id', Details: {}
+2025-03-18 22:11:54,488 - app.api.v1.likes - ERROR - Error in add_like endpoint: 'dict' object has no attribute 'id'
+2025-03-18 22:11:54,488 - app.core.responce - ERROR - Error: Internal server error, Message: 'dict' object has no attribute 'id', Details: {}
+2025-03-18 22:12:25,070 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:12:27,966 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:12:29,910 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while adding like, Details: {'error': "'UserRepository' object has no attribute 'find_by_id'"}
+2025-03-18 22:12:58,748 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:13:01,547 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:13:04,837 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while adding like, Details: {'error': "'UserRepository' object has no attribute 'find_by_id'"}
+2025-03-18 22:13:50,682 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:13:53,262 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:13:56,321 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while adding like, Details: {'error': "'UserRepository' object has no attribute 'get_by_id'"}
+2025-03-18 22:14:08,396 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:14:11,211 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:15:08,466 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:15:11,422 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:15:14,767 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while adding like, Details: {'error': 'Error adding like: Database.fetch_one() takes from 2 to 3 positional arguments but 4 were given'}
+2025-03-18 22:16:17,795 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:16:20,425 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:16:26,167 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while adding like, Details: {'error': "success_response() got multiple values for argument 'data'"}
+2025-03-18 22:18:00,391 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:18:02,926 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:18:07,529 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while adding like, Details: {'error': "'UserRepository' object has no attribute 'get_by_id'"}
+2025-03-18 22:18:27,988 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:18:30,493 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:19:33,495 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while adding like, Details: {'error': "'SocketIOManagerImp' object has no attribute 'emit_to_user'"}
+2025-03-18 22:20:32,384 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:20:34,999 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:21:48,134 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:21:51,202 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:23:15,738 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:23:18,646 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:25:41,970 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:25:44,560 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:26:46,283 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:28:02,654 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:29:50,478 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:29:53,297 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:30:50,797 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:30:53,515 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:30:58,973 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:31:01,518 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:32:19,716 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:32:22,589 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:32:39,417 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:32:42,256 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:33:28,587 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:33:31,527 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:33:33,520 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while getting like status, Details: {'error': "'LikesRepository' object has no attribute 'check_like_exists'"}
+2025-03-18 22:34:14,868 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:34:17,313 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:31,950 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:34,981 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:35,222 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:42,351 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:44,198 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:47,143 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:47,682 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:40:50,029 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:42:14,090 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:42:16,624 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:47:31,914 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:47:33,880 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:47:34,912 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:47:36,786 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:47:37,413 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:47:39,061 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:48:29,113 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:48:30,822 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:49:38,834 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:49:40,595 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:49:42,547 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:49:44,212 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:49:46,246 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:49:47,778 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:50:25,481 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while getting users who liked you, Details: {'error': "This text() construct doesn't define a bound parameter named 'limit'"}
+2025-03-18 22:51:10,837 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:51:12,387 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:51:15,575 - app.core.responce - ERROR - Error: Internal server error, Message: An error occurred while getting users who liked you, Details: {'error': "This text() construct doesn't define a bound parameter named 'items_per_page'"}
+2025-03-18 22:51:50,471 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:51:52,146 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:59:09,421 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:59:11,144 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:59:19,103 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 22:59:20,891 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:00:01,561 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:00:03,302 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:00:32,031 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:00:33,962 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:01:07,007 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:01:09,077 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:01:21,145 - databases - INFO - Disconnected from database postgresql+asyncpg://pacs:********@db:5432/pacsdb
+2025-03-18 23:01:22,885 - databases - INFO - Connected to database postgresql+asyncpg://pacs:********@db:5432/pacsdb

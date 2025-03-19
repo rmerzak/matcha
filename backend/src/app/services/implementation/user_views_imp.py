@@ -23,10 +23,25 @@ class UserViewsServiceImp(BaseService, IUserViewsService):
                 return error_response("Invalid data", "User does not exist", status_code=400)
             cleaned_viewed = str(viewed).replace('UUID(\'', '').replace('\')', '')
             cleaned_viewer_id = str(viewer_id).replace('UUID(\'', '').replace('\')', '')
-            await self.socketio_manager.send_event("view", {"viewed": cleaned_viewed, "viewer": cleaned_viewer_id}, viewer_id)
+            await self.socketio_manager.send_event("view", {"viewed": cleaned_viewed, "viewer": cleaned_viewer_id}, cleaned_viewed)
             await self.user_views_repository.add_view(viewed, viewer_id)
             return success_response({"viewed": viewed, "viewer": viewer_id},"View added successfully", status_code=200)
         except Exception as e:
             return error_response("Internal server error", 'An error occurred while adding view', status_code=500, details={"error": str(e)})
+    async def get_my_views(self, user_id: str, page: int = 1, item_per_page: int = 10):
+        try:
+            result = await self.user_views_repository.get_my_views(user_id, page, item_per_page)
+            return success_response(
+                result,
+                "Views retrieved successfully",
+                status_code=200
+            )
+        except Exception as e:
+            return error_response(
+                "Internal server error",
+                "An error occurred while retrieving views",
+                status_code=500,
+                details={"error": str(e)}
+            )
     async def close_scoped_session(self):
         await self.user_views_repository.close_session()

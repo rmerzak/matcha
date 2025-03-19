@@ -313,12 +313,8 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
         """Get user info for a socket ID"""
         return self._sid_to_user.get(sid)
 
-    # def get_sids_for_uid(self, uid: str) -> Set[str]:
-    #     """Get all socket IDs for a user"""
-    #     return self._user_uid_to_sid.get(uid, set())
     def get_sids_for_uid(self, uid: str) -> Set[str]:
         """Get all socket IDs for a user"""
-        # Clean the UUID format if needed
         cleaned_uid = str(uid).replace('UUID(\'', '').replace('\')', '')
         return self._user_uid_to_sid.get(cleaned_uid, set())
 
