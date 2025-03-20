@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import UsersPage from "./pages/UsersPage";
 import ProfileViewsPage from "./pages/analytics/ProfileViewsPage";
 import ProfileLikesPage from "./pages/analytics/ProfileLikesPage";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -109,6 +110,12 @@ function App() {
           path="/resetPassword"
           element={
             !authUser ? <ResetPassword /> : <Navigate replace={true} to={"/"} />
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            authUser ? <SearchPage /> : <Navigate replace={true} to={"/auth"} />
           }
         />
         <Route

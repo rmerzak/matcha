@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
@@ -7,12 +7,23 @@ import { users } from "../users";
 import Suggestion from "../components/Suggestion";
 import Filters from "../components/Filters";
 import SideFilters from "../components/SideFilters";
+import AgeRangeSlider from "../components/AgeRangeSlider";
 
-function HomePage() {
+function SearchPage() {
   const { getUserProfiles, userProfiles, isLoadingUserProfiles } =
-  useMatchStore();
-  
- 
+    useMatchStore();
+
+  const [ageRangeValues, setAgeRangeValues] = useState({ min: 18, max: 80 });
+  const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
+
+  const handleAgeRangeChange = (value: any) => {
+    setAgeRangeValues(value);
+  };
+
+  const handleFrRangeChange = (value: any) => {
+    setAgeRangeValues(value);
+  };
+
   useEffect(() => {
     // getUserProfiles();
   }, [getUserProfiles]);
@@ -25,23 +36,22 @@ function HomePage() {
       <Sidebar />
       <div className="flex flex-grow flex-col overflow-hidden">
         <Header />
-        <div className="flex flex-col">
-          <Filters />
-          <div className="flex">
-            <SideFilters />
-            <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
-              {users.length > 0 && !isLoadingUserProfiles && (
-                <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
-                  {users.slice(0, 19).map((user, index) => (
-                    <Suggestion user={user} key={index} />
-                  ))}
-                </div>
-              )}
-              {users.length === 0 && !isLoadingUserProfiles && (
-                <NoMoreProfiles />
-              )}
-              {isLoadingUserProfiles && <LoadingUI />}
-            </main>
+        <div className="flex flex-col space-y-10 bg-white m-8 p-8 rounded-lg
+                        shadow-lg max-w-[700px]  ">
+          <div className="flex flex-col ">
+            <h1 className="text-lg font-semibold">
+              Select an <span className="text-purple-600">age</span> gap:
+            </h1>
+            <AgeRangeSlider min={18} max={80} onChange={handleAgeRangeChange} />
+          </div>
+          <div className="flex flex-col gap-2 ">
+            <h1 className="text-lg font-semibold">
+              Select a <span className="text-purple-600">fame rating</span> gap:
+            </h1>
+            <AgeRangeSlider min={4} max={10} onChange={handleFrRangeChange} />
+          </div>
+          <div>
+
           </div>
         </div>
       </div>
@@ -74,4 +84,4 @@ const LoadingUI = () => {
   );
 };
 
-export default HomePage;
+export default SearchPage;

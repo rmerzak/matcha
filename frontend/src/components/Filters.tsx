@@ -1,9 +1,10 @@
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import { useState } from "react";
 import SortBy from "./SortBy";
 import AgeRangeSlider from "./AgeRangeSlider";
 import CommonTags from "./CommonTags";
 import Dropdown from "./Dropdown";
+import { Link } from "react-router-dom";
 
 function Filters() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,8 +32,17 @@ function Filters() {
   };
 
   return (
-    <div className="flex divide-x divide-gray-400 justify-end border-b border-gray-400">
-      <div></div>
+    <div className="flex divide-x divide-gray-400 border-b border-gray-400 justify-between">
+      <div className="w-full flex justify-center items-center">
+        <Link
+          to="/search"
+          className="text-sm px-6  py-2 text-purple-700 flex items-center gap-1 
+            font-semibold justify-center hover:underline "
+        >
+          <Search size={18} />
+          Advanced search
+        </Link>
+      </div>
       <div
         className={`fixed inset-x-0 bottom-0 z-10 w-full h-5/6 bg-white shadow-md overflow-hidden 
                         transition-transform duration-300 ease-in-out

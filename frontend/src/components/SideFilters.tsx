@@ -1,9 +1,5 @@
-import { ChevronDown, X } from "lucide-react";
 import { useState } from "react";
-import SortBy from "./SortBy";
 import AgeRangeSlider from "./AgeRangeSlider";
-import CommonTags from "./CommonTags";
-import Dropdown from "./Dropdown";
 import useAuthStore from "../store/useAuthStore";
 
 interface CheckedItems {

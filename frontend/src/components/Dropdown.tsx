@@ -38,7 +38,7 @@ export default function Dropdown() {
   return (
     <div
       className="hidden text-sm  lg:hover:bg-purple-200 text-purple-700 items-center 
-    gap-1 font-semibold lg:inline-flex "
+    gap-1 font-semibold lg:inline-flex shrink-0 "
     >
       <div className=" relative inline-flex" ref={dropdownRef}>
         <button

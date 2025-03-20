@@ -61,7 +61,7 @@ export const Sidebar = () => {
           </div>
         </div>
       </div>
-      <button className="lg:hidden fixed top-4 left-4 p-2 bg-purple-500 text-white rounded-md z-10"
+      <button className="lg:hidden fixed top-3 left-4 p-2 bg-purple-500 text-white rounded-md z-10"
       onClick={toggleSidebar}>
         <MessageCircle size={24} />
       </button>
