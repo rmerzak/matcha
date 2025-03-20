@@ -20,3 +20,6 @@ class IUserService(ABC):
     @abstractmethod
     async def get_user_by_id(self, user_id: str):
         pass
+    @abstractmethod
+    async def browse_profiles(self, user_id, page, items_per_page, min_age, max_age, max_distance, sort_by, sort_order):
+        pass

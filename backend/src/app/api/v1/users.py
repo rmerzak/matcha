@@ -16,6 +16,9 @@ from app.schemas.users import User
 from typing import Optional
 from app.core.dependencies import get_current_user_info
 from app.schemas.users import UserSortField, SortOrder
+import logging
+logger = logging.getLogger(__name__)
+
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
 router = fastapi.APIRouter(tags=["users"], prefix="/users", dependencies=[Depends(JWTBearer())])
@@ -37,6 +40,36 @@ async def update_profile(
             profile_data.additional_pictures
         )
 
+        return result
+    except Exception as e:
+        return {"error": str(e), "status_code": 500}
+
+@router.get("/browse")
+@inject
+async def browse_profiles(
+    page: int = 1,
+    items_per_page: int = 10,
+    min_age: Optional[int] = None,
+    max_age: Optional[int] = None,
+    max_distance: Optional[int] = None,
+    sort_by: Optional[str] = Query(None, enum=["age", "distance", "fame_rating", "common_tags"]),
+    sort_order: Optional[SortOrder] = SortOrder.DESC,
+    service: IUserService = Depends(Provide[Container.user_service]),
+    current_user: User = Depends(get_current_user_info)
+):
+    try:
+        logger.info(f"Browsing profiles for user {current_user}")
+        # return {"message": "Browsing profiles"}
+        result = await service.browse_profiles(
+            user_id=current_user["id"],
+            page=page,
+            items_per_page=items_per_page,
+            min_age=min_age,
+            max_age=max_age,
+            max_distance=max_distance,
+            sort_by=sort_by,
+            sort_order=sort_order.value if sort_order else "desc"
+        )
         return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}
