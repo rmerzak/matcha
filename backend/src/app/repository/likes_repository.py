@@ -181,3 +181,16 @@ class LikesRepository(BaseRepository):
             "items_per_page": items_per_page,
             "users": results
         }
+
+    async def remove_like(self, liker_id: str, liked_id: str) -> bool:
+        """Remove a like from one user to another"""
+        try:
+            query = """
+                DELETE FROM likes
+                WHERE liker = :liker_id AND liked = :liked_id
+                RETURNING id
+            """
+            result = await self.db.fetch_one(query, {"liker_id": liker_id, "liked_id": liked_id})
+            return result is not None
+        except Exception as e:
+            raise Exception(f"Error removing like: {str(e)}")
