@@ -3,10 +3,6 @@ import { Sidebar } from "../components/Sidebar";
 import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
 import { Frown } from "lucide-react";
-import { users } from "../users";
-import Suggestion from "../components/Suggestion";
-import Filters from "../components/Filters";
-import SideFilters from "../components/SideFilters";
 import AgeRangeSlider from "../components/AgeRangeSlider";
 
 function SearchPage() {
@@ -36,9 +32,9 @@ function SearchPage() {
       <Sidebar />
       <div className="flex flex-grow flex-col overflow-hidden">
         <Header />
-        <div className="flex flex-col space-y-10 bg-white m-8 p-8 rounded-lg
-                        shadow-lg max-w-[700px]  ">
-          <div className="flex flex-col ">
+        <div className="flex flex-col space-y-12 bg-white m-8 p-8 rounded-lg
+                        shadow-lg sm:mx-auto sm:w-full sm:max-w-2xl  ">
+          <div className="flex flex-col gap-2 ">
             <h1 className="text-lg font-semibold">
               Select an <span className="text-purple-600">age</span> gap:
             </h1>
