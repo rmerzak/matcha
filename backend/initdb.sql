@@ -361,25 +361,25 @@ BEGIN
       
       -- Random chance for mutual like (match)
       is_match := random() < 0.3; -- 30% chance of match
-      
+
       -- Insert first like
       INSERT INTO "likes" ("liker", "liked", "is_connected")
       VALUES (user1_id, user2_id, is_match)
       ON CONFLICT DO NOTHING;
-      
+
       -- If match, insert the reverse like too
       IF is_match THEN
         INSERT INTO "likes" ("liker", "liked", "is_connected") 
         VALUES (user2_id, user1_id, TRUE)
         ON CONFLICT DO NOTHING;
-        
+
         -- Add some messages for matches
         IF random() < 0.8 THEN -- 80% chance for messages in matches
           INSERT INTO "messages" ("sender", "receiver", "content", "is_read")
           VALUES 
             (user1_id, user2_id, 'Hi there! How are you doing?', TRUE),
             (user2_id, user1_id, 'Hey! I''m good, thanks for asking. How about you?', random() < 0.5);
-          
+
           IF random() < 0.6 THEN -- 60% chance for more messages
             INSERT INTO "messages" ("sender", "receiver", "content", "is_read")
             VALUES 
@@ -388,27 +388,23 @@ BEGIN
           END IF;
         END IF;
       END IF;
-      
+
       EXCEPTION WHEN OTHERS THEN
         RAISE NOTICE 'Error creating interaction %: %', i, SQLERRM;
     END;
   END LOOP;
-  
   -- Generate some profile views
   FOR i IN 1..num_interactions*10 LOOP
     BEGIN
       user1_id := user_ids[1 + floor(random() * user_count)];
       user2_id := user_ids[1 + floor(random() * user_count)];
-      
       -- Ensure we're not creating a self-view
       WHILE user1_id = user2_id LOOP
         user2_id := user_ids[1 + floor(random() * user_count)];
       END LOOP;
-      
       INSERT INTO "views" ("viewer", "viewed")
       VALUES (user1_id, user2_id)
       ON CONFLICT DO NOTHING;
-      
       EXCEPTION WHEN OTHERS THEN
         RAISE NOTICE 'Error creating view %: %', i, SQLERRM;
     END;

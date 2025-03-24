@@ -28,6 +28,19 @@ async def add_like(
         logger.error(f"Error in add_like endpoint: {str(e)}")
         return error_response("Internal server error", str(e), status_code=500)
 
+@router.delete("/unlike/{unliked_user_id}")
+@inject
+async def unlike_user(
+    unliked_user_id: str,
+    current_user: User = Depends(get_current_user_info),
+    service: ILikesService = Depends(Provide[Container.likes_service]),
+):
+    try:
+        return await service.unlike_user(current_user["id"], unliked_user_id)
+    except Exception as e:
+        logger.error(f"Error in unlike_user endpoint: {str(e)}")
+        return error_response("Internal server error", str(e), status_code=500)
+
 @router.get("/status/{other_user_id}")
 @inject
 async def get_like_status(
