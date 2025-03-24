@@ -6,12 +6,13 @@ from app.repository.user_views_repository import UserViewsRepository
 from app.repository.user_repository import UserRepository
 from app.services.user_views_interface import IUserViewsService
 from app.services.socketio_manager_interface import ISocketIOManager
-
+from app.repository.blocks_repository import BlocksRepository
 class UserViewsServiceImp(BaseService, IUserViewsService):
-    def __init__(self, user_views_repository: UserViewsRepository, user_repository: UserRepository, socketio_manager: ISocketIOManager):
+    def __init__(self, user_views_repository: UserViewsRepository, user_repository: UserRepository, socketio_manager: ISocketIOManager, blocks_repository: BlocksRepository):
         self.user_views_repository = user_views_repository
         self.user_repository = user_repository
         self.socketio_manager = socketio_manager
+        self.blocks_repository = blocks_repository
     async def add_view(self, viewed: str, viewer_id: str):
         try:
             print(viewed, viewer_id)

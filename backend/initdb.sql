@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS "users" (
   "latitude" NUMERIC,
   "longitude" NUMERIC,
   "address" VARCHAR(255),
-  "age" NUMERIC,
+  "age" NUMERIC DEFAULT NULL,
+  "date_of_birth" DATE DEFAULT NULL,
   "bio" TEXT,
   "is_verified" BOOLEAN DEFAULT FALSE,
   "is_blocked" BOOLEAN DEFAULT FALSE,
@@ -188,6 +189,28 @@ DECLARE
     'Exploring life through %s and %s. Looking for a companion on this journey.',
     'Passionate about %s and discovering new %s experiences.'
   ];
+  profile_pics TEXT[] := ARRAY[
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
+    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d',
+    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80',
+    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+    'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e',
+    'https://images.unsplash.com/photo-1568602471122-7832951cc4c5',
+    'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
+    'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6',
+    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
+    'https://images.unsplash.com/photo-1534030347209-467a5b0ad3e6',
+    'https://images.unsplash.com/photo-1519699047748-de8e457a634e',
+    'https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2',
+    'https://images.unsplash.com/photo-1517365830460-955ce3ccd263',
+    'https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e',
+    'https://images.unsplash.com/photo-1480455624313-e29b44bbfde1',
+    'https://images.unsplash.com/photo-1554780336-390462301acf'
+  ];
   user_id UUID;
   random_city INTEGER;
   random_lat NUMERIC;
@@ -200,10 +223,11 @@ DECLARE
   random_first TEXT;
   random_last TEXT;
   random_age INTEGER;
-  user_pictures TEXT[];
+  random_dob DATE;
   profile_pic TEXT;
   interest1 TEXT;
   interest2 TEXT;
+  pic_index INTEGER;
 BEGIN
   -- For debugging - print a message to confirm function is executing
   RAISE NOTICE 'Starting to generate % test users', num_users;
@@ -225,6 +249,9 @@ BEGIN
       -- Generate random age between 18 and 50
       random_age := 18 + floor(random() * 32);
       
+      -- Calculate date of birth based on age
+      random_dob := CURRENT_DATE - (random_age * INTERVAL '1 year') - (floor(random() * 365) * INTERVAL '1 day');
+      
       -- Select random interests (between 2 and 5)
       num_interests := 2 + floor(random() * 4);
       user_interests := ARRAY[]::TEXT[];
@@ -242,14 +269,9 @@ BEGIN
       random_lat := city_coords[random_city][1] + (random() * 0.1 - 0.05);
       random_lng := city_coords[random_city][2] + (random() * 0.1 - 0.05);
       
-      -- Generate random pictures
-      profile_pic := '/profiles/default_' || random_gender || floor(random() * 5 + 1)::TEXT || '.jpg';
-      user_pictures := ARRAY[
-        '/profiles/user' || i || '_1.jpg',
-        '/profiles/user' || i || '_2.jpg',
-        '/profiles/user' || i || '_3.jpg',
-        '/profiles/user' || i || '_4.jpg'
-      ];
+      -- Select a random profile picture from the Unsplash array
+      pic_index := 1 + floor(random() * array_length(profile_pics, 1));
+      profile_pic := profile_pics[pic_index];
       
       -- Create random bio
       interest1 := user_interests[1 + floor(random() * array_length(user_interests, 1))];
@@ -271,8 +293,8 @@ BEGIN
       -- Insert the user
       INSERT INTO "users" (
         "username", "first_name", "last_name", "email", "password", "gender", 
-        "sexual_preferences", "interests", "profile_picture", "pictures", 
-        "fame_rating", "location", "latitude", "longitude", "age", "bio", "is_verified"
+        "sexual_preferences", "interests", "profile_picture",
+        "fame_rating", "location", "latitude", "longitude", "age", "date_of_birth", "bio", "is_verified"
       ) VALUES (
         username, first_name, last_name, email, 
         '$2b$12$ZasZYPAD8w0hauYrEziYcumcMy5DWadtS/voVz0XJGMjpLgWWXQdm', -- Same password for all test users
@@ -280,12 +302,12 @@ BEGIN
         random_sexual_pref::sexual_orientation,
         user_interests,
         profile_pic,
-        user_pictures,
         20 + floor(random() * 80)::INTEGER, -- Random fame rating between 20-100
         cities[random_city],
         random_lat,
         random_lng,
         random_age,
+        random_dob,
         random_bio,
         TRUE
       ) RETURNING id INTO user_id;

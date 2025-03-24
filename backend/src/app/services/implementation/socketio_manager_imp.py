@@ -11,7 +11,7 @@ from app.core.security import verify_token
 import jwt
 from socketio import AsyncServer
 from app.schemas.users import User
-
+from app.repository.blocks_repository import BlocksRepository
 logger = logging.getLogger(__name__)
 
 # class SocketIOManagerImp(BaseService, ISocketIOManager):
@@ -265,11 +265,12 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, user_repository: UserRepository, auth_service: IAuthService, sio: AsyncServer):
+    def __init__(self, user_repository: UserRepository, auth_service: IAuthService, blocks_repository: BlocksRepository, sio: AsyncServer):
         if not self._initialized:
             super().__init__(user_repository)
             self.user_repository = user_repository
             self.auth_service = auth_service
+            self.blocks_repository = blocks_repository
             self.sio = sio
             self._user_uid_to_sid: Dict[str, Set[str]] = {}
             self._sid_to_user: Dict[str, dict] = {}

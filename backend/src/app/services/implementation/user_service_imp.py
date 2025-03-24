@@ -6,12 +6,13 @@ from fastapi import UploadFile, File
 from typing import List
 from app.core.responce import error_response, success_response
 from app.services.cloudinary_service import CloudinaryService
-
+from app.repository.blocks_repository import BlocksRepository
 
 class UserServiceImp(BaseService, IUserService):
-    def __init__(self, user_repository: UserRepository,cloudinary_service: CloudinaryService):
+    def __init__(self, user_repository: UserRepository,cloudinary_service: CloudinaryService, blocks_repository: BlocksRepository):
         self.user_repository = user_repository
         self.cloudinary_service = cloudinary_service
+        self.blocks_repository = blocks_repository
     
     async def close_scoped_session(self):
         await self.user_repository.close_session()
