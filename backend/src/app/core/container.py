@@ -35,11 +35,12 @@ class Container(containers.DeclarativeContainer):
         SocketIOManagerImp,
         user_repository=user_repository,
         auth_service=auth_service,
+        blocks_repository=blocks_repository,
         sio=sio
     )
     cloudinary = providers.Factory(CloudinaryService)
-    user_service = providers.Factory(UserServiceImp, user_repository=user_repository, cloudinary_service=cloudinary)
-    user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository, socketio_manager=socketio_manager)
-    likes_service = providers.Factory(LikesServiceImp, user_repository=user_repository, socketio_manager=socketio_manager, likes_repository=likes_repository)
+    user_service = providers.Factory(UserServiceImp, user_repository=user_repository, cloudinary_service=cloudinary, blocks_repository=blocks_repository)
+    user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository, socketio_manager=socketio_manager, blocks_repository=blocks_repository)
+    likes_service = providers.Factory(LikesServiceImp, user_repository=user_repository, socketio_manager=socketio_manager, likes_repository=likes_repository, blocks_repository=blocks_repository)
     blocks_service = providers.Factory(BlocksServiceImp, blocks_repository=blocks_repository, socketio_manager=socketio_manager, user_repository=user_repository)
     # socketio_manager = providers.Factory(SocketIOManagerImp, user_repository=user_repository, auth_service=auth_service, sio=sio)

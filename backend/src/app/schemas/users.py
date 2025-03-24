@@ -31,8 +31,10 @@ class User(BaseModel):
     fame_rating: Optional[float]
     location: Optional[str] = Field(None, max_length=255)
     latitude: Optional[float]
+    longitude: Optional[float]
     address: Optional[str] = Field(None, max_length=255)
     age: Optional[int]
+    date_of_birth: Optional[datetime]
     bio: Optional[str]
     is_verified: bool = Field(default=False)
     created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
@@ -60,6 +62,11 @@ class ProfileUpdate(BaseModel):
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     sexual_preferences: Optional[SexualPreference] = None
+    date_of_birth: Optional[datetime] = None
+    location: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    address: Optional[str] = None
     bio: Optional[str] = None
     interests: Optional[List[str]] = Field(default=[])
     profile_picture: Optional[UploadFile | None | str] = File(default=None)

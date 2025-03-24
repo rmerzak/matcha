@@ -165,7 +165,12 @@ class UserRepository(BaseRepository):
                 "bio": profile_data.bio,
                 "interests": profile_data.interests if profile_data.interests else None,
                 "pictures": additional_pictures_urls if additional_pictures_urls else None,
-                "email": profile_data.email  # For the updated_email field
+                "email": profile_data.email,  # For the updated_email field
+                "date_of_birth": profile_data.date_of_birth,  # Add date_of_birth
+                "location": profile_data.location,  # Add location
+                "latitude": profile_data.latitude,  # Add latitude
+                "longitude": profile_data.longitude,  # Add longitude
+                "address": profile_data.address  # Add address
             }
             
             for field, value in field_mapping.items():
@@ -187,7 +192,8 @@ class UserRepository(BaseRepository):
                 SET {', '.join(update_fields)}
                 WHERE email = :email
                 RETURNING username, email, first_name, last_name, gender, 
-                        sexual_preferences, bio, interests, pictures;
+                        sexual_preferences, bio, interests, pictures, date_of_birth,
+                        location, latitude, longitude, address;
             """
             
             result = await self.execute(query=query, values=values)

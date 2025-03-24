@@ -8,12 +8,13 @@ from app.repository.likes_repository import LikesRepository
 from app.services.user_views_interface import IUserViewsService
 from app.services.socketio_manager_interface import ISocketIOManager
 from app.services.likes_interface import ILikesService
-
+from app.repository.blocks_repository import BlocksRepository
 class LikesServiceImp(BaseService, ILikesService):
-    def __init__(self, user_repository: UserRepository, socketio_manager: ISocketIOManager, likes_repository: LikesRepository):
+    def __init__(self, user_repository: UserRepository, socketio_manager: ISocketIOManager, likes_repository: LikesRepository, blocks_repository: BlocksRepository):
         self.user_repository = user_repository
         self.socketio_manager = socketio_manager
         self.likes_repository = likes_repository
+        self.blocks_repository = blocks_repository
     async def add_like(self, user_id: str, liked_user_id: str):
         try:
             # Get both users
