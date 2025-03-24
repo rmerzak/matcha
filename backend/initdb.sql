@@ -14,6 +14,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TYPE gender_type AS ENUM ('male', 'female', 'non_binary', 'other');
 CREATE TYPE sexual_orientation AS ENUM ('heterosexual', 'homosexual', 'bisexual', 'other');
 CREATE TYPE report_type AS ENUM ('fake_account', 'inappropriate_content', 'harassment', 'other');
+CREATE TYPE notification_type AS ENUM ('like_received', 'profile_viewed', 'message_received', 'match_created', 'match_broken');
 
 CREATE TABLE IF NOT EXISTS "users" (
   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -108,11 +109,26 @@ CREATE TABLE IF NOT EXISTS "user_preferences" (
   CONSTRAINT fk_user_id FOREIGN KEY ("user_id") REFERENCES "users" ("id")
 );
 
+CREATE TABLE IF NOT EXISTS "notifications" (
+  "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "user_id" UUID NOT NULL,
+  "sender_id" UUID NOT NULL,
+  "type" notification_type NOT NULL,
+  "content" TEXT,
+  "is_read" BOOLEAN DEFAULT FALSE,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_user_id FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
+  CONSTRAINT fk_sender_id FOREIGN KEY ("sender_id") REFERENCES "users" ("id")
+);
+
 CREATE INDEX idx_user_location ON users (latitude, longitude);
 
 CREATE INDEX idx_fame_rating ON users (fame_rating);
 
 CREATE INDEX idx_user_age ON users (age);
+
+CREATE INDEX idx_notification_user ON notifications (user_id);
+CREATE INDEX idx_notification_read ON notifications (user_id, is_read);
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -431,6 +447,44 @@ BEGIN
         RAISE NOTICE 'Error creating view %: %', i, SQLERRM;
     END;
   END LOOP;
+  
+  -- Generate some direct notifications (in addition to those created by triggers)
+  FOR i IN 1..num_interactions*3 LOOP
+    BEGIN
+      user1_id := user_ids[1 + floor(random() * user_count)];
+      user2_id := user_ids[1 + floor(random() * user_count)];
+      
+      -- Ensure we're not creating a self-notification
+      WHILE user1_id = user2_id LOOP
+        user2_id := user_ids[1 + floor(random() * user_count)];
+      END LOOP;
+      
+      -- Create random notification with random read status
+      INSERT INTO "notifications" (
+        "user_id", 
+        "sender_id", 
+        "type", 
+        "content", 
+        "is_read"
+      )
+      VALUES (
+        user1_id,
+        user2_id,
+        (ARRAY['like_received', 'profile_viewed', 'message_received', 'match_created', 'match_broken'])[1 + floor(random() * 5)]::notification_type,
+        CASE 
+          WHEN random() < 0.2 THEN 'Someone liked your profile'
+          WHEN random() < 0.4 THEN 'Someone viewed your profile'
+          WHEN random() < 0.6 THEN 'You received a new message'
+          WHEN random() < 0.8 THEN 'You have a new match!'
+          ELSE 'A match has been broken'
+        END,
+        random() < 0.5  -- 50% chance of being read
+      );
+      
+      EXCEPTION WHEN OTHERS THEN
+        RAISE NOTICE 'Error creating notification %: %', i, SQLERRM;
+    END;
+  END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -470,3 +524,91 @@ END $$;
 -- Clean up the functions when done
 DROP FUNCTION IF EXISTS generate_test_users(INTEGER);
 DROP FUNCTION IF EXISTS generate_random_interactions(INTEGER);
+
+-- Create triggers to automatically create notifications
+
+-- Trigger for likes
+CREATE OR REPLACE FUNCTION create_like_notification() RETURNS TRIGGER AS $$
+BEGIN
+  -- Insert notification for receiving a like
+  INSERT INTO notifications (user_id, sender_id, type, content)
+  VALUES (NEW.liked, NEW.liker, 'like_received', 'Someone liked your profile');
+  
+  -- Check if this creates a match (both users liked each other)
+  IF EXISTS (SELECT 1 FROM likes WHERE liker = NEW.liked AND liked = NEW.liker) THEN
+    -- Create match notification
+    INSERT INTO notifications (user_id, sender_id, type, content)
+    VALUES 
+      (NEW.liked, NEW.liker, 'match_created', 'You have a new match!'),
+      (NEW.liker, NEW.liked, 'match_created', 'You have a new match!');
+    
+    -- Update both like records to show they're connected
+    UPDATE likes SET is_connected = TRUE 
+    WHERE (liker = NEW.liker AND liked = NEW.liked) 
+       OR (liker = NEW.liked AND liked = NEW.liker);
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_like_insert
+  AFTER INSERT ON likes
+  FOR EACH ROW
+  EXECUTE FUNCTION create_like_notification();
+
+-- Trigger for unlikes (when a row is deleted from likes table)
+CREATE OR REPLACE FUNCTION create_unlike_notification() RETURNS TRIGGER AS $$
+BEGIN
+  -- Only create notification if they were previously matched
+  IF OLD.is_connected = TRUE THEN
+    -- Check if the other person still has a like record
+    IF EXISTS (SELECT 1 FROM likes WHERE liker = OLD.liked AND liked = OLD.liker) THEN
+      -- Create unlike notification
+      INSERT INTO notifications (user_id, sender_id, type, content)
+      VALUES (OLD.liked, OLD.liker, 'match_broken', 'A match has been broken');
+      
+      -- Update the remaining like to show they're no longer connected
+      UPDATE likes SET is_connected = FALSE 
+      WHERE liker = OLD.liked AND liked = OLD.liker;
+    END IF;
+  END IF;
+  
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_like_delete
+  AFTER DELETE ON likes
+  FOR EACH ROW
+  EXECUTE FUNCTION create_unlike_notification();
+
+-- Trigger for profile views
+CREATE OR REPLACE FUNCTION create_view_notification() RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO notifications (user_id, sender_id, type, content)
+  VALUES (NEW.viewed, NEW.viewer, 'profile_viewed', 'Someone viewed your profile');
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_view_insert
+  AFTER INSERT ON views
+  FOR EACH ROW
+  EXECUTE FUNCTION create_view_notification();
+
+-- Trigger for messages
+CREATE OR REPLACE FUNCTION create_message_notification() RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO notifications (user_id, sender_id, type, content)
+  VALUES (NEW.receiver, NEW.sender, 'message_received', 'You received a new message');
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_message_insert
+  AFTER INSERT ON messages
+  FOR EACH ROW
+  EXECUTE FUNCTION create_message_notification();
