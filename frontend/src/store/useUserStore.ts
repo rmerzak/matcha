@@ -13,7 +13,7 @@ type DataType = {
     last_name?: string;
     email?: string;
     gender: string;
-    interests: [{value: "", label: ""}];
+    interests: {value: string; label: string}[];
     sexual_preferences: string;
     bio: string;
     profile_picture: string | ArrayBuffer | null;
