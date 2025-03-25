@@ -14,7 +14,7 @@ function FillProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex-grow flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex-grow flex flex-col py-2 px-4 sm:px-6 lg:px-8">
         <PageTitle title="Fill your Profile" />
         <FillProfileForm />
       </div>

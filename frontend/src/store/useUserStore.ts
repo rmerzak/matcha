@@ -16,7 +16,7 @@ type DataType = {
     interests: {value: string; label: string}[];
     sexual_preferences: string;
     bio: string;
-    profile_picture: string | ArrayBuffer | null;
+    profile_picture: string | ArrayBuffer | null | "";
     additional_pictures: string[]
 }
 

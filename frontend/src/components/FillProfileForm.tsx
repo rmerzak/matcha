@@ -8,8 +8,12 @@ import GenderSelect from "./GenderSelect";
 import SexualPreferenceSelect from "./SexualPreferenceSelect";
 import BioInput from "./BioInput";
 import InterestsSelect from "./InterestsSelect";
+import ProfilePictureUpload from "./ProfilePictureUpload";
 
 function FillProfileForm() {
+  const [profilePicture, setProfilePicture] = useState<
+    string | ArrayBuffer | null
+  >(null);
   const [gender, setGender] = useState("");
   const [sexualPreference, setSexualPreference] = useState("bisexual");
   const [bio, setBio] = useState("");
@@ -27,9 +31,6 @@ function FillProfileForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let profilePicture = "";
-    if (pictures.length > 0) profilePicture = pictures[0];
-
     try {
       await updateProfile({
         gender,
@@ -37,7 +38,7 @@ function FillProfileForm() {
         bio,
         interests: interests,
         profile_picture: profilePicture,
-        additional_pictures: pictures.slice(1),
+        additional_pictures: pictures,
       });
       checkAuth();
       navigate("/", { replace: true });
@@ -48,7 +49,7 @@ function FillProfileForm() {
 
   const addPicture = (newPicture: any) => {
     const picturesToAdd = Array.isArray(newPicture) ? newPicture : [newPicture];
-    const canAdd = 5 - pictures.length;
+    const canAdd = 4 - pictures.length;
     if (canAdd > 0) {
       const newPictures = picturesToAdd.slice(0, canAdd);
       setPictures((prevPictures: any) => [...prevPictures, ...newPictures]);
@@ -64,7 +65,6 @@ function FillProfileForm() {
       reader.onloadend = () => {
         addPicture(reader.result);
       };
-
       reader.readAsDataURL(file);
     }
   };
@@ -83,6 +83,10 @@ function FillProfileForm() {
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
         <form onSubmit={handleSubmit} className="space-y-6">
+          <ProfilePictureUpload
+            profilePicture={profilePicture}
+            setProfilePicture={setProfilePicture}
+          />
           <GenderSelect gender={gender} setGender={setGender} />
           {/* <SexualPreferenceSelect
             sexualPreference={sexualPreference}
@@ -122,15 +126,12 @@ function FillProfileForm() {
               />
             </div>
             <span className="ml-2 text-sm text-gray-400">
-              Up to {5 - pictures.length} pictures
+              Up to {4 - pictures.length} pictures
             </span>
             <p className="ml-2 text-sm text-gray-400">
-              {pictures.length}/5 pictures uploaded.
+              {pictures.length}/4 pictures uploaded.
             </p>
           </div>
-          <span className="text-sm ml-2 text-gray-400">
-            First one will be used as a profile picture
-          </span>
           <div className="flex gap-2 flex-wrap">
             {pictures.map((image: any, index: any) => (
               <img
