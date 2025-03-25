@@ -1,14 +1,13 @@
-import clsx from "clsx";
 import React, { useRef, useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
 import { useNavigate } from "react-router-dom";
-import Select from "react-select";
 import GenderSelect from "./GenderSelect";
 import SexualPreferenceSelect from "./SexualPreferenceSelect";
 import BioInput from "./BioInput";
 import InterestsSelect from "./InterestsSelect";
 import ProfilePictureUpload from "./ProfilePictureUpload";
+import PicturesUpload from "./PicturesUpload";
 
 function FillProfileForm() {
   const [profilePicture, setProfilePicture] = useState<
@@ -21,8 +20,6 @@ function FillProfileForm() {
     { value: string; label: string }[]
   >([]);
   const [pictures, setPictures] = useState<string[]>([]);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
 
@@ -47,28 +44,6 @@ function FillProfileForm() {
     }
   };
 
-  const addPicture = (newPicture: any) => {
-    const picturesToAdd = Array.isArray(newPicture) ? newPicture : [newPicture];
-    const canAdd = 4 - pictures.length;
-    if (canAdd > 0) {
-      const newPictures = picturesToAdd.slice(0, canAdd);
-      setPictures((prevPictures: any) => [...prevPictures, ...newPictures]);
-    } else {
-      console.warn("Cannot add more images; limit reached.");
-    }
-  };
-
-  const handleImageChange = (e: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        addPicture(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const options = [
     { value: "vegan", label: "#vegan" },
     { value: "geek", label: "#geek" },
@@ -80,7 +55,7 @@ function FillProfileForm() {
   ];
 
   return (
-    <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
         <form onSubmit={handleSubmit} className="space-y-6">
           <ProfilePictureUpload
@@ -98,50 +73,7 @@ function FillProfileForm() {
             setInterests={setInterests}
             options={options}
           />
-          {/* PICTURES */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Pictures
-            </label>
-            <div className="mt-1 mb-1 flex items-center flex-wrap">
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
-              text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
-              focus:ring-offset-2 focus:ring-purple-500 flex-col"
-              >
-                <span>Upload Picture</span>
-              </button>
-            </div>
-            <div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-                multiple
-                disabled={pictures.length >= 5}
-              />
-            </div>
-            <span className="ml-2 text-sm text-gray-400">
-              Up to {4 - pictures.length} pictures
-            </span>
-            <p className="ml-2 text-sm text-gray-400">
-              {pictures.length}/4 pictures uploaded.
-            </p>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {pictures.map((image: any, index: any) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Uploaded image ${index}`}
-                className="w-24 h-full object-cover rounded-md"
-              />
-            ))}
-          </div>
+          <PicturesUpload pictures={pictures} setPictures={setPictures} />
 
           <button
             type="submit"
