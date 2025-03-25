@@ -10,6 +10,7 @@ const options = [
   "Fame rating: High to Low",
   "Common tags",
 ];
+
 export default function Dropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Suggestions");
