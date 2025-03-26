@@ -13,11 +13,12 @@ type DataType = {
     last_name?: string;
     email?: string;
     gender: string;
-    interests: {value: string; label: string}[];
+    interests: string[];
     sexual_preferences: string;
     bio: string;
     profile_picture: string | ArrayBuffer | null | "";
-    additional_pictures: string[]
+    additional_pictures: string[];
+    date_of_birth: Date;
 }
 
 export const useUserStore = create<UserStoreType>((set) => ({
@@ -31,7 +32,6 @@ export const useUserStore = create<UserStoreType>((set) => ({
               Authorization: `Bearer ${token}`,
             },
           };
-
 
         console.log(data)
         

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
 import { useNavigate } from "react-router-dom";
@@ -8,11 +8,15 @@ import BioInput from "./BioInput";
 import InterestsSelect from "./InterestsSelect";
 import ProfilePictureUpload from "./ProfilePictureUpload";
 import PicturesUpload from "./PicturesUpload";
+import SubmitButton from "./SubmitButton";
+import BirthDatePicker from "./BirthDatePicker";
 
 function FillProfileForm() {
   const [profilePicture, setProfilePicture] = useState<
     string | ArrayBuffer | null
   >(null);
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [isBirthDateValid, setIsBirthDateValid] = useState(false); // New state for validity
   const [gender, setGender] = useState("");
   const [sexualPreference, setSexualPreference] = useState("bisexual");
   const [bio, setBio] = useState("");
@@ -28,14 +32,21 @@ function FillProfileForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!birthDate || !isBirthDateValid) {
+      alert("You must be at least 18 years old to submit this form.");
+      return;
+    }
     try {
       await updateProfile({
         gender,
         sexual_preferences: sexualPreference,
         bio,
-        interests: interests,
+        interests: interests.map(
+          (interest: { value: string; label: string }) => interest.value
+        ),
         profile_picture: profilePicture,
         additional_pictures: pictures,
+        date_of_birth: birthDate,
       });
       checkAuth();
       navigate("/", { replace: true });
@@ -57,10 +68,15 @@ function FillProfileForm() {
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <ProfilePictureUpload
             profilePicture={profilePicture}
             setProfilePicture={setProfilePicture}
+          />
+          <BirthDatePicker
+            birthDate={birthDate}
+            setBirthDate={setBirthDate}
+            onValidityChange={setIsBirthDateValid} // Pass callback to update validity
           />
           <GenderSelect gender={gender} setGender={setGender} />
           {/* <SexualPreferenceSelect
@@ -74,18 +90,7 @@ function FillProfileForm() {
             options={options}
           />
           <PicturesUpload pictures={pictures} setPictures={setPictures} />
-
-          <button
-            type="submit"
-            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-              loading
-                ? "bg-purple-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            }`}
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save"}
-          </button>
+          <SubmitButton loading={loading} />
         </form>
       </div>
     </div>
