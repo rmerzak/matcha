@@ -3,12 +3,14 @@ import { Header } from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
 import FillProfileForm from "../components/FillProfileForm";
+import useAuthStore from "../store/useAuthStore";
 
 function FillProfilePage() {
   const navigate = useNavigate();
+  const { authUser } = useAuthStore();
 
   useEffect(() => {
-    // if (authUser?.gender) navigate("/profile", { replace: true });
+    if (authUser?.gender) navigate("/profile", { replace: true });
   }, []);
 
   return (

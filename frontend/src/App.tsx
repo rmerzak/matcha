@@ -23,14 +23,14 @@ function App() {
   }, [checkAuth]);
 
   if (checkingAuth) return null;
-  // if (authUser && !authUser.gender) {
-  //   return (
-  //     <div className="bg-red-500">
-  //       <Navigate to={"/fill-profile"} replace={true} />
-  //       <FillProfilePage />
-  //     </div>
-  //   );
-  // }
+  if (authUser && !authUser.gender) {
+    return (
+      <div>
+        <Navigate to={"/fill-profile"} replace={true} />
+        <FillProfilePage />
+      </div>
+    );
+  }
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">

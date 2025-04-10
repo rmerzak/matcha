@@ -1,5 +1,6 @@
 import { MapPin, MapPinOff } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { useUserStore } from "../store/useUserStore";
 
 // Define types for location data
 interface GpsLocation {
@@ -33,17 +34,19 @@ interface IpLocation {
   method: "IP";
 }
 
-type Location = GpsLocation | IpLocation;
+export type Location = GpsLocation | IpLocation;
 
-const HybridLocationComponent: React.FC = () => {
+const UpdateLocation: React.FC = () => {
   const [location, setLocation] = useState<Location | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { updateLocation } = useUserStore();
 
   const getGpsLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position: GeolocationPosition) => {
           const { latitude, longitude } = position.coords;
+          updateLocation({ latitude, longitude });
           const gpsData: GpsLocation = { latitude, longitude, method: "GPS" };
           setLocation(gpsData);
 
@@ -61,7 +64,7 @@ const HybridLocationComponent: React.FC = () => {
               data.address.quarter ||
               "Neighborhood not found";
             setLocation(
-              (prev) =>
+              (prev: any) =>
                 ({ ...prev, country, city, neighborhood } as GpsLocation)
             );
           } catch (err) {
@@ -85,7 +88,6 @@ const HybridLocationComponent: React.FC = () => {
       // setError(null);
       const response = await fetch("http://ip-api.com/json/");
       const data = (await response.json()) as IpApiResponse; // Type the raw response
-      console.log(data);
       if (data.status === "success") {
         // Map the response to IpLocation
         const ipLocation: IpLocation = {
@@ -96,6 +98,12 @@ const HybridLocationComponent: React.FC = () => {
           lon: data.lon,
           method: "IP",
         };
+        updateLocation({
+          latitude: data.lat,
+          longitude: data.lon,
+          location: data.country,
+          address: data.city,
+        });
         setLocation(ipLocation);
       } else {
         setError(`IP geolocation failed: ${data.message || "Unknown error"}`);
@@ -109,43 +117,7 @@ const HybridLocationComponent: React.FC = () => {
     getGpsLocation();
   }, []);
 
-  return (
-    <div className="flex text-gray-700 text-sm space-x-1">
-      {error ? (
-        // <p>Error: {error}</p>
-        <MapPinOff size={18} />
-      ) : location ? (
-        <>
-          {/* <p>Method: {location.method}</p> */}
-          {location.method === "GPS" ? (
-            <>
-              {/* <p>Latitude: {(location as GpsLocation).latitude}</p>
-              <p>Longitude: {(location as GpsLocation).longitude}</p>
-              <p>Country: {(location as GpsLocation).country || 'Loading...'}</p>
-              <p>City: {(location as GpsLocation).city || 'Loading...'}</p>
-              <p>Neighborhood: {(location as GpsLocation).neighborhood || 'Loading...'}</p> */}
-              <MapPin size={18} />{" "}
-              <span>
-                {(location as GpsLocation).neighborhood}{", "}
-                {(location as GpsLocation).city}{", "}
-                {(location as GpsLocation).country || "Loading..."}
-              </span>
-            </>
-          ) : (
-            <>
-              <p>City: {(location as IpLocation).city}</p>
-              <p>Region: {(location as IpLocation).regionName}</p>
-              <p>Country: {(location as IpLocation).country}</p>
-              <p>Approx Latitude: {(location as IpLocation).lat}</p>
-              <p>Approx Longitude: {(location as IpLocation).lon}</p>
-            </>
-          )}
-        </>
-      ) : (
-        <p>Fetching location...</p>
-      )}
-    </div>
-  );
+  return <div></div>;
 };
 
-export default HybridLocationComponent;
+export default UpdateLocation;

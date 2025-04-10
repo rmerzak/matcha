@@ -12,7 +12,7 @@ import EditLocationComponent from "../components/EditLocationComponent";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();
-  console.log(authUser?.pictures);
+  console.log(authUser?.profilePicture);
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />

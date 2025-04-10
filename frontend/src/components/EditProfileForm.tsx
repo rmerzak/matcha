@@ -11,24 +11,33 @@ import PicturesUpload from "./PicturesUpload";
 import SubmitButton from "./SubmitButton";
 import BirthDatePicker from "./BirthDatePicker";
 import UpdateLocation from "./UpdateLocation";
+import EmailInput from "./EmailInput";
+import FirstNameInput from "./FirstNameInput";
+import LastNameInput from "./LastNameInput";
 
-function FillProfileForm() {
+function EditProfileForm() {
+  const { authUser, checkAuth } = useAuthStore();
   const [profilePicture, setProfilePicture] = useState<
     string | ArrayBuffer | null
-  >(null);
-  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  >(authUser?.profilePicture || "./avatar.png" || "");
+  const [firstName, setFirstName] = useState(authUser?.firstName || "");
+  const [lastName, setLastName] = useState(authUser?.lastName || "");
+  const [email, setEmail] = useState(authUser?.email || "");
+  const [birthDate, setBirthDate] = useState<Date | null>(
+    authUser?.birthDate || null
+  );
   const [isBirthDateValid, setIsBirthDateValid] = useState(false); // New state for validity
-  const [gender, setGender] = useState("");
-  const [sexualPreference, setSexualPreference] = useState("bisexual");
-  const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState<
-    { value: string; label: string }[]
-  >([]);
-  const [pictures, setPictures] = useState<string[]>([]);
+  const [gender, setGender] = useState(authUser?.gender || "");
+  const [sexualPreference, setSexualPreference] = useState(
+    authUser?.sexualPreferences || ""
+  );  
+  const [bio, setBio] = useState(authUser?.bio || "");
+  const [interests, setInterests] = useState<any>(authUser?.interests || []);
+
+  const [pictures, setPictures] = useState<string[]>(authUser?.pictures || []);
 
   const navigate = useNavigate();
 
-  const { authUser, checkAuth } = useAuthStore();
   const { loading, updateProfile } = useUserStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,8 +47,11 @@ function FillProfileForm() {
       return;
     }
     try {
-      console.log(location)
+      console.log(location);
       await updateProfile({
+        first_name: firstName,
+        last_name: lastName,
+        email,
         gender,
         sexual_preferences: sexualPreference,
         bio,
@@ -76,6 +88,18 @@ function FillProfileForm() {
             profilePicture={profilePicture}
             setProfilePicture={setProfilePicture}
           />
+          <FirstNameInput
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <LastNameInput
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+          <EmailInput
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <BirthDatePicker
             birthDate={birthDate}
             setBirthDate={setBirthDate}
@@ -100,4 +124,4 @@ function FillProfileForm() {
   );
 }
 
-export default FillProfileForm;
+export default EditProfileForm;

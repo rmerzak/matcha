@@ -70,14 +70,14 @@ const PicturesUpload: React.FC<PicturesUploadProps> = ({
       <p className="ml-2 text-sm text-gray-400">
         {pictures.length}/4 pictures uploaded.
       </p>
-      <div className="flex gap-2 flex-wrap pt-2 pl-2">
+      <div className="flex gap-2 flex-wrap mx-auto  pt-2 pl-2">
         {pictures.map((image, index) => (
-          <div key={index} className="relative">
+          <div key={index} className="relative ">
             <img
               src={image}
               alt={`Uploaded image ${index}`}
-              className="w-24 h-24 object-cover rounded-md"
-            />
+              className="w-40 h-full object-cover rounded-md"
+              />
             <button
               type="button"
               onClick={() => removePicture(index)}
