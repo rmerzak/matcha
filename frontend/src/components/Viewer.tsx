@@ -1,16 +1,21 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { axiosInstance } from "../lib/axios";
+import { useUserStore } from "../store/useUserStore";
 
 export default function Viewer({
-  firstName,
-  lastName,
+  id,
   username,
   profilePicture,
 }: {
-  firstName: string;
-  lastName: string;
+  id: string;
   username: string;
-  profilePicture: string
+  profilePicture: string;
 }) {
+  const { user, getUser } = useUserStore();
+  useEffect(() => {
+    getUser(id);
+  }, []);
   return (
     <div className="flex justify-between">
       <div className="flex items-center gap-2">
@@ -19,11 +24,13 @@ export default function Viewer({
           alt="profile picture"
           className="h-14 w-14 object-cover rounded-full "
         />
-        <div className="flex gap-1 font-semibold">
-          <span>
-            {firstName} {lastName}
-          </span>
-        </div>
+        {user && (
+          <div className="flex gap-1 font-semibold">
+            <span>
+              {user.first_name} {user.last_name}
+            </span>
+          </div>
+        )}
       </div>
       <Link
         to={`/users/${username}`}

@@ -4,9 +4,12 @@ import toast from "react-hot-toast";
 import useAuthStore from "./useAuthStore";
 
 type UserStoreType = {
+  user: any;
   loading: boolean;
   updateProfile: (data: DataType) => Promise<void>;
   updateLocation: (location: Location) => Promise<void>;
+  getUser: (id: string) => Promise<void>;
+
 };
 
 type DataType = {
@@ -32,7 +35,23 @@ type Location = {
 };
 
 export const useUserStore = create<UserStoreType>((set) => ({
+  user: null,
   loading: false,
+
+  getUser: async (id: string) => {
+    const token = localStorage.getItem("jwt");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const res = await axiosInstance.get(`/users/id/${id}`, config);
+      set({user: res.data.data})
+    } catch (error: any) {
+      console.log("Something went wrong");
+    } 
+  },
 
   updateProfile: async (data: DataType) => {
     const { checkAuth } = useAuthStore.getState();

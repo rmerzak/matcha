@@ -1,13 +1,14 @@
 import { Heart, Users } from "lucide-react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAnalyticsStore } from "../store/useAnalyticsStore";
 
-export default function Analytics({
-  numberOfProfileViews,
-  numberOfLikes,
-}: {
-  numberOfProfileViews: number;
-  numberOfLikes: number;
-}) {
+export default function Analytics() {
+  const {profileViews, getProfileViews} = useAnalyticsStore();
+
+  useEffect(()=> {
+    getProfileViews();
+  }, [])
   return (
     <div className="border px-2 py-3 space-y-1">
       <h2 className="font-bold text-lg">Analytics</h2>
@@ -16,7 +17,7 @@ export default function Analytics({
           <div className="flex text-base space-x-1 items-center ">
             <Users size={18} />{" "}
             <span className="font-semibold hover:text-purple-700  hover:underline">
-              {numberOfProfileViews} profile views
+              {profileViews.length} profile views
             </span>
           </div>
           <p className="text-xs">Discover who's viewed your profile</p>
@@ -25,7 +26,7 @@ export default function Analytics({
           <div className="flex  text-base space-x-1 items-center">
             <Heart size={18} />{" "}
             <span className="font-semibold hover:text-purple-700 hover:underline">
-              {numberOfLikes} likes
+              8 likes
             </span>
           </div>
           <p className="text-xs">Discover who's liked your profile</p>
