@@ -10,12 +10,14 @@ type AuthUserType = {
   firstName: string;
   lastName: string;
   gender?: string | undefined;
-  sexualPreferences?: string | undefined;
+  sexualPref?: string | undefined;
   bio?: string | undefined;
   interests?: { value: string; label: string }[] | undefined | [];
   profilePicture?: string | undefined;
   pictures?: string[] | undefined;
   birthDate?: Date;
+  latitude?: string;
+  longitude?: string;
 };
 
 type SignUpDataType = {
@@ -177,7 +179,9 @@ const useAuthStore = create<AuthState>((set) => ({
         interests,
         profile_picture,
         pictures,
-        age
+        age,
+        latitude,
+        longitude,
       } = response.data;
       if (interests) {
         const labledInterests = interests.map((interest: string) => ({
@@ -191,12 +195,14 @@ const useAuthStore = create<AuthState>((set) => ({
             firstName: first_name,
             lastName: last_name,
             gender,
-            sexualPreferences: sexual_preferences,
+            sexualPref: sexual_preferences,
             bio,
             interests: labledInterests,
             profilePicture: profile_picture,
             pictures,
             birthDate: age,
+            latitude,
+            longitude,
           },
         });
       } else {
@@ -207,10 +213,12 @@ const useAuthStore = create<AuthState>((set) => ({
             firstName: first_name,
             lastName: last_name,
             gender,
-            sexualPreferences: sexual_preferences,
+            sexualPref: sexual_preferences,
             bio,
             pictures,
-            profilePicture: profile_picture
+            profilePicture: profile_picture,
+            latitude,
+            longitude,
           },
         });
       }

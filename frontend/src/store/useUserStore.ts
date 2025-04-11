@@ -20,6 +20,8 @@ type DataType = {
   profile_picture: string | ArrayBuffer | null | "";
   additional_pictures: string[];
   date_of_birth: Date;
+  latitude?: string;
+  longitude?: string;
 };
 
 type Location = {

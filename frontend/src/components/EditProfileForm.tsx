@@ -14,6 +14,7 @@ import UpdateLocation from "./UpdateLocation";
 import EmailInput from "./EmailInput";
 import FirstNameInput from "./FirstNameInput";
 import LastNameInput from "./LastNameInput";
+import EditLocationComponent from "./EditLocationComponent";
 
 function EditProfileForm() {
   const { authUser, checkAuth } = useAuthStore();
@@ -28,13 +29,12 @@ function EditProfileForm() {
   );
   const [isBirthDateValid, setIsBirthDateValid] = useState(false); // New state for validity
   const [gender, setGender] = useState(authUser?.gender || "");
-  const [sexualPreference, setSexualPreference] = useState(
-    authUser?.sexualPreferences || ""
-  );  
+  const [sexualPref, setSexualPref] = useState(authUser?.sexualPref || "");
   const [bio, setBio] = useState(authUser?.bio || "");
   const [interests, setInterests] = useState<any>(authUser?.interests || []);
-
   const [pictures, setPictures] = useState<string[]>(authUser?.pictures || []);
+  const [latitude, setLatitude] = useState<string>(authUser?.latitude || "");
+  const [longitude, setLongitude] = useState<string>(authUser?.longitude || "");
 
   const navigate = useNavigate();
 
@@ -46,14 +46,28 @@ function EditProfileForm() {
       alert("You must be at least 18 years old to submit this form.");
       return;
     }
+    const lat = parseFloat(latitude);
+    const lon = parseFloat(longitude);
+    if (
+      isNaN(lat) ||
+      isNaN(lon) ||
+      lat < -90 ||
+      lat > 90 ||
+      lon < -180 ||
+      lon > 180
+    ) {
+      alert(
+        "Invalid latitude or longitude values. Latitude: -90 to 90, Longitude: -180 to 180"
+      );
+      return;
+    }
     try {
-      console.log(location);
       await updateProfile({
         first_name: firstName,
         last_name: lastName,
         email,
         gender,
-        sexual_preferences: sexualPreference,
+        sexual_preferences: sexualPref,
         bio,
         interests: interests.map(
           (interest: { value: string; label: string }) => interest.value
@@ -61,9 +75,11 @@ function EditProfileForm() {
         profile_picture: profilePicture,
         additional_pictures: pictures,
         date_of_birth: birthDate,
+        latitude,
+        longitude,
       });
       checkAuth();
-      navigate("/", { replace: true });
+      navigate("/profile", { replace: true });
     } catch (error) {
       console.error("Submission failed:", error);
     }
@@ -105,10 +121,16 @@ function EditProfileForm() {
             setBirthDate={setBirthDate}
             onValidityChange={setIsBirthDateValid} // Pass callback to update validity
           />
+          <EditLocationComponent
+            latitude={latitude}
+            longitude={longitude}
+            setLatitude={setLatitude}
+            setLongitude={setLongitude}
+          />
           <GenderSelect gender={gender} setGender={setGender} />
           {/* <SexualPreferenceSelect
-            sexualPreference={sexualPreference}
-            setSexualPreference={setSexualPreference}
+            sexualPreference={sexualPref}
+            setSexualPreference={setSexualPref}
           /> */}
           <BioInput bio={bio} setBio={setBio} />
           <InterestsSelect
