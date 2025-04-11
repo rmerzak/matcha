@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { useAnalyticsStore } from "../store/useAnalyticsStore";
 
 export default function Analytics() {
-  const {profileViews, getProfileViews} = useAnalyticsStore();
+  const {profileViews, getProfileViews, likes, getLikes} = useAnalyticsStore();
 
   useEffect(()=> {
     getProfileViews();
+    getLikes();
   }, [])
   return (
     <div className="border px-2 py-3 space-y-1">
@@ -26,7 +27,7 @@ export default function Analytics() {
           <div className="flex  text-base space-x-1 items-center">
             <Heart size={18} />{" "}
             <span className="font-semibold hover:text-purple-700 hover:underline">
-              8 likes
+              {likes.length} likes
             </span>
           </div>
           <p className="text-xs">Discover who's liked your profile</p>

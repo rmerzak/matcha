@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { axiosInstance } from "../lib/axios";
 import { useUserStore } from "../store/useUserStore";
 
 export default function Viewer({

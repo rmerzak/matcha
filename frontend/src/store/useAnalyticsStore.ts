@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import toast from "react-hot-toast";
-import useAuthStore from "./useAuthStore";
 
 type AnalyticsStoreType = {
   profileViews: [];
   likes: [];
   getProfileViews: () => Promise<void>;
+  getLikes: () => Promise<void>;
+
 };
 
 export const useAnalyticsStore = create<AnalyticsStoreType>((set) => ({
@@ -22,14 +22,26 @@ export const useAnalyticsStore = create<AnalyticsStoreType>((set) => ({
           Authorization: `Bearer ${token}`,
         },
       };
-      // send a get request to endpoint
       const res = await axiosInstance.get("/views/get-my-views", config);
       set({profileViews: res.data.data.result})
-      // set({ matches: [{ _id: "1", name: "Jane Doe", image: undefined }] });
     } catch (error) {
-      // set({ matches: [] });
-      // toast.error("Something went wrong");
-    } finally {
+      console.log(error)
+    }
+  },
+  getLikes: async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) return;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const res = await axiosInstance.get("/likes/received", config);
+      set({likes: res.data.data.users})
+      console.log(res.data.data.users)
+    } catch (error) {
+      console.log(error)
     }
   },
 }));
