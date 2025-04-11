@@ -5,10 +5,13 @@ from .core.config import settings
 from .core.setup import create_application
 from app.core.container import Container
 from .websocket.router import websocket_router
+from .websocket.socketio import sio
 app = create_application(router=router, settings=settings)
-app.include_router(websocket_router)
-# origins = ["*"] 
-origins = ["http://localhost:3000"] 
+
+# app.include_router(websocket_router)
+origins = ["*"] 
+# origins = ["http://localhost:3000"] 
+# socket_app = socketio.ASGIApp(sio, app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,15 +20,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-container = Container()
+container = Container(sio=sio)
 
 
 @app.on_event("startup")
 async def startup():
     await container.db().connect()
-    container.wire(modules=["app.api.v1.authentication", "app.api.v1.users"])
+    container.wire(modules=["app.api.v1.authentication", "app.api.v1.users", "app.websocket.socketio", "app.api.v1.likes", "app.api.v1.blocks"])
 
 @app.on_event("shutdown")
 async def shutdown():
     await container.db().disconnect()
     container.unwire()
+# app.mount("/ws", socket_app)

@@ -15,7 +15,7 @@ function LoginForm({}: Props) {
       onSubmit={async (e) => {
         e.preventDefault();
         await signIn({ username, password });
-		checkAuth();
+        checkAuth();
       }}
     >
       <div>

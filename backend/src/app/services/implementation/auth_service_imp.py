@@ -36,18 +36,16 @@ class AuthServiceImp(BaseService, IAuthService):
 
             if not await verify_password(user.password, existing_user["password"]):
                 raise HTTPException( status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
-            
             access_token = await createAccessToken(
-                {"sub": existing_user['email'], "utility": "ACCESS_TOKEN"}, 
-                "ACCESS_TOKEN", 
+                {"sub": existing_user['email'], "utility": "ACCESS_TOKEN"},
+                "ACCESS_TOKEN",
                 timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
             )
 
             refresh_token = await createAccessToken(
-                {"sub": existing_user['email'], "utility": "REFRESH_TOKEN"}, 
+                {"sub": existing_user['email'], "utility": "REFRESH_TOKEN"},
                 "REFRESH_TOKEN"
             )
-            
             max_age = settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
             response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="Lax", max_age=max_age)
 
@@ -80,7 +78,6 @@ class AuthServiceImp(BaseService, IAuthService):
             template = template_env.get_template(verify_template)
             verification_link = f"{front_url_prefix}/verifyEmail?token={verification_token}"
             body = template.render(username=user_internal.username, email=user_internal.email, verification_link=verification_link)
-        
             await send_email(email=user_internal.email, body=body, subject="Email Verification")
 
             return success_response({"message": "User created successfully", "result": created_user_dict}, status_code=status.HTTP_201_CREATED)
@@ -126,13 +123,10 @@ class AuthServiceImp(BaseService, IAuthService):
 
             if user["is_verified"]:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already verified")
-            
             await self.user_repository.update_user_verification(email)
 
             access_token = await createAccessToken({"sub": user['email'], "utility": "ACCESS_TOKEN"}, "ACCESS_TOKEN", timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
-            
             refresh_token = await createAccessToken({"sub": user['email'], "utility": "REFRESH_TOKEN"}, "REFRESH_TOKEN")
-            
             max_age = settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
             response.set_cookie( key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="Lax", max_age=max_age)
 
@@ -150,11 +144,10 @@ class AuthServiceImp(BaseService, IAuthService):
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User with this email not found")
 
             reset_token = await createAccessToken(
-                {"sub": user['email'], "utility": "PASSWORD_RESET"}, 
-                "ACCESS_TOKEN", 
+                {"sub": user['email'], "utility": "PASSWORD_RESET"},
+                "ACCESS_TOKEN",
                 timedelta(minutes=settings.PASSWORD_RESET_TOKEN_EXPIRE_MINUTES)
             )
-            
             template = template_env.get_template(settings.EMAIL_TEMPLATES["reset_password"])
             reset_link = f"{front_url_prefix}/resetPassword?token={reset_token}"
             body = template.render(
@@ -201,19 +194,15 @@ class AuthServiceImp(BaseService, IAuthService):
         try:
             token_dict = token.dict()
             payload = await verify_token(token_dict["token"])
-        
             if not payload:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
-            
             if payload["utility"] != token_dict["utility"]:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token utility")
-        
             result = TokenVerifyResponse(
                 is_valid=True,
                 expires_at=payload.get("exp"),
                 user_email=payload.get("sub")
             )
-        
             return success_response(
                 data={
                     "message": "Token verified successfully",
@@ -229,22 +218,18 @@ class AuthServiceImp(BaseService, IAuthService):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to verify token"
             )
-    
     async def get_me(self, token: str):
         try:
             payload = await verify_token(token)
             print(payload)
             if not payload:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
-            
             email = payload["sub"]
             user = await self.user_repository.get_user_by_email(email)
             if not user:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
             user_dict = dict(user)
             return user_dict
-
-            
             # return success_response({"message": "User retrieved successfully", "result": user_dict}, status_code=status.HTTP_200_OK)
 
         except HTTPException as he:
@@ -259,7 +244,6 @@ class AuthServiceImp(BaseService, IAuthService):
             payload = await verify_token(token)
             if not payload:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
-            
             email = payload["sub"]
             user = await self.user_repository.get_user_by_email(email)
             if not user:

@@ -11,6 +11,8 @@ from .config import (
 )
 from app.core.logger import logging
 from psycopg2 import sql
+import socketio
+from ..websocket.socketio import sio
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +32,13 @@ def create_application(
     **kwargs: Any,
 ) -> FastAPI:
     application = FastAPI(**kwargs)
+    socket_app = socketio.ASGIApp(sio)
+
 
     application.include_router(router)
+    application.mount("/", socket_app)
     application.add_event_handler("startup", set_threadpool_tokens)
-    
+
     if isinstance(settings, EnvironmentSettings):
         docs_router = APIRouter()
 
