@@ -7,12 +7,11 @@ import useAuthStore from "../../store/useAuthStore";
 import { users } from "../../users";
 
 const ProfileViewsPage = () => {
-    const {profileViews, getProfileViews} = useAnalyticsStore();
-  
-    useEffect(()=> {
-      getProfileViews();
-    }, [])
+  const { profileViews, getProfileViews } = useAnalyticsStore();
 
+  useEffect(() => {
+    getProfileViews();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

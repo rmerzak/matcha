@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
@@ -9,18 +9,57 @@ import Filters from "../components/Filters";
 import SideFilters from "../components/SideFilters";
 
 function HomePage() {
-  const { getUserProfiles, userProfiles, isLoadingUserProfiles } =
-  useMatchStore();
+  const {
+    getUserProfiles,
+    userProfiles,
+    isLoadingUserProfiles,
+    currentPage,
+    hasMore,
+  } = useMatchStore();
+
+  const observerTarget = useRef(null);
+  const loadingRef = useRef(false);
   
- 
+  const stableGetUserProfiles = useCallback(() => {
+    getUserProfiles(1);
+  }, [getUserProfiles]); // Only recreate if getUserProfiles changes
+  
   useEffect(() => {
-    // getUserProfiles();
-  }, [getUserProfiles]);
+    stableGetUserProfiles();
+    return () => {
+      if (observerTarget.current) {
+        const observer = new IntersectionObserver(() => {}, {});
+        observer.disconnect();
+      }
+    };
+  }, [stableGetUserProfiles]);
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: "-0px",
+      threshold: 0.1, 
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore && !isLoadingUserProfiles && !loadingRef.current) {
+        loadingRef.current = true;
+        getUserProfiles(currentPage + 1).finally(() => {
+          loadingRef.current = false;
+        });
+      }
+    }, options);
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasMore, isLoadingUserProfiles, currentPage, getUserProfiles]);
 
   return (
     <div
-      className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100  to-blue-100
-    overflow-hidden"
+      className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100 to-blue-100 overflow-hidden"
     >
       <Sidebar />
       <div className="flex flex-grow flex-col overflow-hidden">
@@ -30,17 +69,22 @@ function HomePage() {
           <div className="flex">
             <SideFilters />
             <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
-              {users.length > 0 && !isLoadingUserProfiles && (
+              {userProfiles.length > 0 && !isLoadingUserProfiles && (
                 <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
-                  {users.slice(0, 19).map((user, index) => (
-                    <Suggestion user={user} key={index} />
+                  {userProfiles.map((user: any, index) => (
+                    <Suggestion user={user} key={user.id || index} />
                   ))}
+                  {hasMore && (
+                    <div ref={observerTarget} className="text-center py-4">
+                      {isLoadingUserProfiles ? "Loading more..." : ""}
+                    </div>
+                  )}
                 </div>
               )}
-              {users.length === 0 && !isLoadingUserProfiles && (
+              {userProfiles.length === 0 && !isLoadingUserProfiles && (
                 <NoMoreProfiles />
               )}
-              {isLoadingUserProfiles && <LoadingUI />}
+              {isLoadingUserProfiles && !hasMore && <LoadingUI />}
             </main>
           </div>
         </div>

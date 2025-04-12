@@ -1,6 +1,16 @@
 import { Link } from "react-router-dom";
-import { User } from "../users";
 import { MapPin, Star } from "lucide-react";
+
+export type User = {
+  first_name: string;
+  last_name: string;
+  username: string;
+  profile_picture: string;
+  location: string;
+  interests: string[];
+  gender: string;
+  bio: string;
+};
 
 interface Props {
   user: User;
@@ -13,14 +23,14 @@ const Suggestion = ({ user }: Props) => {
   lg:w-full lg:flex lg:flex-row lg:space-x-4 grid"
     >
       <img
-        src={user.profilePicture}
+        src={user.profile_picture}
         // className="h-44 w-full object-contain rounded-lg "
         className="h-44 w-44 object-cover rounded-lg "
         alt=""
       />
       <div className="flex flex-col justify-between">
         <span className="text-xl font-bold mb-1">
-          {user.firstName} {user.lastName}
+          {user.first_name} {user.last_name}
         </span>
         <div className="flex flex-col text-gray-700 text-sm">
           <div className="flex space-x-1 items-center">

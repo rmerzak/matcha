@@ -128,10 +128,10 @@ function EditProfileForm() {
             setLongitude={setLongitude}
           />
           <GenderSelect gender={gender} setGender={setGender} />
-          {/* <SexualPreferenceSelect
+          <SexualPreferenceSelect
             sexualPreference={sexualPref}
             setSexualPreference={setSexualPref}
-          /> */}
+          />
           <BioInput bio={bio} setBio={setBio} />
           <InterestsSelect
             interests={interests}
