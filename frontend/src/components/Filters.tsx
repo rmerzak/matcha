@@ -1,8 +1,5 @@
-import { ChevronDown, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
-import SortBy from "./SortBy";
-import AgeRangeSlider from "./AgeRangeSlider";
-import CommonTags from "./CommonTags";
 import Dropdown from "./Dropdown";
 import { Link } from "react-router-dom";
 import FilterButton from "./FilterButton"; // Already imported
@@ -30,7 +27,7 @@ function Filters() {
   };
 
   const handleFrRangeChange = (value: any) => {
-    setFrRangeValues(value); // Corrected to update frRangeValues
+    setFrRangeValues(value); 
   };
 
   return (
@@ -54,7 +51,7 @@ function Filters() {
         frRangeValues={frRangeValues}
         handleAgeRangeChange={handleAgeRangeChange}
         handleFrRangeChange={handleFrRangeChange}
-      /> {/* Use the new component */}
+      />
       <FilterButton onClick={toggleFilters} isOpen={isOpen} />
       <Dropdown />
     </div>

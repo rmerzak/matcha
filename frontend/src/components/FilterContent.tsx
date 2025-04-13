@@ -1,0 +1,67 @@
+import { useState } from "react";
+import SortBy from "./SortBy";
+import AgeRangeSlider from "./AgeRangeSlider";
+import CommonTags from "./CommonTags";
+import { useMatchStore } from "../store/useMatchStore";
+
+interface FilterContentProps {
+    filter: string;
+    ageRangeValues: { min: number; max: number };
+    frRangeValues: { min: number; max: number };
+    handleAgeRangeChange: (value: any) => void;
+    handleFrRangeChange: (value: any) => void;
+    onSortChange?: (selected: string | null) => void; // New optional prop
+  }
+
+const FilterContent: React.FC<FilterContentProps> = ({
+  filter,
+  ageRangeValues,
+  frRangeValues,
+  handleAgeRangeChange,
+  handleFrRangeChange,
+}) => {
+  const {setSortBy} = useMatchStore()
+  const [selectedSort, setSelectedSort] = useState<string | null>(null);
+
+  // Handler to update the selected sort option
+  const handleSortChange = (newSelection: string | null) => {
+    setSelectedSort(newSelection);
+    setSortBy(newSelection)
+  };
+
+  return (
+    <div className="overflow-y-auto pt-3 w-full mb-0">
+      <div className="mb-0">
+        <div className="mx-3">
+          <div className="overflow-auto">
+            <div className="mb-2">
+              {filter === "Age" && (
+                <AgeRangeSlider
+                  min={18}
+                  max={80}
+                  onChange={handleAgeRangeChange}
+                />
+              )}
+              {filter === "Fame rating" && (
+                <AgeRangeSlider
+                  min={4}
+                  max={10}
+                  onChange={handleFrRangeChange}
+                />
+              )}
+              {filter === "Common tags" && <CommonTags />}
+              {filter === "Sort by" && (
+                <SortBy
+                  selectedSort={selectedSort} // Pass current selection
+                  onSortChange={handleSortChange} // Pass callback to update selection
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FilterContent;
