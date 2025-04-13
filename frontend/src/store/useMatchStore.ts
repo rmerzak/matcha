@@ -79,7 +79,7 @@ export const useMatchStore = create<MatchStoreType>((set) => ({
       const newProfiles = res.data.data.profiles || [];
 
       const hasMore = newProfiles.length === 0 ? false : newProfiles.length >= config.params.limit;
-      console.log(res.data.data)
+      // console.log(res.data.data)
       // Update state with new profiles and pagination info
       set((state) => ({
         userProfiles: page === 1 ? newProfiles : [...state.userProfiles, ...newProfiles],
