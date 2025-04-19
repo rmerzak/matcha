@@ -30,8 +30,9 @@ function HomePage() {
       }
     };
   }, [getUserProfiles]);
-
+  
   useEffect(() => {
+    console.log(userProfiles)
     const options = {
       root: null,
       rootMargin: "-0px",

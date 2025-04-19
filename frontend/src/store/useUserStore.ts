@@ -9,6 +9,7 @@ type UserStoreType = {
   updateProfile: (data: DataType) => Promise<void>;
   updateLocation: (location: Location) => Promise<void>;
   getUser: (id: string) => Promise<void>;
+  getUserByUsername: (username: string) => Promise<void>;
 
 };
 
@@ -49,7 +50,23 @@ export const useUserStore = create<UserStoreType>((set) => ({
       const res = await axiosInstance.get(`/users/id/${id}`, config);
       set({user: res.data.data})
     } catch (error: any) {
-      console.log("Something went wrong");
+      console.log(error.response, "Something went wrong");
+    } 
+  },
+
+  getUserByUsername: async (username: string) => {
+    const token = localStorage.getItem("jwt");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const res = await axiosInstance.get(`/users/${username}`, config);
+      console.log(res.data.data.users[0])
+      set({user: res.data.data.users[0]})
+    } catch (error: any) {
+      console.log(error.response, "Something went wrong");
     } 
   },
 

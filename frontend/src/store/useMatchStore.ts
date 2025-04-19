@@ -144,7 +144,6 @@ export const useMatchStore = create<MatchStoreType>((set, get) => ({
       const res = await axiosInstance.get("/users/browse", config);
 
       const newProfiles = res.data.data.profiles || [];
-      console.log(newProfiles)
 
       const hasMore =
         newProfiles.length === 0

@@ -185,7 +185,6 @@ const useAuthStore = create<AuthState>((set) => ({
         longitude,
         date_of_birth
       } = response.data;
-      console.log(response.data)
       if (interests) {
         const labledInterests = interests.map((interest: string) => ({
           value: interest,
@@ -203,9 +202,9 @@ const useAuthStore = create<AuthState>((set) => ({
             interests: labledInterests,
             profilePicture: profile_picture,
             pictures,
-            birthDate: age,
             latitude,
             longitude,
+            birthDate: new Date(date_of_birth)
           },
         });
       } else {
@@ -222,6 +221,7 @@ const useAuthStore = create<AuthState>((set) => ({
             profilePicture: profile_picture,
             latitude,
             longitude,
+            birthDate: new Date(date_of_birth)
           },
         });
       }
