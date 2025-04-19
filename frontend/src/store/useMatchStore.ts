@@ -2,6 +2,8 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import { userProfile } from "./userProfiles";
 import { axiosInstance } from "../lib/axios";
+import { useUserStore } from "./useUserStore";
+import useAuthStore from "./useAuthStore";
 
 type User = {
   id: string;
@@ -23,6 +25,7 @@ type User = {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
+  common_tag_count: number;
 };
 
 type MatchStoreType = {
@@ -65,13 +68,49 @@ export const useMatchStore = create<MatchStoreType>((set, get) => ({
   },
 
   filterUserProfiles: () => {
+    const { authUser } = useAuthStore.getState();
     if (get().sortBy) {
+      console.log(get().sortBy)
+      console.log("before", get().userProfiles);
       if (get().sortBy === "Age: Low to High") {
-        set({userProfiles: sortByAgeLowToHigh(get().userProfiles)})
+        set({ userProfiles: sortByAgeLowToHigh(get().userProfiles) });
       }
       if (get().sortBy === "Age: High to Low") {
-        set({userProfiles: sortByAgeHighToLow(get().userProfiles)})
+        set({ userProfiles: sortByAgeHighToLow(get().userProfiles) });
       }
+      if (get().sortBy === "Location") {
+        const targetLatitude = authUser?.latitude as unknown as number;
+        const targetLongitude = authUser?.longitude as unknown as number;
+        set({
+          userProfiles: sortByDistance(
+            get().userProfiles,
+            targetLatitude,
+            targetLongitude
+          ),
+        });
+      }
+      if (get().sortBy === "Fame rating: Low to High") {
+        set({
+          userProfiles: get().userProfiles.sort(
+            (a, b) => Number(a.fame_rating) - Number(b.fame_rating)
+          ),
+        });
+      }
+      if (get().sortBy === "Fame rating: High to Low") {
+        set({
+          userProfiles: get().userProfiles.sort(
+            (a, b) => Number(b.fame_rating) - Number(a.fame_rating)
+          ),
+        });
+      }
+      if (get().sortBy === "Common tags") {
+        set({
+          userProfiles: get().userProfiles.sort(
+            (a, b) => Number(b.common_tag_count) - Number(a.common_tag_count)
+          ),
+        });
+      }
+      console.log("after", get().userProfiles);
     }
   },
 
@@ -105,12 +144,12 @@ export const useMatchStore = create<MatchStoreType>((set, get) => ({
       const res = await axiosInstance.get("/users/browse", config);
 
       const newProfiles = res.data.data.profiles || [];
+      console.log(newProfiles)
 
       const hasMore =
         newProfiles.length === 0
           ? false
           : newProfiles.length >= config.params.limit;
-      // console.log(res.data.data)
       // Update state with new profiles and pagination info
       set((state) => ({
         userProfiles:
@@ -128,3 +167,58 @@ export const useMatchStore = create<MatchStoreType>((set, get) => ({
     }
   },
 }));
+
+function sortByDistance(
+  users: User[],
+  targetLat: number,
+  targetLng: number
+): User[] {
+  // Convert target coordinates to radians
+  const targetLatRad = toRadians(targetLat);
+  const targetLngRad = toRadians(targetLng);
+
+  // Sort users by distance from target coordinates
+  return users.sort((a: any, b: any) => {
+    const lat1 = toRadians(Number(a.latitude)); // Convert string to number and then to radians
+    const lng1 = toRadians(Number(a.longitude));
+    const lat2 = toRadians(Number(b.latitude));
+    const lng2 = toRadians(Number(b.longitude));
+
+    // Haversine formula
+    const dLat = lat2 - lat1;
+    const dLng = lng2 - lng1;
+
+    const aValue =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(aValue), Math.sqrt(1 - aValue));
+    const radius = 6371; // Earth's radius in kilometers
+
+    const distanceA = radius * c; // Distance to user a
+    const distanceB = radius * c; // Distance to user b (recalculate for each)
+
+    // Recalculate for b to ensure correct comparison
+    const bLatRad = toRadians(Number(b.latitude));
+    const bLngRad = toRadians(Number(b.longitude));
+    const bDLat = bLatRad - targetLatRad;
+    const bDLng = bLngRad - targetLngRad;
+
+    const bAValue =
+      Math.sin(bDLat / 2) * Math.sin(bDLat / 2) +
+      Math.cos(targetLatRad) *
+        Math.cos(bLatRad) *
+        Math.sin(bDLng / 2) *
+        Math.sin(bDLng / 2);
+
+    const bC = 2 * Math.atan2(Math.sqrt(bAValue), Math.sqrt(1 - bAValue));
+    const distanceBFinal = radius * bC;
+
+    return distanceA - distanceBFinal; // Sort ascending (closest to farthest)
+  });
+}
+
+// Helper function to convert degrees to radians
+function toRadians(degrees: number): number {
+  return degrees * (Math.PI / 180);
+}

@@ -20,19 +20,16 @@ function HomePage() {
   const observerTarget = useRef(null);
   const loadingRef = useRef(false);
   
-  const stableGetUserProfiles = useCallback(() => {
-    getUserProfiles(1);
-  }, [getUserProfiles]); // Only recreate if getUserProfiles changes
   
   useEffect(() => {
-    stableGetUserProfiles();
+    getUserProfiles();
     return () => {
       if (observerTarget.current) {
         const observer = new IntersectionObserver(() => {}, {});
         observer.disconnect();
       }
     };
-  }, [stableGetUserProfiles]);
+  }, [getUserProfiles]);
 
   useEffect(() => {
     const options = {

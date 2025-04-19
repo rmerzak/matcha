@@ -69,6 +69,7 @@ const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ loading: true });
       const res = await axiosInstance.post("/auth/login", data);
+      console.log(res)
       const jwt = res.data.data.result.access_token;
       localStorage.setItem("jwt", jwt);
     } catch (error: any) {
@@ -182,6 +183,7 @@ const useAuthStore = create<AuthState>((set) => ({
         age,
         latitude,
         longitude,
+        date_of_birth
       } = response.data;
       if (interests) {
         const labledInterests = interests.map((interest: string) => ({

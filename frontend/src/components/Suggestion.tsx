@@ -10,6 +10,7 @@ export type User = {
   interests: string[];
   gender: string;
   bio: string;
+  fame_rating: number;
 };
 
 interface Props {
@@ -37,7 +38,7 @@ const Suggestion = ({ user }: Props) => {
             <MapPin className="size-4" /> <span>{user.location}</span>
           </div>
           <div className="flex space-x-1 ">
-            <Star className="size-4" /> <span>Fame rating: {6.6}</span>
+            <Star className="size-4" /> <span>Fame rating: {user.fame_rating}</span>
           </div>
         </div>
         <div className="mt-2 flex flex-wrap gap-1">

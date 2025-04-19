@@ -94,6 +94,7 @@ function EditProfileForm() {
     { value: "books", label: "#books" },
     { value: "music", label: "#music" },
   ];
+  console.log(birthDate)
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
@@ -116,11 +117,11 @@ function EditProfileForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <BirthDatePicker
+          {/* <BirthDatePicker
             birthDate={birthDate}
             setBirthDate={setBirthDate}
             onValidityChange={setIsBirthDateValid} // Pass callback to update validity
-          />
+          /> */}
           <EditLocationComponent
             latitude={latitude}
             longitude={longitude}
