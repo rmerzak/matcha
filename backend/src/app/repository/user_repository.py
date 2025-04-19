@@ -18,7 +18,7 @@ class UserRepository(BaseRepository):
             query = """
                 SELECT id, username, first_name, last_name, email, gender, 
                     sexual_preferences, interests, pictures, profile_picture, fame_rating, 
-                    location, latitude, longitude, address, age, bio, is_verified
+                    location, latitude, longitude, address, age, bio, is_verified, date_of_birth
                 FROM users 
                 WHERE email = :email
             """
@@ -31,7 +31,7 @@ class UserRepository(BaseRepository):
             query = """
                 SELECT id, username, first_name, last_name, email, gender, 
                     sexual_preferences, interests, pictures, profile_picture, fame_rating, 
-                    location, latitude, address, age, bio
+                    location, latitude, address, age, bio, date_of_birth
                 FROM users 
                 WHERE id = :user_id
             """
@@ -54,7 +54,7 @@ class UserRepository(BaseRepository):
             query = """
                 INSERT INTO users (username, email, password, first_name, last_name) 
                 VALUES (:username, :email, :password, :first_name, :last_name) 
-                RETURNING username, email, first_name, last_name;
+                RETURNING username, email, first_name, last_name, date_of_birth;
             """
             values = {
                 "username": user.username,
@@ -245,7 +245,7 @@ class UserRepository(BaseRepository):
             query = f"""
                 SELECT id, username, first_name, last_name, email, gender, 
                     sexual_preferences, interests, pictures, profile_picture, fame_rating, 
-                    location, latitude, address, age, bio
+                    location, latitude, address, age, bio, date_of_birth
                 FROM users 
                 WHERE {' AND '.join(conditions)}
                 {order_clause}
@@ -262,7 +262,7 @@ class UserRepository(BaseRepository):
             query = """
                 SELECT id, username, first_name, last_name, email, gender, 
                     sexual_preferences, interests, pictures, profile_picture, fame_rating, 
-                    location, latitude, address, age, bio
+                    location, latitude, address, age, bio, date_of_birth
                 FROM users 
                 WHERE username ILIKE :username_prefix
                 ORDER BY username ASC

@@ -22,7 +22,7 @@ type DataType = {
   bio: string;
   profile_picture: string | ArrayBuffer | null | "";
   additional_pictures: string[];
-  date_of_birth: Date;
+  date_of_birth: Date | string;
   latitude?: string;
   longitude?: string;
 };
@@ -63,6 +63,7 @@ export const useUserStore = create<UserStoreType>((set) => ({
     };
     try {
       set({ loading: true });
+      console.log("update profile", data)
       await axiosInstance.put("/users/update-profile", data, config);
       await checkAuth();
       toast.success("Profile updated successfully!");

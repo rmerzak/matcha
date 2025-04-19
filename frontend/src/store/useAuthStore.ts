@@ -185,6 +185,7 @@ const useAuthStore = create<AuthState>((set) => ({
         longitude,
         date_of_birth
       } = response.data;
+      console.log(response.data)
       if (interests) {
         const labledInterests = interests.map((interest: string) => ({
           value: interest,
