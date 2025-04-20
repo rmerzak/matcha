@@ -5,7 +5,7 @@ interface FilterFooterProps {
   }
 
 const FilterFooter: React.FC<FilterFooterProps> = ({ toggleFilters }) => {
-    const {filterUserProfiles} = useMatchStore();
+    const {filterUserProfiles, getUserProfiles} = useMatchStore();
 
     const showResults = () => {
         filterUserProfiles()
