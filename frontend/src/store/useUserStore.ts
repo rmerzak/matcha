@@ -63,7 +63,6 @@ export const useUserStore = create<UserStoreType>((set) => ({
     };
     try {
       const res = await axiosInstance.get(`/users/${username}`, config);
-      console.log(res.data.data.users[0])
       set({user: res.data.data.users[0]})
     } catch (error: any) {
       console.log(error.response, "Something went wrong");

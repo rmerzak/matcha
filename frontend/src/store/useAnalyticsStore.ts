@@ -39,7 +39,6 @@ export const useAnalyticsStore = create<AnalyticsStoreType>((set) => ({
       };
       const res = await axiosInstance.get("/likes/received", config);
       set({likes: res.data.data.users})
-      console.log(res.data.data.users)
     } catch (error) {
       console.log(error)
     }
