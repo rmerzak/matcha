@@ -49,7 +49,11 @@ async def get_like_status(
     service: ILikesService = Depends(Provide[Container.likes_service]),
 ):
     print(current_user["id"], other_user_id)
-    return await service.get_like_status(current_user["id"], other_user_id)
+    like_status = await service.get_like_status(current_user["id"], other_user_id)
+    return success_response(
+        message="Like status retrieved successfully",
+        data=like_status
+    )
 
 @router.get("/statistics")
 @inject

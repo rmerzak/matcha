@@ -41,8 +41,8 @@ async def login(
     service: IAuthService = Depends(Provide[Container.auth_service])
 ):
     try:
-        result = await service.login(user, response)
-        return result
+        print("login")
+        return await service.login(user, response)
     except HTTPException as he:
         raise he
     except Exception as e:
