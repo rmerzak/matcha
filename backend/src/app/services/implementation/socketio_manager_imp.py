@@ -12,6 +12,8 @@ import jwt
 from socketio import AsyncServer
 from app.schemas.users import User
 from app.repository.blocks_repository import BlocksRepository
+from uuid import UUID
+
 logger = logging.getLogger(__name__)
 
 
@@ -93,8 +95,9 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
             if not token:
                 logger.error(f"No token for SID: {sid}")
                 return None
-
+            logger.info(f"Token: {token}")
             user = await self.auth_service.get_me(token)
+            logger.info(f"Userxxxxx: {user}")
             if not user:
                 return None
 
@@ -108,6 +111,7 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
             return user_dict
 
         except Exception as e:
+            raise e
             logger.error(f"Authentication error: {str(e)}")
             return None
 
@@ -129,7 +133,7 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
         except Exception as e:
             logger.error(f"Disconnect error: {str(e)}")
 
-    async def send_event(self, event: str, data: Any, user_id: str) -> None:
+    async def send_event(self, event: str, data: Any, user_id: UUID) -> None:
         """Send event to client"""
         try:
             cleaned_user_id = str(user_id).replace('UUID(\'', '').replace('\')', '')

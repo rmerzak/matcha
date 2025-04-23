@@ -40,12 +40,12 @@ class MessageServiceImp(BaseService, IMessageService):
                     403
                 )
 
-            # Check if users are connected (mutual likes)
+            # Check if users are connected
             like_status = await self.likes_service.get_like_status(sender_id, receiver_id)
             if not like_status.get("data", {}).get("is_connected", False):
                 return error_response(
                     "Not connected", 
-                    "You can only message users you are connected with", 
+                    "You can only send messages to connected users", 
                     403
                 )
 
@@ -56,21 +56,6 @@ class MessageServiceImp(BaseService, IMessageService):
                 content=content
             )
 
-            # Send real-time notification via Socket.IO
-            await self.socketio_manager.send_to_user(
-                receiver_id, 
-                {
-                    "event": "new_message",
-                    "data": {
-                        "message_id": message["id"],
-                        "sender_id": sender_id,
-                        "sender_name": sender.get("username"),
-                        "content": content,
-                        "sent_at": message["sent_at"]
-                    }
-                }
-            )
-
             return success_response(
                 message="Message sent successfully",
                 data=message
@@ -78,6 +63,23 @@ class MessageServiceImp(BaseService, IMessageService):
 
         except Exception as e:
             return error_response("Internal server error", str(e), 500)
+
+    async def create_message(self, sender_id: str, receiver_id: str, content: str):
+        try:
+            sender = await self.user_service.get_user_by_id(sender_id)
+            receiver = await self.user_service.get_user_by_id(receiver_id)
+            
+            if not sender or not receiver:
+                return None
+            return await self.message_repository.create_message(
+                sender_id=sender_id,
+                receiver_id=receiver_id,
+                content=content
+            )
+        except Exception as e:
+            return None
+
+
 
     async def get_chat_history(self, user_id: str, other_user_id: str, page: int = 1, items_per_page: int = 50):
         try:

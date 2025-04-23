@@ -11,6 +11,8 @@ from app.schemas.token import TokenVerifyRequest, TokenVerifyResponse
 from app.core.security import generate_email_verification_token, send_email
 from app.services.auth_interface import IAuthService
 from fastapi import HTTPException
+from logging import getLogger
+logger = getLogger(__name__)
 front_url_prefix = settings.FRONT_URL
 template_env = settings.EMAIL_TEMPLATES_ENV
 verify_template = settings.EMAIL_TEMPLATES["verify_email"]
@@ -221,11 +223,12 @@ class AuthServiceImp(BaseService, IAuthService):
     async def get_me(self, token: str):
         try:
             payload = await verify_token(token)
-            print(payload)
+            logger.info(f"Payload: {payload}")
             if not payload:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
             email = payload["sub"]
             user = await self.user_repository.get_user_by_email(email)
+            logger.info(f"Useryyyyyyyy: {user}")
             if not user:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
             user_dict = dict(user)
