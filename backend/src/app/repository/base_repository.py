@@ -4,12 +4,8 @@ class BaseRepository:
         self.db = db
     async def fetch_all(self, query: str, values: dict = None):
         return await self.db.fetch_all(query=query, values=values)
-    @handle_database_errors()
     async def fetch_one(self, query: str, values: dict = None):
-        try:
-            return await self.db.fetch_one(query=query, values=values)
-        except Exception as e:
-            raise map_database_error(e)
+        return await self.db.fetch_one(query=query, values=values)
 
     async def execute(self, query: str, values: dict = None):
         return await self.db.execute(query=query, values=values)

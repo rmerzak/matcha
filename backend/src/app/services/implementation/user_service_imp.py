@@ -3,6 +3,7 @@ from app.services.base_service import BaseService
 from app.services.user_interface import IUserService
 from app.schemas.users import ProfileUpdate, UserSearchParams
 from fastapi import UploadFile, File
+from typing import Optional
 from typing import List
 from app.core.responce import error_response, success_response
 from app.services.cloudinary_service import CloudinaryService
@@ -20,7 +21,7 @@ class UserServiceImp(BaseService, IUserService):
     async def update_profile(self, 
         profile_data: ProfileUpdate, 
         email: str,
-        profile_picture: UploadFile = File(...), 
+        profile_picture: Optional[UploadFile] = None,
         additional_pictures: List[UploadFile] = File([]),
         ):
         try:
@@ -28,7 +29,10 @@ class UserServiceImp(BaseService, IUserService):
                 return error_response("Invalid data", "You can only upload 4 additional pictures", status_code=400)
             
             profile_picture_url = None
-            if profile_picture:
+            if profile_picture is None or (hasattr(profile_data, 'profile_picture') and 
+                                         profile_data.profile_picture == ""):
+                profile_picture_url = ""
+            elif profile_picture:
                 profile_picture_url = await self.cloudinary_service.upload_image(profile_picture)
             
             additional_pictures_urls = []
@@ -49,7 +53,6 @@ class UserServiceImp(BaseService, IUserService):
         
         except Exception as e:
             return error_response("An error occurred", str(e), status_code=500)
-    
     async def search_users(self, search_params: UserSearchParams):
         try:
             result = await self.user_repository.search_users(

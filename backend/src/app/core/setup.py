@@ -12,7 +12,7 @@ from .config import (
 from app.core.logger import logging
 from psycopg2 import sql
 import socketio
-from ..websocket.socketio import sio
+from app.socketio.socketio import sio
 
 logger = logging.getLogger(__name__)
 

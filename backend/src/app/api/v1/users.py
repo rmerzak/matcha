@@ -32,7 +32,7 @@ async def update_profile(
     current_user: User = Depends(get_current_user_info)
 ):
     try:
-
+        print("profile_data == ", profile_data)
         result = await service.update_profile(
             profile_data, 
             current_user['email'], 

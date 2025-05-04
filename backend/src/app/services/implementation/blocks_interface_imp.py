@@ -118,16 +118,22 @@ class BlocksServiceImp(BaseService, IBlocksService):
                 
                 user1_blocked_user2 = block1 is not None
                 user2_blocked_user1 = block2 is not None
-            
-            return success_response(
-                message="Block status retrieved successfully",
-                data={
+            return {
                     "me": user_id1,
                     "user_id": user_id2,
                     "is_blocked": is_blocked,
                     "i_blocked_user": user1_blocked_user2,
                     "user_blocked_me": user2_blocked_user1
                 }
-            )
+            # return success_response(
+            #     message="Block status retrieved successfully",
+            #     data={
+            #         "me": user_id1,
+            #         "user_id": user_id2,
+            #         "is_blocked": is_blocked,
+            #         "i_blocked_user": user1_blocked_user2,
+            #         "user_blocked_me": user2_blocked_user1
+            #     }
+            # )
         except Exception as e:
             return error_response("Internal server error", str(e), 500)

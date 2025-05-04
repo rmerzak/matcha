@@ -29,12 +29,12 @@ class LikesServiceImp(BaseService, ILikesService):
                 return error_response("Invalid operation", "Users cannot like themselves", status_code=400)
             
             # Check if liker has a profile picture
-            if not liker.get("profile_picture"):
-                return error_response(
-                    "Profile incomplete", 
-                    "You need to add a profile picture before liking other users", 
-                    status_code=400
-                )
+            # if not liker.get("profile_picture"):
+            #     return error_response(
+            #         "Profile incomplete", 
+            #         "You need to add a profile picture before liking other users", 
+            #         status_code=400
+            #     )
             
             # Add the like
             new_like = await self.likes_repository.add_like(user_id, liked_user_id)
@@ -165,18 +165,24 @@ class LikesServiceImp(BaseService, ILikesService):
             is_connected = False
             if mutual_like:
                 is_connected = await self.likes_repository.check_connection_status(user_id, other_user_id)
-                
-            return success_response(
-                data={
-                    "is_liked_by_other": liked_by_other,
-                    "i_liked_them": i_liked_them,
-                    "is_mutual": mutual_like,
-                    "is_connected": is_connected,
-                    "other_user_id": other_user_id
-                },
-                message="Like status retrieved successfully",
-                status_code=200
-            )
+            return {
+                "is_liked_by_other": liked_by_other,
+                "i_liked_them": i_liked_them,
+                "is_mutual": mutual_like,
+                "is_connected": is_connected,
+                "other_user_id": other_user_id
+            }
+            # return success_response(
+            #     data={
+            #         "is_liked_by_other": liked_by_other,
+            #         "i_liked_them": i_liked_them,
+            #         "is_mutual": mutual_like,
+            #         "is_connected": is_connected,
+            #         "other_user_id": other_user_id
+            #     },
+            #     message="Like status retrieved successfully",
+            #     status_code=200
+            # )
         except Exception as e:
             return error_response(
                 "Internal server error", 

@@ -64,7 +64,11 @@ async def check_block(
     service: IBlocksService = Depends(Provide[Container.blocks_service]),
 ):
     try:
-        return await service.check_block(current_user["id"], blocked_user_id)
+        block = await service.check_block(current_user["id"], blocked_user_id)
+        return success_response(
+            message="Block status retrieved successfully",
+            data=block
+        )
     except Exception as e:
         logger.error(f"Error checking block: {e}")
         return error_response("Internal server error", str(e), status_code=500)

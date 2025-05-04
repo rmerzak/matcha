@@ -2,6 +2,8 @@ from app.repository.base_repository import BaseRepository
 from app.schemas.users import UserCreateInternal, ProfileUpdate
 from typing import List
 from app.core.db.database import DatabaseError
+from typing import Optional
+from app.core.db.database import DatabaseError
 
 class UserRepository(BaseRepository):
     def __init__(self, db):
@@ -143,38 +145,41 @@ class UserRepository(BaseRepository):
     #         print(e)
     #         return {"error": f"An error occurred while updating profile: {str(e)}"}
     
-
     async def update_profile(
-        self, 
-        profile_data: ProfileUpdate, 
-        email: str,
-        profile_picture_url: str, 
-        additional_pictures_urls: List[str]
-    ):
+            self, 
+            profile_data: ProfileUpdate, 
+            email: str,
+            profile_picture_url: Optional[str] = None, 
+            additional_pictures_urls: List[str] = []
+        ):
         try:
             values = {"email": email}
-            
+                
             update_fields = []
-            
+                
             field_mapping = {
-                "gender": profile_data.gender,
-                "first_name": profile_data.first_name,
-                "last_name": profile_data.last_name,
-                "profile_picture": profile_picture_url,
-                "sexual_preferences": profile_data.sexual_preferences,
-                "bio": profile_data.bio,
-                "interests": profile_data.interests if profile_data.interests else None,
-                "pictures": additional_pictures_urls if additional_pictures_urls else None,
-                "email": profile_data.email,  # For the updated_email field
-                "date_of_birth": profile_data.date_of_birth,  # Add date_of_birth
-                "location": profile_data.location,  # Add location
-                "latitude": profile_data.latitude,  # Add latitude
-                "longitude": profile_data.longitude,  # Add longitude
-                "address": profile_data.address  # Add address
+                    "gender": profile_data.gender,
+                    "first_name": profile_data.first_name,
+                    "last_name": profile_data.last_name,
+                    "profile_picture": profile_picture_url,  # This can now be "" to delete
+                    "sexual_preferences": profile_data.sexual_preferences,
+                    "bio": profile_data.bio,
+                    "interests": profile_data.interests if profile_data.interests else None,
+                    "pictures": additional_pictures_urls if additional_pictures_urls else None,
+                    "email": profile_data.email,
+                    "date_of_birth": profile_data.date_of_birth,
+                    "location": profile_data.location,
+                    "latitude": profile_data.latitude,
+                    "longitude": profile_data.longitude,
+                    "address": profile_data.address
             }
-            
+                
             for field, value in field_mapping.items():
-                if value is not None:
+                # For profile_picture, treat empty string as explicit NULL in database
+                if field == "profile_picture" and value == "":
+                    values[field] = None
+                    update_fields.append(f"{field} = :{field}")
+                elif value is not None:
                     if field == "email":
                         values["updated_email"] = value
                         update_fields.append("email = :updated_email")
@@ -182,6 +187,7 @@ class UserRepository(BaseRepository):
                         values[field] = value
                         update_fields.append(f"{field} = :{field}")
             
+            # Rest of the code remains the same
             update_fields.append("updated_at = CURRENT_TIMESTAMP")
             
             if len(update_fields) <= 1:
@@ -195,7 +201,6 @@ class UserRepository(BaseRepository):
                         sexual_preferences, bio, interests, pictures, date_of_birth,
                         location, latitude, longitude, address;
             """
-            
             result = await self.execute(query=query, values=values)
             return result
             
