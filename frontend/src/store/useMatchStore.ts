@@ -120,10 +120,14 @@ export const useMatchStore = create<MatchStoreType>((set, get) => ({
       console.log("after", get().userProfiles);
     }
     console.log("before", get().userProfiles);
-    set({ userProfiles: get().userProfiles.filter((user) => {
-      const age = user.age as number
-      return !isNaN(age) && age >= get().ageRange.min && age <= get().ageRange.max;
-    }) });
+    set({
+      userProfiles: get().userProfiles.filter((user) => {
+        const age = user.age as number;
+        return (
+          !isNaN(age) && age >= get().ageRange.min && age <= get().ageRange.max
+        );
+      }),
+    });
   },
 
   getMyMatches: async () => {
@@ -148,7 +152,7 @@ export const useMatchStore = create<MatchStoreType>((set, get) => ({
       },
       params: {
         page,
-        limit: 10,
+        items_per_page: 900,
       },
     };
     try {
@@ -156,19 +160,12 @@ export const useMatchStore = create<MatchStoreType>((set, get) => ({
       const res = await axiosInstance.get("/users/browse", config);
 
       const newProfiles = res.data.data.profiles || [];
+      console.log(newProfiles)
 
-      const hasMore =
-        newProfiles.length === 0
-          ? false
-          : newProfiles.length >= config.params.limit;
-      // Update state with new profiles and pagination info
-      set((state) => ({
-        userProfiles:
-          page === 1 ? newProfiles : [...state.userProfiles, ...newProfiles],
-        currentPage: page,
-        hasMore: hasMore,
+      set({
+        userProfiles: newProfiles,
         isLoadingUserProfiles: false,
-      }));
+      });
     } catch (error) {
       set({ userProfiles: [] });
       console.log(error);
