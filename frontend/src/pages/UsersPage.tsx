@@ -9,6 +9,9 @@ import UserLocation from "../components/UserLocation";
 import FameRating from "../components/FameRating";
 import { useParams } from "react-router-dom";
 import { useUserStore } from "../store/useUserStore";
+import Age from "../components/Age";
+import Gender from "../components/Gender";
+import SexualPreference from "../components/SexualPreference";
 
 interface LabeledInterest {
   value: string;
@@ -18,11 +21,14 @@ interface LabeledInterest {
 export default function UsersPage() {
   const { username } = useParams();
   const { user, getUserByUsername } = useUserStore();
-  const [labeledInterests, setLabeledInterests] = useState<LabeledInterest[]>([]);
+  const [labeledInterests, setLabeledInterests] = useState<LabeledInterest[]>(
+    []
+  );
 
   useEffect(() => {
     if (username) {
       getUserByUsername(username);
+      console.log(user);
     }
   }, [username, getUserByUsername]);
 
@@ -59,12 +65,21 @@ export default function UsersPage() {
             <ProfilePicture profilePicture={user.profile_picture} />
             <div className="flex justify-between">
               <div className="flex flex-col">
-                <UserName firstName={user.first_name} lastName={user.last_name} />
+                <UserName
+                  firstName={user.first_name}
+                  lastName={user.last_name}
+                  username={user.username}
+                />
                 <UserLocation location={user.location} />
                 <FameRating fameRating={user.fame_rating} />
               </div>
               {/* <EditProfileButton /> */}
             </div>
+            <div className="flex gap-4">
+              <Age age={user.age} />
+              <Gender gender={user.gender} />
+            </div>
+            <SexualPreference sexualPreference={user.sexual_preferences} />
             <Bio bio={user.bio || ""} />
             <Interests interests={labeledInterests} />
             <ProfilePictures pictures={user.pictures || []} />
