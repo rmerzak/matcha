@@ -1,22 +1,22 @@
 import { useEffect } from "react";
 import { Sidebar } from "../components/Sidebar";
-import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
 import { Frown } from "lucide-react";
 import Suggestion from "../components/Suggestion";
 import Filters from "../components/Filters";
 import SideFilters from "../components/SideFilters";
+import { useBrowsingStore } from "../store/useBrowsingStore";
 
 function HomePage() {
   const {
-    getUserProfiles,
-    userProfiles,
-    isLoadingUserProfiles,
-  } = useMatchStore();
+    suggestions,
+    isLoadingSuggestions,
+    getSuggestions,
+  } = useBrowsingStore();
   
   useEffect(() => {
-    getUserProfiles();
-  }, [getUserProfiles]);
+    getSuggestions();
+  }, [getSuggestions]);
   
   return (
     <div
@@ -30,18 +30,18 @@ function HomePage() {
           <div className="flex">
             <SideFilters />
             <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
-              {userProfiles.length > 0 && !isLoadingUserProfiles && (
+              {suggestions.length > 0 && !isLoadingSuggestions && (
                 <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
-                  {userProfiles.map((user: any, index) => (
-                    <Suggestion user={user} key={user.id || index} />
+                  {suggestions.map((suggestion: any, index) => (
+                    <Suggestion user={suggestion} key={suggestion.id || index} />
                   ))}
 
                 </div>
               )}
-              {userProfiles.length === 0 && !isLoadingUserProfiles && (
+              {suggestions.length === 0 && !isLoadingSuggestions && (
                 <NoMoreProfiles />
               )}
-              {isLoadingUserProfiles && <LoadingUI />}
+              {isLoadingSuggestions && <LoadingUI />}
             </main>
           </div>
         </div>

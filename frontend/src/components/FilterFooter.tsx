@@ -1,15 +1,14 @@
-import { useMatchStore } from "../store/useMatchStore";
+import { useBrowsingStore } from "../store/useBrowsingStore";
 
 interface FilterFooterProps {
     toggleFilters: () => void;
   }
 
 const FilterFooter: React.FC<FilterFooterProps> = ({ toggleFilters }) => {
-    const {filterUserProfiles, getUserProfiles} = useMatchStore();
+    const {getSuggestions} = useBrowsingStore();
 
     const showResults = () => {
-        filterUserProfiles()
-        toggleFilters();
+        getSuggestions()
     }
     return (
       <div className="flex h-full items-end">
