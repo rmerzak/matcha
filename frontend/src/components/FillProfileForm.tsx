@@ -38,7 +38,6 @@ function FillProfileForm() {
       return;
     }
     try {
-      console.log(location)
       await updateProfile({
         gender,
         sexual_preferences: sexualPreference,

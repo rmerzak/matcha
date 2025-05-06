@@ -13,6 +13,10 @@ type BrowsingStoreType = {
   setSortBy: (element: "age" | null) => void;
   sortOrder: "asc" | "desc" | null;
   setSortOrder: (order: "asc" | "desc" | null) => void;
+  minAge: number | null;
+  maxAge: number | null;
+  setMinAge: (age: number | null) => void;
+  setMaxAge: (age: number | null) => void;
 
 };
 
@@ -44,6 +48,16 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
   isLoadingSuggestions: false,
   sortBy: null,
   sortOrder: null,
+  minAge: null,
+  maxAge: null,
+
+  setMinAge: (age: number | null) => {
+    set({minAge: age})
+  },
+
+  setMaxAge: (age: number | null) => {
+    set({maxAge: age})
+  },
 
   setSortBy: (element: "age" | null) => {
     set({ sortBy: element });
@@ -64,8 +78,11 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
         items_per_page: 900,
         sort_by: get().sortBy,
         sort_order: get().sortOrder,
+        min_age: get().minAge,
+        max_age: get().maxAge,
       },
     };
+    console.log(config.params)
     try {
       set({ isLoadingSuggestions: true });
       const res = await axiosInstance.get("/users/browse", config);
