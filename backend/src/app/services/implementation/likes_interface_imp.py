@@ -8,13 +8,12 @@ from app.repository.likes_repository import LikesRepository
 from app.services.user_views_interface import IUserViewsService
 from app.services.socketio_manager_interface import ISocketIOManager
 from app.services.likes_interface import ILikesService
-from app.repository.blocks_repository import BlocksRepository
+from app.services.notification_interface import INotificationService
 class LikesServiceImp(BaseService, ILikesService):
-    def __init__(self, user_repository: UserRepository, socketio_manager: ISocketIOManager, likes_repository: LikesRepository, blocks_repository: BlocksRepository):
+    def __init__(self, user_repository: UserRepository, likes_repository: LikesRepository, notification_service: INotificationService):
         self.user_repository = user_repository
-        self.socketio_manager = socketio_manager
         self.likes_repository = likes_repository
-        self.blocks_repository = blocks_repository
+        self.notification_service = notification_service
     async def add_like(self, user_id: str, liked_user_id: str):
         try:
             # Get both users
@@ -41,32 +40,17 @@ class LikesServiceImp(BaseService, ILikesService):
             if not new_like:
                 return success_response("Already liked", "You have already liked this user")
 
+            # Send like notification
+
             # Check for mutual like (match)
             mutual_like = await self.likes_repository.check_mutual_like(user_id, liked_user_id)
             if mutual_like:
                 # Update connection status for both users
                 await self.likes_repository.update_connection_status(user_id, liked_user_id)
                 
-                # Notify both users about the match via WebSocket if they're online
-                match_data = {
-                    "event": "new_match",
-                    "data": {
-                        "user_id": liked_user_id,
-                        "username": liked.get("username"),
-                        "profile_picture": liked.get("profile_picture")
-                    }
-                }
-                # await self.socketio_manager.send_to_user(liked_user_id, match_data)
-                
-                match_data_for_liker = {
-                    "event": "new_match",
-                    "data": {
-                        "user_id": user_id,
-                        "username": liker.get("username"),
-                        "profile_picture": liker.get("profile_picture")
-                    }
-                }
-                # await self.socketio_manager.send_to_user(user_id, match_data_for_liker)
+                # Send match notifications to both users
+                await self.notification_service.send_match_notification(liked_user_id, user_id)
+                await self.notification_service.send_match_notification(user_id, liked_user_id)
                 
                 return success_response(
                     data={"is_match": True, "liked_user_id": liked_user_id},
@@ -74,6 +58,7 @@ class LikesServiceImp(BaseService, ILikesService):
                     status_code=200
                 )
                 
+            await self.notification_service.send_like_notification(liked_user_id, user_id)
             return success_response(
                 data={"is_match": False, "liked_user_id": liked_user_id},
                 message="Like added",
@@ -105,23 +90,16 @@ class LikesServiceImp(BaseService, ILikesService):
             if not like_exists:
                 return error_response("Not found", "You haven't liked this user", status_code=404)
             
+            # Check if they were connected (matched) before removing the like
+            was_connected = await self.likes_repository.check_connection_status(user_id, unliked_user_id)
+            
             # Remove the like
             removed = await self.likes_repository.remove_like(user_id, unliked_user_id)
             
             if removed:
-                # Check if they were connected (matched)
-                was_connected = await self.likes_repository.check_connection_status(user_id, unliked_user_id)
-                
                 if was_connected:
-                    # Notify the other user that the connection was broken
-                    disconnect_data = {
-                        "event": "connection_broken",
-                        "data": {
-                            "user_id": user_id,
-                            "username": liker.get("username")
-                        }
-                    }
-                    await self.socketio_manager.send_to_user(unliked_user_id, disconnect_data)
+                    # Send notification about broken connection
+                    await self.notification_service.send_unlike_notification(unliked_user_id, user_id)
                     
                     return success_response(
                         data={"was_connected": True, "unliked_user_id": unliked_user_id},

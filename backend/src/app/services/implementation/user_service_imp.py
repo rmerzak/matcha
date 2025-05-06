@@ -115,6 +115,11 @@ class UserServiceImp(BaseService, IUserService):
         except Exception as e:
             return error_response("An error occurred", str(e), status_code=500)
     
+    async def get_user_by_id_data(self, user_id: str):
+        try:
+            return await self.user_repository.get_user_by_id(user_id)
+        except Exception as e:
+            return error_response("An error occurred", str(e), status_code=500)
     async def browse_profiles(
         self,
         user_id: str,
