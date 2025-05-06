@@ -11,6 +11,7 @@ export type User = {
   gender: string;
   bio: string;
   fame_rating: number;
+  age: number;
 };
 
 interface Props {
@@ -33,6 +34,7 @@ const Suggestion = ({ user }: Props) => {
         <span className="text-xl font-bold mb-1">
           {user.first_name} {user.last_name}
         </span>
+        <>age {user.age}</>
         <div className="flex flex-col text-gray-700 text-sm">
           <div className="flex space-x-1 items-center">
             <MapPin className="size-4" /> <span>{user.location}</span>

@@ -29,16 +29,20 @@ class UserServiceImp(BaseService, IUserService):
                 return error_response("Invalid data", "You can only upload 4 additional pictures", status_code=400)
             
             profile_picture_url = None
-            if profile_picture is None or (hasattr(profile_data, 'profile_picture') and 
+            print("profile_picture 0", (hasattr(profile_data, 'profile_picture') and 
+                                         profile_data.profile_picture == ""), profile_picture is None)
+            if (hasattr(profile_data, 'profile_picture') and 
                                          profile_data.profile_picture == ""):
+                print("profile_picture 2")
                 profile_picture_url = ""
             elif profile_picture:
+                print("profile_picture 1")
                 profile_picture_url = await self.cloudinary_service.upload_image(profile_picture)
             
             additional_pictures_urls = []
             for picture in additional_pictures:
                 additional_pictures_urls.append(await self.cloudinary_service.upload_image(picture))
-            
+            print("additional_pictures_urls" ,profile_picture_url)
             result = await self.user_repository.update_profile(
                 profile_data, 
                 email, 

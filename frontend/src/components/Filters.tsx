@@ -1,11 +1,13 @@
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
 import { Link } from "react-router-dom";
-import FilterButton from "./FilterButton"; // Already imported
-import FilterPanel from "./FilterPanel"; // Import the new component
+import FilterButton from "./FilterButton";
+import FilterPanel from "./FilterPanel";
+import { useBrowsingStore } from "../store/useBrowsingStore";
 
 function Filters() {
+  const {minAge, setMinAge, maxAge, setMaxAge} = useBrowsingStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleFilters = () => setIsOpen(!isOpen);
@@ -19,15 +21,17 @@ function Filters() {
     "Sort by",
   ];
 
-  const [ageRangeValues, setAgeRangeValues] = useState({ min: 18, max: 80 });
+  const [ageRangeValues, setAgeRangeValues] = useState({min: minAge || 18, max: maxAge || 80});
   const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
 
-  const handleAgeRangeChange = (value: any) => {
-    setAgeRangeValues(value);
+  const handleAgeRangeChange = (values: any) => {
+    setAgeRangeValues(values);
+    setMinAge(values.min);
+    setMaxAge(values.max);
   };
 
-  const handleFrRangeChange = (value: any) => {
-    setFrRangeValues(value); 
+  const handleFrRangeChange = (values: any) => {
+    setFrRangeValues(values); 
   };
 
   return (

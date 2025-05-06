@@ -23,7 +23,7 @@ const FilterContent: React.FC<FilterContentProps> = ({
   const {setSortBy} = useMatchStore()
   const [selectedSort, setSelectedSort] = useState<string | null>(null);
 
-  // Handler to update the selected sort option
+
   const handleSortChange = (newSelection: string | null) => {
     setSelectedSort(newSelection);
     setSortBy(newSelection)
@@ -52,8 +52,8 @@ const FilterContent: React.FC<FilterContentProps> = ({
               {filter === "Common tags" && <CommonTags />}
               {filter === "Sort by" && (
                 <SortBy
-                  selectedSort={selectedSort} // Pass current selection
-                  onSortChange={handleSortChange} // Pass callback to update selection
+                  selectedSort={selectedSort} 
+                  onSortChange={handleSortChange}
                 />
               )}
             </div>

@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useMatchStore } from "../store/useMatchStore";
+import { useBrowsingStore } from "../store/useBrowsingStore";
 
 const options = [
   "Suggestions",
@@ -13,9 +13,9 @@ const options = [
 ];
 
 export default function Dropdown() {
-  const {filterUserProfiles, setSortBy} = useMatchStore();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Suggestions");
+  const { sortBy, setSortBy, sortOrder, setSortOrder, getSuggestions } = useBrowsingStore();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -23,9 +23,19 @@ export default function Dropdown() {
 
   const onOptionClicked = (value: any) => () => {
     setSelectedOption(value);
-    console.log(value)
-    setSortBy(value)
-    filterUserProfiles()
+    if (value == "Suggestions") {
+      setSortBy(null);
+      setSortOrder(null);
+    }
+    else if (value == "Age: Low to High") {
+      setSortBy("age");
+      setSortOrder("asc");
+    }
+    else if (value == "Age: High to Low") {
+      setSortBy("age");
+      setSortOrder("desc");
+    }
+    getSuggestions();
     setIsOpen(false);
   };
 

@@ -1,59 +1,23 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Sidebar } from "../components/Sidebar";
-import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
 import { Frown } from "lucide-react";
-import { users } from "../users";
 import Suggestion from "../components/Suggestion";
 import Filters from "../components/Filters";
 import SideFilters from "../components/SideFilters";
+import { useBrowsingStore } from "../store/useBrowsingStore";
 
 function HomePage() {
   const {
-    getUserProfiles,
-    userProfiles,
-    isLoadingUserProfiles,
-    currentPage,
-    hasMore,
-  } = useMatchStore();
-
-  const observerTarget = useRef(null);
-  const loadingRef = useRef(false);
-  
+    suggestions,
+    isLoadingSuggestions,
+    getSuggestions,
+  } = useBrowsingStore();
   
   useEffect(() => {
-    getUserProfiles();
-    return () => {
-      if (observerTarget.current) {
-        const observer = new IntersectionObserver(() => {}, {});
-        observer.disconnect();
-      }
-    };
-  }, [getUserProfiles]);
+    getSuggestions();
+  }, [getSuggestions]);
   
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: "-0px",
-      threshold: 0.1, 
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore && !isLoadingUserProfiles && !loadingRef.current) {
-        loadingRef.current = true;
-        getUserProfiles(currentPage + 1).finally(() => {
-          loadingRef.current = false;
-        });
-      }
-    }, options);
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => observer.disconnect();
-  }, [hasMore, isLoadingUserProfiles, currentPage, getUserProfiles]);
-
   return (
     <div
       className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100 to-blue-100 overflow-hidden"
@@ -66,22 +30,18 @@ function HomePage() {
           <div className="flex">
             <SideFilters />
             <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
-              {userProfiles.length > 0 && !isLoadingUserProfiles && (
+              {suggestions.length > 0 && !isLoadingSuggestions && (
                 <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
-                  {userProfiles.map((user: any, index) => (
-                    <Suggestion user={user} key={user.id || index} />
+                  {suggestions.map((suggestion: any, index) => (
+                    <Suggestion user={suggestion} key={suggestion.id || index} />
                   ))}
-                  {hasMore && (
-                    <div ref={observerTarget} className="text-center py-4">
-                      {isLoadingUserProfiles ? "Loading more..." : ""}
-                    </div>
-                  )}
+
                 </div>
               )}
-              {userProfiles.length === 0 && !isLoadingUserProfiles && (
+              {suggestions.length === 0 && !isLoadingSuggestions && (
                 <NoMoreProfiles />
               )}
-              {isLoadingUserProfiles && !hasMore && <LoadingUI />}
+              {isLoadingSuggestions && <LoadingUI />}
             </main>
           </div>
         </div>

@@ -38,7 +38,6 @@ function FillProfileForm() {
       return;
     }
     try {
-      console.log(location)
       await updateProfile({
         gender,
         sexual_preferences: sexualPreference,
@@ -82,10 +81,10 @@ function FillProfileForm() {
             onValidityChange={setIsBirthDateValid} // Pass callback to update validity
           />
           <GenderSelect gender={gender} setGender={setGender} />
-          {/* <SexualPreferenceSelect
+          <SexualPreferenceSelect
             sexualPreference={sexualPreference}
             setSexualPreference={setSexualPreference}
-          /> */}
+          />
           <BioInput bio={bio} setBio={setBio} />
           <InterestsSelect
             interests={interests}
