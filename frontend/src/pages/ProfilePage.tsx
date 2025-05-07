@@ -19,11 +19,11 @@ export default function ProfilePage() {
         <PageTitle title="Profile" />
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border-gray-200 space-y-2">
-            <div className="flex justify-between">
+            <div className="flex justify-center">
               <img
-                src={authUser?.profilePicture}
+                src={authUser?.profilePicture  || "./avatar.png"}
                 alt="Profile picture"
-                className=" object-cover border-2 border-white"
+                className="object-cover border-2 border-white"
               />
             </div>
             <div className="flex justify-between">

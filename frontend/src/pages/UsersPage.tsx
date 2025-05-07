@@ -12,6 +12,8 @@ import { useUserStore } from "../store/useUserStore";
 import Age from "../components/Age";
 import Gender from "../components/Gender";
 import SexualPreference from "../components/SexualPreference";
+import useAuthStore from "../store/useAuthStore";
+import { useAnalyticsStore } from "../store/useAnalyticsStore";
 
 interface LabeledInterest {
   value: string;
@@ -19,8 +21,10 @@ interface LabeledInterest {
 }
 
 export default function UsersPage() {
+  const {authUser} = useAuthStore();
   const { username } = useParams();
   const { user, getUserByUsername } = useUserStore();
+  const {addView} = useAnalyticsStore();
   const [labeledInterests, setLabeledInterests] = useState<LabeledInterest[]>(
     []
   );
@@ -28,19 +32,23 @@ export default function UsersPage() {
   useEffect(() => {
     if (username) {
       getUserByUsername(username);
-      console.log(user);
     }
   }, [username, getUserByUsername]);
-
+  
   useEffect(() => {
-    if (user?.interests) {
-      const newLabeledInterests = user.interests.map((interest: string) => ({
-        value: interest,
-        label: `#${interest}`,
-      }));
-      setLabeledInterests(newLabeledInterests);
-    } else {
-      setLabeledInterests([]); // Clear interests if none exist
+    if (user) {
+      addView(user.id)
+      console.log(authUser?.username, "viewd", user.id)
+
+      if (user?.interests) {
+        const newLabeledInterests = user.interests.map((interest: string) => ({
+          value: interest,
+          label: `#${interest}`,
+        }));
+        setLabeledInterests(newLabeledInterests);
+      } else {
+        setLabeledInterests([]); // Clear interests if none exist
+      }
     }
   }, [user]);
 
