@@ -57,9 +57,9 @@ function FillProfileForm() {
   };
 
   const options = [
-    { value: "vegan", label: "#vegan" },
+    { value: "technology", label: "#technology" },
     { value: "geek", label: "#geek" },
-    { value: "piercing", label: "#piercing" },
+    { value: "sports", label: "#sports" },
     { value: "cars", label: "#cars" },
     { value: "movies", label: "#movies" },
     { value: "books", label: "#books" },

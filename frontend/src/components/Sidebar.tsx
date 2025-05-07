@@ -8,12 +8,12 @@ export const Sidebar = () => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-
-  const {getMyMatches, matches, isLoadingMyMatches} = useMatchStore()
+  const { getMyMatches, matches, isLoadingMyMatches } = useMatchStore();
 
   useEffect(() => {
     getMyMatches();
-  }, [getMyMatches])
+  }, [getMyMatches]);
+
   return (
     <>
       <div
@@ -41,18 +41,18 @@ export const Sidebar = () => {
               <NoMatchesFound />
             ) : (
               matches.map((match) => (
-                <Link key={match._id} to={`/chat/${match._id}`}>
+                <Link key={match.id} to={`/chat/${match.id}`}>
                   <div
                     className="flex items-center mb-4 cursor-pointer hover:bg-purple-50 p-2 rounded-lg
                 transition-colors duration-300"
                   >
                     <img
-                      src={match.image || "/avatar.png"}
+                      src={match.profile_picture || "/avatar.png"}
                       alt="User avar"
                       className="size-12 object-cover rounded-full mr-3 border-2 border-purple-300"
                     />
                     <h3 className="font-semibold text-gray-800">
-                      {match.name}
+                      {match.first_name} {match.last_name}
                     </h3>
                   </div>
                 </Link>
@@ -61,8 +61,10 @@ export const Sidebar = () => {
           </div>
         </div>
       </div>
-      <button className="lg:hidden fixed top-3 left-4 p-2 bg-purple-500 text-white rounded-md z-10"
-      onClick={toggleSidebar}>
+      <button
+        className="lg:hidden fixed top-3 left-4 p-2 bg-purple-500 text-white rounded-md z-10"
+        onClick={toggleSidebar}
+      >
         <MessageCircle size={24} />
       </button>
     </>
@@ -74,8 +76,7 @@ const NoMatchesFound = () => (
     <Heart className="text-purple-400 mb-4" size={48} />
     <h3 className="text-xl font-semibold text-gray-700 mb-2">No Matches Yet</h3>
     <p className="text-gray-500 max-w-xs">
-      Don&apos;t worry! Your perfect match is just around the corner. Keep
-      swiping!
+      Don&apos;t worry! Your perfect match is just around the corner.
     </p>
   </div>
 );

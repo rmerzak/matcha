@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import qs from 'qs'; 
-import { parsePath } from "react-router-dom";
 
 type AnalyticsStoreType = {
   profileViews: [];

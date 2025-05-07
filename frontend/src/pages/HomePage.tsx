@@ -8,20 +8,15 @@ import SideFilters from "../components/SideFilters";
 import { useBrowsingStore } from "../store/useBrowsingStore";
 
 function HomePage() {
-  const {
-    suggestions,
-    isLoadingSuggestions,
-    getSuggestions,
-  } = useBrowsingStore();
-  
+  const { suggestions, isLoadingSuggestions, getSuggestions } =
+    useBrowsingStore();
+
   useEffect(() => {
     getSuggestions();
   }, [getSuggestions]);
-  
+
   return (
-    <div
-      className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100 to-blue-100 overflow-hidden"
-    >
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100 to-blue-100 overflow-hidden">
       <Sidebar />
       <div className="flex flex-grow flex-col overflow-hidden">
         <Header />
@@ -33,9 +28,11 @@ function HomePage() {
               {suggestions.length > 0 && !isLoadingSuggestions && (
                 <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
                   {suggestions.map((suggestion: any, index) => (
-                    <Suggestion user={suggestion} key={suggestion.id || index} />
+                    <Suggestion
+                      user={suggestion}
+                      key={suggestion.id || index}
+                    />
                   ))}
-
                 </div>
               )}
               {suggestions.length === 0 && !isLoadingSuggestions && (

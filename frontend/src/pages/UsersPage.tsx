@@ -12,8 +12,8 @@ import { useUserStore } from "../store/useUserStore";
 import Age from "../components/Age";
 import Gender from "../components/Gender";
 import SexualPreference from "../components/SexualPreference";
-import useAuthStore from "../store/useAuthStore";
 import { useAnalyticsStore } from "../store/useAnalyticsStore";
+import LikeButton from "../components/LikeButton";
 
 interface LabeledInterest {
   value: string;
@@ -21,7 +21,6 @@ interface LabeledInterest {
 }
 
 export default function UsersPage() {
-  const {authUser} = useAuthStore();
   const { username } = useParams();
   const { user, getUserByUsername } = useUserStore();
   const {addView} = useAnalyticsStore();
@@ -38,8 +37,6 @@ export default function UsersPage() {
   useEffect(() => {
     if (user) {
       addView(user.id)
-      console.log(authUser?.username, "viewd", user.id)
-
       if (user?.interests) {
         const newLabeledInterests = user.interests.map((interest: string) => ({
           value: interest,
@@ -81,7 +78,7 @@ export default function UsersPage() {
                 <UserLocation location={user.location} />
                 <FameRating fameRating={user.fame_rating} />
               </div>
-              {/* <EditProfileButton /> */}
+              <LikeButton likedUserId={user.id} />
             </div>
             <div className="flex gap-4">
               <Age age={user.age} />

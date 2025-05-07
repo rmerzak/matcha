@@ -13,9 +13,6 @@ interface CheckedItems {
 }
 
 function SearchPage() {
-  const { getUserProfiles, userProfiles, isLoadingUserProfiles } =
-    useMatchStore();
-
   const { authUser } = useAuthStore();
   const { getSuggestions, setMinAge, setMaxAge } = useBrowsingStore();
 
@@ -24,7 +21,6 @@ function SearchPage() {
   const navigate = useNavigate();
 
   const handleAgeRangeChange = (value: any) => {
-    console.log(value);
     setAgeRangeValues(value);
     setMinAge(value.min);
     setMaxAge(value.max);
@@ -33,10 +29,6 @@ function SearchPage() {
   const handleFrRangeChange = (value: any) => {
     setAgeRangeValues(value);
   };
-
-  useEffect(() => {
-    // getUserProfiles();
-  }, [getUserProfiles]);
 
   const [checkedCommonTags, setCheckedCommonTags] = useState<CheckedItems>({});
 
@@ -53,10 +45,7 @@ function SearchPage() {
   };
 
   return (
-    <div
-      className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100  to-blue-100
-    overflow-hidden"
-    >
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100  to-blue-100 overflow-hidden">
       <Sidebar />
       <div className="flex flex-grow flex-col overflow-hidden">
         <Header />

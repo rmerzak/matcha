@@ -1,6 +1,5 @@
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import { userProfile } from "./userProfiles";
 import { axiosInstance } from "../lib/axios";
 import { useUserStore } from "./useUserStore";
 import useAuthStore from "./useAuthStore";
@@ -82,7 +81,6 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
         max_age: get().maxAge,
       },
     };
-    console.log(config.params)
     try {
       set({ isLoadingSuggestions: true });
       const res = await axiosInstance.get("/users/browse", config);
