@@ -28,7 +28,7 @@ function FillProfileForm() {
 
   const navigate = useNavigate();
 
-  const { authUser, checkAuth } = useAuthStore();
+  const { checkAuth } = useAuthStore();
   const { loading, updateProfile } = useUserStore();
 
   const handleSubmit = async (e: React.FormEvent) => {

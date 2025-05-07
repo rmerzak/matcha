@@ -8,6 +8,7 @@ import Interests from "../components/Interests";
 import HybridLocationComponent from "../components/HybridLocationComponent";
 import ProfilePictures from "../components/ProfilePictures";
 import EditProfileButton from "../components/EditProfileButton";
+import { Link } from "react-router-dom";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();
@@ -20,7 +21,7 @@ export default function ProfilePage() {
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border-gray-200 space-y-2">
             <div className="flex justify-center">
               <img
-                src={authUser?.profilePicture  || "./avatar.png"}
+                src={authUser?.profilePicture || "./avatar.png"}
                 alt="Profile picture"
                 className="object-cover border-2 border-white"
               />

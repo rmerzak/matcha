@@ -14,6 +14,7 @@ import Gender from "../components/Gender";
 import SexualPreference from "../components/SexualPreference";
 import { useAnalyticsStore } from "../store/useAnalyticsStore";
 import LikeButton from "../components/LikeButton";
+import BlockButton from "../components/BlockButton";
 
 interface LabeledInterest {
   value: string;
@@ -88,6 +89,9 @@ export default function UsersPage() {
             <Bio bio={user.bio || ""} />
             <Interests interests={labeledInterests} />
             <ProfilePictures pictures={user.pictures || []} />
+          <div className="items-center justify-center flex">
+            <BlockButton  userId={user.id}  />
+          </div>
           </div>
         </div>
       </div>

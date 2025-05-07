@@ -1,8 +1,6 @@
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { useUserStore } from "./useUserStore";
-import useAuthStore from "./useAuthStore";
 
 type BrowsingStoreType = {
   suggestions: Suggestion[];

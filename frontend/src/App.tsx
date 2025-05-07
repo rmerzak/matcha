@@ -14,6 +14,7 @@ import UsersPage from "./pages/UsersPage";
 import ProfileViewsPage from "./pages/analytics/ProfileViewsPage";
 import ProfileLikesPage from "./pages/analytics/ProfileLikesPage";
 import SearchPage from "./pages/SearchPage";
+import BlockedProfilesPage from "./pages/BlockedProfilesPage";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -62,6 +63,16 @@ function App() {
           element={
             authUser ? (
               <ProfileLikesPage />
+            ) : (
+              <Navigate replace={true} to={"/auth"} />
+            )
+          }
+        />
+        <Route
+          path="/blocked-profiles"
+          element={
+            authUser ? (
+              <BlockedProfilesPage />
             ) : (
               <Navigate replace={true} to={"/auth"} />
             )

@@ -44,10 +44,7 @@ export const useMatchStore = create<MatchStoreType>((set) => ({
           connected: true,
         }
       };
-
       const res = await axiosInstance.get("/likes/received", config);
-      console.log("API Response:", res.data.data.users);
-
       const matchesData = res.data.data.users || [];
       set({ matches: matchesData });
     } catch (error: any) {
