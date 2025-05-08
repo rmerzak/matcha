@@ -15,7 +15,7 @@ const Chat: React.FC<ChatProps> = ({ authToken, userId }) => {
 
   useEffect(() => {
     const newSocket = io("http://localhost:8000", {
-      path: "/",
+		transports: ["websocket"],
       extraHeaders: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -26,7 +26,7 @@ const Chat: React.FC<ChatProps> = ({ authToken, userId }) => {
     });
 
     // Handle connection
-    newSocket.on("connect", () => {
+    newSocket.on("welcome", () => {
       console.log("Connected to socket.io server");
     });
 
@@ -42,9 +42,9 @@ const Chat: React.FC<ChatProps> = ({ authToken, userId }) => {
     });
 
     // Handle connection errors
-    newSocket.on("connect_error", (error: Error) => {
-      console.error("Connection error:", error.message);
-    });
+    // newSocket.on("connect_error", (error: Error) => {
+    //   console.error("Connection error:", error.message);
+    // });
 
     // Handle disconnection
     newSocket.on("disconnect", () => {
