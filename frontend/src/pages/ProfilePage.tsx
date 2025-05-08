@@ -8,7 +8,6 @@ import Interests from "../components/Interests";
 import HybridLocationComponent from "../components/HybridLocationComponent";
 import ProfilePictures from "../components/ProfilePictures";
 import EditProfileButton from "../components/EditProfileButton";
-import { Link } from "react-router-dom";
 
 export default function ProfilePage() {
   const { authUser } = useAuthStore();

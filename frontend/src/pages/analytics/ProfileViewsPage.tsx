@@ -3,8 +3,6 @@ import { Header } from "../../components/Header";
 import PageTitle from "../../components/PageTitle";
 import Viewer from "../../components/Viewer";
 import { useAnalyticsStore } from "../../store/useAnalyticsStore";
-import useAuthStore from "../../store/useAuthStore";
-import { users } from "../../users";
 
 const ProfileViewsPage = () => {
   const { profileViews, getProfileViews } = useAnalyticsStore();

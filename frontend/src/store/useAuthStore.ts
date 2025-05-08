@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 type VerificationStatus = "verifying" | "success" | "error";
 
 type AuthUserType = {
+  id: string;
   username: string;
   email: string;
   firstName: string;
@@ -170,6 +171,7 @@ const useAuthStore = create<AuthState>((set) => ({
       };
       const response = await axiosInstance.get("/auth/me", config);
       const {
+        id,
         email,
         first_name,
         last_name,
@@ -192,6 +194,7 @@ const useAuthStore = create<AuthState>((set) => ({
         }));
         set({
           authUser: {
+            id,
             username,
             email,
             firstName: first_name,
@@ -210,6 +213,7 @@ const useAuthStore = create<AuthState>((set) => ({
       } else {
         set({
           authUser: {
+            id,
             username,
             email,
             firstName: first_name,

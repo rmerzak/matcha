@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useAnalyticsStore } from "../store/useAnalyticsStore";
 import { Header } from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import Viewer from "../components/Viewer";
