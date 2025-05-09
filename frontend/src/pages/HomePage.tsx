@@ -6,6 +6,7 @@ import Suggestion from "../components/Suggestion";
 import Filters from "../components/Filters";
 import SideFilters from "../components/SideFilters";
 import { useBrowsingStore } from "../store/useBrowsingStore";
+import SuggestionsList from "../components/SuggestionsList";
 
 function HomePage() {
   const { suggestions, isLoadingSuggestions, getSuggestions } =
@@ -16,24 +17,17 @@ function HomePage() {
   }, [getSuggestions]);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100 to-blue-100 overflow-hidden">
+    <div className="flex flex-col lg:flex-row bg-gradient-to-br from-red-100 via-purple-100 to-blue-100 overflow-hidden">
       <Sidebar />
-      <div className="flex flex-grow flex-col overflow-hidden">
+      <div className="flex flex-grow flex-col h-screen">
         <Header />
         <div className="flex flex-col">
           <Filters />
           <div className="flex">
             <SideFilters />
-            <main className="flex-grow flex flex-col gap-10 p-4 relative overflow-hidden">
+            <main className="flex-grow flex flex-col gap-10 p-4 relative h-screen ">
               {suggestions.length > 0 && !isLoadingSuggestions && (
-                <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3">
-                  {suggestions.map((suggestion: any, index) => (
-                    <Suggestion
-                      user={suggestion}
-                      key={suggestion.id || index}
-                    />
-                  ))}
-                </div>
+                <SuggestionsList suggestions={suggestions.slice(0, 10)} />
               )}
               {suggestions.length === 0 && !isLoadingSuggestions && (
                 <NoMoreProfiles />

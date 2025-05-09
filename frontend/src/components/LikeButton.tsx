@@ -26,9 +26,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({ likedUserId }) => {
     return (
       <button
         onClick={handleUnLike}
-        className="inline-flex items-center px-4 py-2 border-red-300 rounded-md shadow-sm
-            text-sm font-bold text-red-700 hover:bg-white bg-red-50 focus:outline-none focus:ring-2
-            focus:ring-offset-2 focus:ring-red-500 self-start mt-2 cursor-pointer border-2 "
+        className="inline-flex items-center px-4 py-2 border-purple-300 rounded-md shadow-sm
+            text-sm font-bold text-purple-700 hover:bg-white bg-purple-50 focus:outline-none focus:ring-2
+            focus:ring-offset-2 focus:ring-purple-500 self-start mt-2 cursor-pointer border-2 "
       >
         UnLike
       </button>
@@ -37,9 +37,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({ likedUserId }) => {
   return (
     <button
       onClick={handleLike}
-      className="inline-flex items-center px-4 py-2 border-red-300 rounded-md shadow-sm
-          text-sm font-bold text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2
-          focus:ring-offset-2 focus:ring-red-500 self-start mt-2 cursor-pointer border-2 "
+      className="inline-flex items-center px-4 py-2 border-purple-300 rounded-md shadow-sm
+          text-sm font-bold text-purple-700 bg-white hover:bg-purple-50 focus:outline-none focus:ring-2
+          focus:ring-offset-2 focus:ring-purple-500 self-start mt-2 cursor-pointer border-2 "
     >
       Like
     </button>
