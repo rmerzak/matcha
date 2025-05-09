@@ -7,7 +7,7 @@ interface SuggestionsListProps {
 
 const SuggestionsList: React.FC<SuggestionsListProps> = ({ suggestions }) => {
   return (
-    <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3 overflow-scroll">
+    <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3  h-full overflow-scroll">
       {suggestions.map((suggestion: any, index) => (
         <Suggestion user={suggestion} key={suggestion.id || index} />
       ))}
