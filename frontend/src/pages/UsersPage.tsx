@@ -85,7 +85,7 @@ export default function UsersPage() {
               <Age age={user.age} />
               <Gender gender={user.gender} />
             </div>
-            <SexualPreference sexualPreference={user.sexual_preferences} />
+            {/* <SexualPreference sexualPreference={user.sexual_preferences} /> */}
             <Bio bio={user.bio || ""} />
             <Interests interests={labeledInterests} />
             <ProfilePictures pictures={user.pictures || []} />
