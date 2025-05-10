@@ -100,16 +100,14 @@ class NotificationServiceImp(BaseService, INotificationService):
             "connection_broken"
         )
         
-    async def get_user_notifications(self, user_id: str, page: int = 1, items_per_page: int = 20):
-        """Get notifications for a user"""
+    async def get_user_notifications(self, user_id: str):
+        """Get all notifications for a user"""
         try:
             user = await self.user_service.get_user_by_id(user_id)
             if not user:
                 return error_response("User not found", "User does not exist", 404)
                 
-            notifications = await self.notification_repository.get_user_notifications(
-                user_id, page, items_per_page
-            )
+            notifications = await self.notification_repository.get_user_notifications(user_id)
             
             return success_response(
                 data=notifications,

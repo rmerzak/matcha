@@ -36,35 +36,15 @@ class NotificationRepository(BaseRepository):
         result = await self.db.fetch_one(query, {"notification_id": notification_id})
         return bool(result)
     
-    async def get_user_notifications(self, user_id: str, page: int = 1, items_per_page: int = 20) -> Dict:
-        """Get notifications for a user with pagination"""
-        offset = (page - 1) * items_per_page
-        
-        count_query = """
-            SELECT COUNT(*) as total
-            FROM notifications
-            WHERE user_id = :user_id
-        """
-        
+    async def get_user_notifications(self, user_id: str) -> List[Dict]:
+        """Get all notifications for a user without pagination"""
         query = """
             SELECT n.*, u.username, u.profile_picture
             FROM notifications n
             JOIN users u ON n.sender_id = u.id
             WHERE n.user_id = :user_id
             ORDER BY n.created_at DESC
-            LIMIT :limit OFFSET :offset
         """
         
-        total = await self.db.fetch_val(count_query, {"user_id": user_id})
-        
-        results = await self.db.fetch_all(
-            query, 
-            {"user_id": user_id, "limit": items_per_page, "offset": offset}
-        )
-        
-        return {
-            "total": total,
-            "page": page,
-            "items_per_page": items_per_page,
-            "notifications": [dict(row) for row in results]
-        }
+        results = await self.db.fetch_all(query, {"user_id": user_id})
+        return [dict(row) for row in results] if results else []
