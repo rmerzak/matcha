@@ -22,6 +22,16 @@ class UserViewsServiceImp(BaseService, IUserViewsService):
             print("user", user)
             if not user:
                 return error_response("Invalid data", "User does not exist", status_code=400)
+            
+            # Check if there's a recent view within the last 30 seconds
+            recent_view = await self.user_views_repository.get_recent_view(viewed, viewer_id)
+            if recent_view:
+                return success_response(
+                    {"viewed": viewed, "viewer": viewer_id},
+                    "View already recorded in the last 30 seconds", 
+                    status_code=200
+                )
+            
             cleaned_viewed = str(viewed).replace('UUID(\'', '').replace('\')', '')
             cleaned_viewer_id = str(viewer_id).replace('UUID(\'', '').replace('\')', '')
             await self.socketio_manager.send_event("view", {"viewed": cleaned_viewed, "viewer": cleaned_viewer_id}, cleaned_viewed)

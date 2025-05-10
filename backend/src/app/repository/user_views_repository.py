@@ -70,3 +70,23 @@ class UserViewsRepository(BaseRepository):
             }
         except Exception as e:
             raise e
+
+    async def get_recent_view(self, viewed: str, viewer_id: str, seconds: int = 30):
+        try:
+            query = """
+                SELECT id 
+                FROM views 
+                WHERE viewed = :viewed 
+                AND viewer = :viewer 
+                AND view_time > NOW() - (INTERVAL '1 second' * :seconds)
+                ORDER BY view_time DESC
+                LIMIT 1;
+            """
+            values = {
+                "viewed": viewed,
+                "viewer": viewer_id,
+                "seconds": seconds
+            }
+            return await self.fetch_one(query=query, values=values)
+        except Exception as e:
+            raise e
