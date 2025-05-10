@@ -81,16 +81,16 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
         cleaned_uid = str(uid).replace('UUID(\'', '').replace('\')', '')
         return self._user_uid_to_sid.get(cleaned_uid, set())
 
-    async def authenticate_connection(self, sid: str, environ) -> Optional[dict]:
+    async def authenticate_connection(self, sid: str, token: str) -> Optional[dict]:
         """Authenticate and store user connection"""
         try:
-            # Extract token
-            http_headers = environ.get('HTTP_AUTHORIZATION', '')
-            query = environ.get('QUERY_STRING', '')
-            params = parse_qs(query)
-            token = params.get('token', [None])[0]
-            if not token and http_headers.startswith('Bearer '):
-                token = http_headers.split(' ')[1]
+            # # Extract token
+            # http_headers = environ.get('HTTP_AUTHORIZATION', '')
+            # query = environ.get('QUERY_STRING', '')
+            # params = parse_qs(query)
+            # token = params.get('token', [None])[0]
+            # if not token and http_headers.startswith('Bearer '):
+            #     token = http_headers.split(' ')[1]
 
             if not token:
                 logger.error(f"No token for SID: {sid}")

@@ -15,11 +15,14 @@ const Chat: React.FC<ChatProps> = ({ authToken, userId }) => {
 
   useEffect(() => {
     const newSocket = io("http://localhost:8000", {
-		transports: ["websocket"],
       extraHeaders: {
         Authorization: `Bearer ${authToken}`,
       },
-
+      auth: {
+        token: authToken,
+      },
+      withCredentials: true,
+      transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,

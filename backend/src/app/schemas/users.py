@@ -56,7 +56,7 @@ class UserLogin(BaseModel):
     username: str
     password: str
 
-class ProfileUpdate(BaseModel):    
+class ProfileUpdate(BaseModel):
     gender: Optional[Gender] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None

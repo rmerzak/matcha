@@ -19,9 +19,10 @@ logger = logging.getLogger(__name__)
 # Initialize Socket.IO server with CORS and other configurations
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=["*"],
+    cors_allowed_origins=[],
     # logger=True,
     # engineio_logger=True
+    
 )
 
 @sio.event
@@ -36,15 +37,18 @@ async def error_handler(sid, data):
     await sio.emit('error', {'message': 'An error occurred'}, room=sid)
 
 @sio.event
-@inject
 async def connect(
     sid: str, 
     environ: dict,
-    socketio_manager: ISocketIOManager = Depends(Provide[Container.socketio_manager])
+    auth: dict,
 ) -> bool:
     """Handle new connections"""
     try:
-        user = await socketio_manager.authenticate_connection(sid, environ)
+        from app.main import container
+        socketio_manager = container.socketio_manager()
+        logger.info(f"Auth: {auth['token']}")
+        logger.info(f"Sid: {sid}")
+        user = await socketio_manager.authenticate_connection(sid, auth['token'])
         if not user:
             logger.warning(f"Authentication failed for socket {sid}")
             await socketio_manager.send_error("Authentication failed", sid)
@@ -53,7 +57,6 @@ async def connect(
         logger.info(f"User sid: {user_sid}")
         user = socketio_manager.get_user_uid_to_sid()
         logger.info(f"User *****: {user}")
-        # await socketio_manager.connect_socket(sid, user)
         return True
     except Exception as e:
         logger.error(f"Error during connection for SID {sid}: {str(e)}")
