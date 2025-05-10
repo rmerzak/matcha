@@ -6,6 +6,8 @@ from app.services.socketio_manager_interface import ISocketIOManager
 from app.services.user_interface import IUserService
 from app.services.likes_interface import ILikesService
 from app.services.blocks_interface import IBlocksService
+import logging
+logger = logging.getLogger(__name__)
 
 class MessageServiceImp(BaseService, IMessageService):
     def __init__(
@@ -79,9 +81,7 @@ class MessageServiceImp(BaseService, IMessageService):
         except Exception as e:
             return None
 
-
-
-    async def get_chat_history(self, user_id: str, other_user_id: str, page: int = 1, items_per_page: int = 50):
+    async def get_chat_history(self, user_id: str, other_user_id: str):
         try:
             # Check if users exist
             user = await self.user_service.get_user_by_id(user_id)
@@ -92,7 +92,7 @@ class MessageServiceImp(BaseService, IMessageService):
 
             # Check if either user has blocked the other
             block_status = await self.blocks_service.check_block(user_id, other_user_id)
-            if block_status.get("data", {}).get("is_blocked", False):
+            if block_status.get("is_blocked", False):
                 return error_response(
                     "Blocked", 
                     "Cannot access chat history due to blocking", 
@@ -101,7 +101,8 @@ class MessageServiceImp(BaseService, IMessageService):
 
             # Check if users are connected
             like_status = await self.likes_service.get_like_status(user_id, other_user_id)
-            if not like_status.get("data", {}).get("is_connected", False):
+            logger.info(f"like_status: {like_status}")
+            if not like_status.get("is_connected", False):
                 return error_response(
                     "Not connected", 
                     "You can only view chat history with connected users", 
@@ -111,9 +112,7 @@ class MessageServiceImp(BaseService, IMessageService):
             # Get chat history
             messages = await self.message_repository.get_chat_history(
                 user_id=user_id,
-                other_user_id=other_user_id,
-                page=page,
-                items_per_page=items_per_page
+                other_user_id=other_user_id
             )
 
             return success_response(

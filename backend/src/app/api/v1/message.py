@@ -38,17 +38,13 @@ async def send_message(
 @inject
 async def get_chat_history(
     other_user_id: str,
-    page: int = 1,
-    items_per_page: int = 50,
     current_user: User = Depends(get_current_user_info),
     service: IMessageService = Depends(Provide[Container.message_service]),
 ):
     try:
         return await service.get_chat_history(
             user_id=current_user["id"],
-            other_user_id=other_user_id,
-            page=page,
-            items_per_page=items_per_page
+            other_user_id=other_user_id
         )
     except Exception as e:
         logger.error(f"Error getting chat history: {e}")
