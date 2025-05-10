@@ -612,3 +612,17 @@ CREATE TRIGGER after_message_insert
   AFTER INSERT ON messages
   FOR EACH ROW
   EXECUTE FUNCTION create_message_notification();
+
+-- Create trigger to automatically update age when date_of_birth changes
+CREATE OR REPLACE FUNCTION update_age_from_dob() RETURNS TRIGGER AS $$
+BEGIN
+    NEW.age = EXTRACT(YEAR FROM AGE(NOW(), NEW.date_of_birth));
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_user_age
+    BEFORE INSERT OR UPDATE OF date_of_birth ON users
+    FOR EACH ROW
+    WHEN (NEW.date_of_birth IS NOT NULL)
+    EXECUTE FUNCTION update_age_from_dob();
