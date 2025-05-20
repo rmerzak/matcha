@@ -1,10 +1,7 @@
-import { useParams } from "react-router-dom";
-import Chat from "../components/Chat";
-import { useEffect } from "react";
+import { Chat } from "../components/Chat";
 import useAuthStore from "../store/useAuthStore";
 
 const ChatPage = () => {
-  const { id } = useParams();
   const {authUser} = useAuthStore();
   const userId = authUser?.id;
   const token = localStorage.getItem("jwt");
@@ -12,12 +9,12 @@ const ChatPage = () => {
     console.log("Please log in to view matches");
     return;
   }
-  console.log(userId, token);
 
   return (
     <div>
       <h1>ChatPage</h1>
-      <Chat userId={userId} authToken={token}  />
+      {/* <Chat userId={userId} authToken={token}  /> */}
+      <Chat />
     </div>
   );
 };
