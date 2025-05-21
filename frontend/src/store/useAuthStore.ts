@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 type VerificationStatus = "verifying" | "success" | "error";
 
-type AuthUserType = {
+export type AuthUserType = {
   id: string;
   username: string;
   email: string;

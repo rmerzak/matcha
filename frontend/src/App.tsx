@@ -15,6 +15,7 @@ import ProfileViewsPage from "./pages/analytics/ProfileViewsPage";
 import ProfileLikesPage from "./pages/analytics/ProfileLikesPage";
 import SearchPage from "./pages/SearchPage";
 import BlockedProfilesPage from "./pages/BlockedProfilesPage";
+import { ChatContextProvider } from "./context/ChatContext";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -34,111 +35,129 @@ function App() {
   }
 
   return (
-    <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-      <Routes>
-        <Route
-          path="/"
-          element={
-            authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            authUser ? <ProfilePage /> : <Navigate replace={true} to="/auth" />
-          }
-        />
-        <Route
-          path="/analytics/profile-views"
-          element={
-            authUser ? (
-              <ProfileViewsPage />
-            ) : (
-              <Navigate replace={true} to={"/auth"} />
-            )
-          }
-        />
-        <Route
-          path="/analytics/profile-likes"
-          element={
-            authUser ? (
-              <ProfileLikesPage />
-            ) : (
-              <Navigate replace={true} to={"/auth"} />
-            )
-          }
-        />
-        <Route
-          path="/blocked-profiles"
-          element={
-            authUser ? (
-              <BlockedProfilesPage />
-            ) : (
-              <Navigate replace={true} to={"/auth"} />
-            )
-          }
-        />
-        <Route
-          path="/auth"
-          element={
-            !authUser ? <AuthPage /> : <Navigate replace={true} to={"/"} />
-          }
-        />
-        <Route
-          path="/"
-          element={
-            authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />
-          }
-        />
-        <Route
-          path="/fill-profile"
-          element={
-            authUser ? (
-              <FillProfilePage />
-            ) : (
-              <Navigate replace={true} to={"/auth"} />
-            )
-          }
-        />
-        <Route
-          path="/edit-profile/"
-          element={
-            authUser ? (
-              <EditProfilePage />
-            ) : (
-              <Navigate replace={true} to={"/auth"} />
-            )
-          }
-        />
-        <Route
-          path="/chat/:id"
-          element={
-            authUser ? <ChatPage /> : <Navigate replace={true} to={"/auth"} />
-          }
-        />
-        <Route path="/verifyEmail" element={<EmailVerification />} />
-        <Route
-          path="/resetPassword"
-          element={
-            !authUser ? <ResetPassword /> : <Navigate replace={true} to={"/"} />
-          }
-        />
-        <Route
-          path="/search"
-          element={
-            authUser ? <SearchPage /> : <Navigate replace={true} to={"/auth"} />
-          }
-        />
-        <Route
-          path="/users/:username"
-          element={
-            authUser ? <UsersPage /> : <Navigate replace={true} to={"/auth"} />
-          }
-        />
-      </Routes>
+    <ChatContextProvider user={authUser}>
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              authUser ? (
+                <ProfilePage />
+              ) : (
+                <Navigate replace={true} to="/auth" />
+              )
+            }
+          />
+          <Route
+            path="/analytics/profile-views"
+            element={
+              authUser ? (
+                <ProfileViewsPage />
+              ) : (
+                <Navigate replace={true} to={"/auth"} />
+              )
+            }
+          />
+          <Route
+            path="/analytics/profile-likes"
+            element={
+              authUser ? (
+                <ProfileLikesPage />
+              ) : (
+                <Navigate replace={true} to={"/auth"} />
+              )
+            }
+          />
+          <Route
+            path="/blocked-profiles"
+            element={
+              authUser ? (
+                <BlockedProfilesPage />
+              ) : (
+                <Navigate replace={true} to={"/auth"} />
+              )
+            }
+          />
+          <Route
+            path="/auth"
+            element={
+              !authUser ? <AuthPage /> : <Navigate replace={true} to={"/"} />
+            }
+          />
+          <Route
+            path="/"
+            element={
+              authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />
+            }
+          />
+          <Route
+            path="/fill-profile"
+            element={
+              authUser ? (
+                <FillProfilePage />
+              ) : (
+                <Navigate replace={true} to={"/auth"} />
+              )
+            }
+          />
+          <Route
+            path="/edit-profile/"
+            element={
+              authUser ? (
+                <EditProfilePage />
+              ) : (
+                <Navigate replace={true} to={"/auth"} />
+              )
+            }
+          />
+          <Route
+            path="/chat/:id"
+            element={
+              authUser ? <ChatPage /> : <Navigate replace={true} to={"/auth"} />
+            }
+          />
+          <Route path="/verifyEmail" element={<EmailVerification />} />
+          <Route
+            path="/resetPassword"
+            element={
+              !authUser ? (
+                <ResetPassword />
+              ) : (
+                <Navigate replace={true} to={"/"} />
+              )
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              authUser ? (
+                <SearchPage />
+              ) : (
+                <Navigate replace={true} to={"/auth"} />
+              )
+            }
+          />
+          <Route
+            path="/users/:username"
+            element={
+              authUser ? (
+                <UsersPage />
+              ) : (
+                <Navigate replace={true} to={"/auth"} />
+              )
+            }
+          />
+        </Routes>
 
-      <Toaster />
-    </div>
+        <Toaster />
+      </div>
+    </ChatContextProvider>
   );
 }
 
