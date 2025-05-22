@@ -1,15 +1,14 @@
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
-import { Chat } from "../components/Chat";
 import { useContext, useEffect } from "react";
 import { useMatchStore } from "../store/useMatchStore";
 import { useParams } from "react-router-dom";
 import { ChatContext } from "../context/ChatContext";
 import { ChatBox } from "../components/ChatBox";
-import { Container, Stack } from "react-bootstrap";
+import { Chat } from "../components/Chat";
 
 function ChatPage() {
-  const { getMyMatches, matches } = useMatchStore();
+  const { getMyMatches } = useMatchStore();
   const { updateCurrentChat } = useContext(ChatContext);
   const { id } = useParams();
 
@@ -23,7 +22,7 @@ function ChatPage() {
       <Sidebar />
       <div className="flex flex-grow flex-col h-screen ">
         <Header />
-        {/* <Chat /> */}
+        <Chat />
         <ChatBox />
       </div>
     </div>

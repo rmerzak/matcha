@@ -8,7 +8,7 @@ import InputEmoji from "react-input-emoji";
 
 export const ChatBox = () => {
   const { authUser } = useAuthStore();
-  const { currentChatId, messages, isMessagesLoading, sendTextMessage } =
+  const { currentChatId, messages, isMessagesLoading, sendMessage } =
     useContext(ChatContext);
   const { user, getUser } = useUserStore();
   const [textMessage, setTextMessage] = useState("");
@@ -17,11 +17,13 @@ export const ChatBox = () => {
     if (currentChatId) {
       getUser(currentChatId);
     }
-  }, [currentChatId, getUser]);
+  }, [currentChatId, getUser, messages]);
 
   if (isMessagesLoading) {
     return <p className="flex items-center justify-center">Loading Chat...</p>;
   }
+
+  console.log("Messages: ", messages);
 
   return (
     <Stack gap={4} className="chat-box h-full bg-red-300 border rounded-lg">
@@ -66,10 +68,11 @@ export const ChatBox = () => {
         />
         <button
           onClick={() =>
-            sendTextMessage(
-              textMessage,
-              authUser?.id,
-              currentChatId,
+            sendMessage(
+              {
+                receiver_id: currentChatId,
+                content: textMessage,
+              },
               setTextMessage
             )
           }

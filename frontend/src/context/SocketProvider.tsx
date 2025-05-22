@@ -8,13 +8,14 @@ interface SocketProviderProps {
 
 export const SocketProvider = ({ children }: SocketProviderProps) => {
   const { connect, disconnect } = useSocketStore();
-
+  const authToken = localStorage.getItem('jwt');
+  
   useEffect(() => {
-    connect(); // Connect when component mounts
+    connect(authToken); // Connect when component mounts
     return () => {
       disconnect(); // Disconnect when component unmounts
     };
-  }, [connect, disconnect]);
+  }, [connect, disconnect, authToken]);
 
   return <>{children}</>;
 };

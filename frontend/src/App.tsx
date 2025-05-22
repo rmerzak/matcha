@@ -16,6 +16,7 @@ import ProfileLikesPage from "./pages/analytics/ProfileLikesPage";
 import SearchPage from "./pages/SearchPage";
 import BlockedProfilesPage from "./pages/BlockedProfilesPage";
 import { ChatContextProvider } from "./context/ChatContext";
+import { SocketProvider } from "./context/SocketProvider.tsx";
 
 function App() {
   const { authUser, checkAuth, checkingAuth } = useAuthStore();
@@ -35,6 +36,8 @@ function App() {
   }
 
   return (
+    <SocketProvider>
+
     <ChatContextProvider user={authUser}>
       <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
         <Routes>
@@ -63,7 +66,7 @@ function App() {
                 <Navigate replace={true} to={"/auth"} />
               )
             }
-          />
+            />
           <Route
             path="/analytics/profile-likes"
             element={
@@ -83,19 +86,19 @@ function App() {
                 <Navigate replace={true} to={"/auth"} />
               )
             }
-          />
+            />
           <Route
             path="/auth"
             element={
               !authUser ? <AuthPage /> : <Navigate replace={true} to={"/"} />
             }
-          />
+            />
           <Route
             path="/"
             element={
               authUser ? <HomePage /> : <Navigate replace={true} to="/auth" />
             }
-          />
+            />
           <Route
             path="/fill-profile"
             element={
@@ -105,7 +108,7 @@ function App() {
                 <Navigate replace={true} to={"/auth"} />
               )
             }
-          />
+            />
           <Route
             path="/edit-profile/"
             element={
@@ -115,13 +118,13 @@ function App() {
                 <Navigate replace={true} to={"/auth"} />
               )
             }
-          />
+            />
           <Route
             path="/chat/:id"
             element={
               authUser ? <ChatPage /> : <Navigate replace={true} to={"/auth"} />
             }
-          />
+            />
           <Route path="/verifyEmail" element={<EmailVerification />} />
           <Route
             path="/resetPassword"
@@ -142,7 +145,7 @@ function App() {
                 <Navigate replace={true} to={"/auth"} />
               )
             }
-          />
+            />
           <Route
             path="/users/:username"
             element={
@@ -152,12 +155,13 @@ function App() {
                 <Navigate replace={true} to={"/auth"} />
               )
             }
-          />
+            />
         </Routes>
 
         <Toaster />
       </div>
     </ChatContextProvider>
+            </SocketProvider>
   );
 }
 
