@@ -9,13 +9,20 @@ interface ChatContextType {
   isMessagesLoading: boolean;
   messagesError: any;
   currentChatId: string | null;
+  sendTextMessage: (
+    textMessage: string,
+    senderId: string | undefined,
+    currentChatId: string | null,
+    setTextMessage: any
+  ) => void;
 }
 export const ChatContext = createContext<ChatContextType>({
   updateCurrentChat: () => {},
   messages: null,
   isMessagesLoading: false,
-  messagesError: null,	
+  messagesError: null,
   currentChatId: null,
+  sendTextMessage: () => {},
 });
 
 interface ChatContextProviderProps {
@@ -28,9 +35,11 @@ export const ChatContextProvider = ({
   user,
 }: ChatContextProviderProps) => {
   const [currentChatId, setCurrentChatId] = useState(null as string | null);
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState<any[]>([]);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
-  const [messagesError, setMessagesError] = useState(null);
+  const [messagesError, setMessagesError] = useState<any>(null);
+  const [sendTextMessageError, setSendTextMessageError] = useState(null);
+  const [newMessage, setNewMessage] = useState(null);
 
   console.log("Messages: ", messages);
   useEffect(() => {
@@ -53,13 +62,50 @@ export const ChatContextProvider = ({
     getMessages();
   }, [currentChatId]);
 
+  const sendTextMessage = useCallback(
+    async (
+      textMessage: string,
+      senderId: string | undefined,
+      currentChatId: string | null,
+      setTextMessage: any
+    ) => {
+      if (!textMessage) return;
+
+      const response = await postRequest(
+        `${baseUrl}/message/send`,
+        JSON.stringify({
+          chatId: currentChatId,
+          senderId,
+          text: textMessage,
+        })
+      );
+
+      if (response.error) {
+        return setSendTextMessageError(response);
+      }
+
+      setNewMessage(response.data.message);
+      setMessages((prev) => [...prev, response.data.message]);
+      setTextMessage("");
+    },
+
+    []
+  );
+
   const updateCurrentChat = useCallback((chat: string) => {
     setCurrentChatId(chat);
   }, []);
 
   return (
     <ChatContext.Provider
-      value={{ currentChatId, updateCurrentChat, messages, isMessagesLoading, messagesError }}
+      value={{
+        currentChatId,
+        updateCurrentChat,
+        messages,
+        isMessagesLoading,
+        messagesError,
+        sendTextMessage,
+      }}
     >
       {children}
     </ChatContext.Provider>
