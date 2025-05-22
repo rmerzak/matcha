@@ -137,7 +137,7 @@ body {
 
 /* Chat Box */
 .chat-box {
-  max-height: calc(100vh - 10rem);
+  /* max-height: calc(100vh - 10rem); */
   overflow-y: auto;
   background: white;
 }

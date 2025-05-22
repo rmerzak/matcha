@@ -21,14 +21,10 @@ function ChatPage() {
   return (
     <div className="flex flex-col lg:flex-row bg-gradient-to-br from-red-100 via-purple-100 to-blue-100 overflow-hidden">
       <Sidebar />
-      <div className="flex flex-grow flex-col h-screen">
+      <div className="flex flex-grow flex-col h-screen ">
         <Header />
         {/* <Chat /> */}
-        <Container>
-          <Stack direction="horizontal" gap={4} className="items-start" >
-            <ChatBox />
-          </Stack>
-        </Container>
+        <ChatBox />
       </div>
     </div>
   );
