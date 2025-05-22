@@ -22,7 +22,7 @@ function ChatPage() {
       <Sidebar />
       <div className="flex flex-grow flex-col h-screen ">
         <Header />
-        <Chat />
+        {/* <Chat /> */}
         <ChatBox />
       </div>
     </div>

@@ -34,23 +34,28 @@ class MessageServiceImp(BaseService, IMessageService):
                 return error_response("User not found", "One or both users do not exist", 404)
 
             # Check if either user has blocked the other
-            block_status = await self.blocks_service.check_block(sender_id, receiver_id)
-            if block_status.get("data", {}).get("is_blocked", False):
-                return error_response(
-                    "Blocked", 
-                    "Cannot send message due to blocking", 
-                    403
-                )
-
+            try:
+                block_status = await self.blocks_service.check_block(sender_id, receiver_id)
+                if block_status.get("is_blocked", False):
+                    return error_response(
+                        "Blocked", 
+                        "Cannot send message due to blocking", 
+                        403
+                    )
+            except Exception as e:
+                return error_response("Internal server error", str(e), 500)
             # Check if users are connected
-            like_status = await self.likes_service.get_like_status(sender_id, receiver_id)
-            if not like_status.get("data", {}).get("is_connected", False):
-                return error_response(
-                    "Not connected", 
-                    "You can only send messages to connected users", 
-                    403
-                )
-
+            try:
+                like_status = await self.likes_service.get_like_status(sender_id, receiver_id)
+                logger.info(f"like_status: {like_status}")
+                if not like_status.get("is_connected", False):
+                    return error_response(
+                        "Not connected",
+                        "You can only send messages to connected users",
+                        403
+                    )
+            except Exception as e:
+                return error_response("Internal server error", str(e), 500)
             # Create the message
             message = await self.message_repository.create_message(
                 sender_id=sender_id,

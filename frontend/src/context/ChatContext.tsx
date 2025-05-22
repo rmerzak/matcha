@@ -1,69 +1,69 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState, ReactNode } from "react";
 import { getRequest, baseUrl, postRequest } from "../utils/services";
 import useAuthStore, { AuthUserType } from "../store/useAuthStore";
-import { useParams } from "react-router-dom";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { SendMessagePayload } from "../types/socket";
 
-interface MessageType {
-  id: string | null;
-  sender: string | null | undefined;
-  receiver: string | null;
+// Define proper types for messages
+export interface MessageType {
+  id: string;
+  sender: string;
+  receiver: string;
   content: string;
   is_read: boolean;
-  sent_at: string | null;
+  sent_at: string;
 }
 
+// Define proper types for the context
 interface ChatContextType {
-  updateCurrentChat: (chat: any) => void;
-  messages: any;
+  updateCurrentChat: (chatId: string | null) => void;
+  messages: MessageType[];
   isMessagesLoading: boolean;
-  messagesError: any;
+  messagesError: string | null;
   currentChatId: string | null;
   sendTextMessage: (
     textMessage: string,
-    senderId: string | undefined,
-    currentChatId: string | null,
-    setTextMessage: any
+    senderId: string,
+    currentChatId: string,
+    setTextMessage: React.Dispatch<React.SetStateAction<string>>
+  ) => Promise<void>;
+  sendMessage: (
+    payload: SendMessagePayload, 
+    setTextMessage: React.Dispatch<React.SetStateAction<string>>
   ) => void;
-  sendMessage: (payload: SendMessagePayload, setTextMessage: any) => void;
-  socket: any;
+  socket: Socket | null;
+  clearChat: () => void;
 }
 
 export const ChatContext = createContext<ChatContextType>({
   updateCurrentChat: () => {},
-  messages: null,
+  messages: [],
   isMessagesLoading: false,
   messagesError: null,
   currentChatId: null,
-  sendTextMessage: () => {},
+  sendTextMessage: async () => {},
   sendMessage: () => {},
   socket: null,
+  clearChat: () => {},
 });
 
 interface ChatContextProviderProps {
-  children: React.ReactNode;
-  user: AuthUserType | null;
+  children: ReactNode;
 }
 
-export const ChatContextProvider = ({
-  children,
-  user,
-}: ChatContextProviderProps) => {
+export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
   const { authUser } = useAuthStore();
-  const [currentChatId, setCurrentChatId] = useState(null as string | null);
+  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
-  const [messagesError, setMessagesError] = useState<any>(null);
-  const [sendTextMessageError, setSendTextMessageError] = useState(null);
-  const [newMessage, setNewMessage] = useState({});
-  const [socket, setSocket] = useState<any>(null);
+  const [messagesError, setMessagesError] = useState<string | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
   const authToken = localStorage.getItem("jwt");
 
-  // console.log(messages);
-
+  // Initialize socket connection
   useEffect(() => {
-    console.log(authToken);
+    if (!authToken) return;
+    
     const newSocket = io("http://localhost:8000", {
       extraHeaders: {
         Authorization: `Bearer ${authToken}`,
@@ -76,107 +76,146 @@ export const ChatContextProvider = ({
       reconnection: true,
       reconnectionDelay: 1000,
     });
+    
     setSocket(newSocket);
+
+    // Socket event listeners
+    newSocket.on("connect", () => {
+      console.log("Socket connected");
+    });
+
+    newSocket.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+    });
+
+    newSocket.on("error", (error) => {
+      console.error("Socket error:", error);
+    });
+
+    newSocket.on("new_message", (data) => {
+      console.log("New message received:", data);
+      if (data.sender !== authUser?.id) {
+        setMessages((prev) => [...prev, data]);
+      }
+    });
 
     return () => {
       newSocket.disconnect();
     };
-  }, [authToken]);
+  }, [authToken, authUser?.id]);
 
-
-  // send message
+  // Fetch messages when current chat changes
   useEffect(() => {
-    if (socket === null) return;
-    socket.emit("send_message", (data: any) => {
-      console.log("New message received:", data);
-      setMessages((prev) => [...prev, data]);
-    });
-    return () => {
-      socket.off("send_message");
-    };
-  }, [newMessage]);
+    if (currentChatId) {
+      getMessages();
+    } else {
+      setMessages([]);
+    }
+  }, [currentChatId]);
 
+  // Get chat history
   const getMessages = async () => {
-    if (currentChatId === null) return;
+    if (!currentChatId) return;
+    
     setIsMessagesLoading(true);
     setMessagesError(null);
 
-    const response = await getRequest(
-      `${baseUrl}/message/history/${currentChatId}`
-    );
-    setIsMessagesLoading(false);
-
-    if (response.error) {
-      return setMessagesError(response);
-    }
-    setMessages(response.data.messages);
-  };
-  useEffect(() => {
-    getMessages();
-  }, [currentChatId, socket]);
-
-
-  const sendMessage = (payload: SendMessagePayload, setTextMessage: any) => {
-    if (socket) {
-      socket.emit("send_message", payload);
-      setNewMessage({
-        sender: authUser?.id,
-        id: "c26df1ef-7656-40ec-9d8d-7f5dc82cc419",
-        receiver: payload.receiver_id,
-        content: payload.content,
-        is_read: false,
-        sent_at: "2025-05-21T13:33:03.855551",
-      });
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: authUser?.id,
-          id: "c26df1ef-7656-40ec-9d8d-7f5dc82cc419",
-          receiver: payload.receiver_id,
-          content: payload.content,
-          is_read: false,
-          sent_at: "2025-05-21T13:33:03.855551",
-        },
-      ]);
-      setTextMessage("");
-      // await wait(3000); // Wait for 3 seconds
-      // getMessages();
-      // setNewMessage(payload)
+    try {
+      const response = await getRequest(`${baseUrl}/message/history/${currentChatId}`);
+      
+      if (response.error) {
+        setMessagesError(response.message || "Failed to load messages");
+        setIsMessagesLoading(false);
+        return;
+      }
+      
+      // Sort messages by date (newest last)
+      const sortedMessages = response.data.messages.sort((a: MessageType, b: MessageType) => 
+        new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
+      );
+      
+      setMessages(sortedMessages);
+    } catch (error) {
+      setMessagesError("An error occurred while fetching messages");
+      console.error("Error fetching messages:", error);
+    } finally {
+      setIsMessagesLoading(false);
     }
   };
 
-  const sendTextMessage = useCallback(
-    async (
-      textMessage: string,
-      senderId: string | undefined,
-      currentChatId: string | null,
-      setTextMessage: any
-    ) => {
-      if (!textMessage) return;
+  // Send message via socket
+  const sendMessage = useCallback((
+    payload: SendMessagePayload, 
+    setTextMessage: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    if (!socket || !authUser?.id || !payload.content.trim()) return;
+    
+    // Optimistically add message to UI
+    const tempMessage: MessageType = {
+      id: `temp-${Date.now()}`,
+      sender: authUser.id,
+      receiver: payload.receiver_id,
+      content: payload.content,
+      is_read: false,
+      sent_at: new Date().toISOString(),
+    };
+    
+    setMessages((prev) => [...prev, tempMessage]);
+    setTextMessage("");
+    
+    // Send via socket
+    socket.emit("send_message", payload, (response: any) => {
+      if (response?.error) {
+        console.error("Error sending message:", response.error);
+        // Remove the temp message if there was an error
+        setMessages((prev) => prev.filter(msg => msg.id !== tempMessage.id));
+        return;
+      }
+    });
+  }, [socket, authUser?.id]);
 
+  // Send message via REST API (fallback)
+  const sendTextMessage = useCallback(async (
+    textMessage: string,
+    senderId: string,
+    currentChatId: string,
+    setTextMessage: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    if (!textMessage.trim()) return;
+
+    try {
       const response = await postRequest(
         `${baseUrl}/message/send`,
         JSON.stringify({
-          chatId: currentChatId,
-          senderId,
-          text: textMessage,
+          receiver_id: currentChatId,
+          content: textMessage,
         })
       );
 
       if (response.error) {
-        return setSendTextMessageError(response);
+        setMessagesError(response.message || "Failed to send message");
+        return;
       }
 
-      setNewMessage(response.data.message);
-      setMessages((prev) => [...prev, response.data.message]);
+      setMessages((prev) => [...prev, response.data]);
       setTextMessage("");
-    },
+    } catch (error) {
+      setMessagesError("An error occurred while sending message");
+      console.error("Error sending message:", error);
+    }
+  }, []);
 
-    []
-  );
+  // Update current chat
+  const updateCurrentChat = useCallback((chatId: string | null) => {
+    setCurrentChatId(chatId);
+    setMessagesError(null);
+  }, []);
 
-  const updateCurrentChat = useCallback((chat: string) => {
-    setCurrentChatId(chat);
+  // Clear chat
+  const clearChat = useCallback(() => {
+    setMessages([]);
+    setCurrentChatId(null);
+    setMessagesError(null);
   }, []);
 
   return (
@@ -190,6 +229,7 @@ export const ChatContextProvider = ({
         sendTextMessage,
         socket,
         sendMessage,
+        clearChat,
       }}
     >
       {children}
