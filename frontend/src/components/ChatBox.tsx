@@ -5,10 +5,17 @@ import InputEmoji from "react-input-emoji";
 import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
 import { ChatContext, MessageType } from "../context/ChatContext";
+import { SignalZero } from "lucide-react";
 
 export const ChatBox = () => {
   const { authUser } = useAuthStore();
-  const { currentChatId, messages, isMessagesLoading, messagesError, sendMessage } = useContext(ChatContext);
+  const {
+    currentChatId,
+    messages,
+    isMessagesLoading,
+    messagesError,
+    sendMessage,
+  } = useContext(ChatContext);
   const { user, getUser } = useUserStore();
   const [textMessage, setTextMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -28,10 +35,11 @@ export const ChatBox = () => {
 
   // Handle message sending
   const handleSendMessage = () => {
-    if (!textMessage.trim() || !currentChatId || !authUser?.id || isSending) return;
-    
+    if (!textMessage.trim() || !currentChatId || !authUser?.id || isSending)
+      return;
+
     setIsSending(true);
-    
+
     try {
       sendMessage(
         {
@@ -81,13 +89,13 @@ export const ChatBox = () => {
   }
 
   return (
-    <Stack gap={4} className="chat-box h-full border rounded-lg flex flex-col">
+    <Stack gap={4} className="chat-box h-full border rounded-lg flex flex-col lg:mx-auto lg:w-3xl lg:max-w-3xl">
       {/* Chat Header */}
       <div className="chat-header border-b p-4 bg-gray-100 flex items-center gap-3">
         {user?.profile_picture && (
-          <img 
-            src={user.profile_picture} 
-            alt={user.username} 
+          <img
+            src={user.profile_picture}
+            alt={user.username}
             className="w-10 h-10 rounded-full object-cover"
           />
         )}
@@ -100,10 +108,12 @@ export const ChatBox = () => {
       </div>
 
       {/* Messages Container */}
-      <div className="messages flex-grow overflow-y-auto p-4">
+      <div className="messages flex-grow overflow-y-auto p-4 ">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">No messages yet. Start the conversation!</p>
+            <p className="text-gray-500">
+              No messages yet. Start the conversation!
+            </p>
           </div>
         ) : (
           messages.map((message: MessageType) => (
@@ -111,14 +121,14 @@ export const ChatBox = () => {
               key={message.id}
               className={`mb-4 max-w-[80%] ${
                 message.sender === authUser?.id
-                  ? "ml-auto"
+                  ? "ml-auto self-end "
                   : "mr-auto"
               }`}
             >
               <div
-                className={`p-3 rounded-lg ${
+                className={`p-3 rounded-lg max-w-xl ${
                   message.sender === authUser?.id
-                    ? "bg-blue-500 text-white rounded-br-none"
+                    ? "bg-blue-500 text-white rounded-br-none self-end ml-auto"
                     : "bg-gray-200 text-gray-800 rounded-bl-none"
                 }`}
               >
@@ -140,17 +150,20 @@ export const ChatBox = () => {
       </div>
 
       {/* Input Area */}
-      <div className="chat-input p-4 border-t bg-white">
-        <div className="flex items-center gap-2">
-          <div className="flex-grow">
+      <div className="chat-input p-4 border-t  ">
+        <div className="flex items-center gap-2  ">
+          <div className="overflow-hidden w-full ">
             <InputEmoji
               value={textMessage}
               onChange={setTextMessage}
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleKeyPress as any}
               cleanOnEnter
               placeholder="Type a message..."
               borderRadius={8}
               borderColor="#e2e8f0"
+              shouldReturn={true}
+              shouldConvertEmojiToImage={false}
+
             />
           </div>
           <button

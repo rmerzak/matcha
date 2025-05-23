@@ -8,7 +8,7 @@ import { SendMessagePayload } from "../types/socket";
 export interface MessageType {
   id: string;
   sender: string;
-  receiver: string;
+  receiver: string | null;
   content: string;
   is_read: boolean;
   sent_at: string;
@@ -16,11 +16,11 @@ export interface MessageType {
 
 // Define proper types for the context
 interface ChatContextType {
-  updateCurrentChat: (chatId: string | null) => void;
+  updateCurrentChat: (chatId: string | null | undefined) => void;
   messages: MessageType[];
   isMessagesLoading: boolean;
   messagesError: string | null;
-  currentChatId: string | null;
+  currentChatId: string | null | undefined;
   sendTextMessage: (
     textMessage: string,
     senderId: string,
@@ -53,7 +53,7 @@ interface ChatContextProviderProps {
 
 export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
   const { authUser } = useAuthStore();
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+  const [currentChatId, setCurrentChatId] = useState<string | null| undefined>(null);
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState<string | null>(null);
@@ -206,7 +206,7 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
   }, []);
 
   // Update current chat
-  const updateCurrentChat = useCallback((chatId: string | null) => {
+  const updateCurrentChat = useCallback((chatId: string | null | undefined) => {
     setCurrentChatId(chatId);
     setMessagesError(null);
   }, []);
