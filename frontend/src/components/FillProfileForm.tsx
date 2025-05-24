@@ -3,7 +3,7 @@ import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
 import { useNavigate } from "react-router-dom";
 import GenderSelect from "./GenderSelect";
-import SexualPreferenceSelect from "./SexualPreferenceSelect";
+// import SexualPreferenceSelect from "./SexualPreferenceSelect";
 import BioInput from "./BioInput";
 import InterestsSelect from "./InterestsSelect";
 import ProfilePictureUpload from "./ProfilePictureUpload";
@@ -19,7 +19,7 @@ function FillProfileForm() {
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [isBirthDateValid, setIsBirthDateValid] = useState(false); // New state for validity
   const [gender, setGender] = useState("");
-  const [sexualPreference, setSexualPreference] = useState("bisexual");
+  const [sexualPreference] = useState("bisexual");
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<
     { value: string; label: string }[]

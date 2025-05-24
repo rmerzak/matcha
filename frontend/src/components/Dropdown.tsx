@@ -15,8 +15,7 @@ const options = [
 export default function Dropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Suggestions");
-  const { sortBy, setSortBy, sortOrder, setSortOrder, getSuggestions } = useBrowsingStore();
-
+  const { setSortBy, setSortOrder, getSuggestions } = useBrowsingStore();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggling = () => setIsOpen(!isOpen);

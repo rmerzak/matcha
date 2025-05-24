@@ -91,7 +91,6 @@ export const useUserStore = create<UserStoreType>((set) => ({
   },
 
   updateLocation: async (location: Location) => {
-    const { checkAuth } = useAuthStore.getState();
     const token = localStorage.getItem("jwt");
     const config = {
       headers: {

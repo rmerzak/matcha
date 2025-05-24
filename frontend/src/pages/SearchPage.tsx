@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
-import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
-import { Frown } from "lucide-react";
 import AgeRangeSlider from "../components/AgeRangeSlider";
 import useAuthStore from "../store/useAuthStore";
 import { useBrowsingStore } from "../store/useBrowsingStore";
@@ -17,7 +15,7 @@ function SearchPage() {
   const { getSuggestions, setMinAge, setMaxAge } = useBrowsingStore();
 
   const [ageRangeValues, setAgeRangeValues] = useState({ min: 18, max: 80 });
-  const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
+  // const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
   const navigate = useNavigate();
 
   const handleAgeRangeChange = (value: any) => {
@@ -47,6 +45,7 @@ function SearchPage() {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-red-100 via-purple-100  to-blue-100 overflow-hidden">
       <Sidebar />
+      <div className="hidden">{ageRangeValues.max}</div>
       <div className="flex flex-grow flex-col overflow-hidden">
         <Header />
         <div

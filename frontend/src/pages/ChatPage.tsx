@@ -5,7 +5,6 @@ import { useMatchStore } from "../store/useMatchStore";
 import { useParams } from "react-router-dom";
 import { ChatContext } from "../context/ChatContext";
 import { ChatBox } from "../components/ChatBox";
-import { Chat } from "../components/Chat";
 
 function ChatPage() {
   const { getMyMatches } = useMatchStore();
@@ -22,7 +21,6 @@ function ChatPage() {
       <Sidebar />
       <div className="flex flex-grow flex-col h-screen ">
         <Header />
-        {/* <Chat /> */}
         <ChatBox />
       </div>
     </div>

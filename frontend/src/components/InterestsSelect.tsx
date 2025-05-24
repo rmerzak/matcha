@@ -48,7 +48,6 @@ const InterestsSelect: React.FC<InterestsSelectProps> = ({
   // Handle creation of new options
   const handleChange = (
     newValue: any,
-    actionMeta: any
   ) => {
     setInterests(newValue || []);
   };

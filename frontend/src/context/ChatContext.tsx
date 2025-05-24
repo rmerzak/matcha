@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useState, ReactNode } from "react";
-import { getRequest, baseUrl, postRequest } from "../utils/services";
-import useAuthStore, { AuthUserType } from "../store/useAuthStore";
+import { getRequest, baseUrl,  } from "../utils/services";
+import useAuthStore  from "../store/useAuthStore";
 import { io, Socket } from "socket.io-client";
 import { SendMessagePayload } from "../types/socket";
 
@@ -21,12 +21,7 @@ interface ChatContextType {
   isMessagesLoading: boolean;
   messagesError: string | null;
   currentChatId: string | null | undefined;
-  sendTextMessage: (
-    textMessage: string,
-    senderId: string,
-    currentChatId: string,
-    setTextMessage: React.Dispatch<React.SetStateAction<string>>
-  ) => Promise<void>;
+
   sendMessage: (
     payload: SendMessagePayload, 
     setTextMessage: React.Dispatch<React.SetStateAction<string>>
@@ -41,7 +36,6 @@ export const ChatContext = createContext<ChatContextType>({
   isMessagesLoading: false,
   messagesError: null,
   currentChatId: null,
-  sendTextMessage: async () => {},
   sendMessage: () => {},
   socket: null,
   clearChat: () => {},
@@ -174,36 +168,7 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
     });
   }, [socket, authUser?.id]);
 
-  // Send message via REST API (fallback)
-  const sendTextMessage = useCallback(async (
-    textMessage: string,
-    senderId: string,
-    currentChatId: string,
-    setTextMessage: React.Dispatch<React.SetStateAction<string>>
-  ) => {
-    if (!textMessage.trim()) return;
 
-    try {
-      const response = await postRequest(
-        `${baseUrl}/message/send`,
-        JSON.stringify({
-          receiver_id: currentChatId,
-          content: textMessage,
-        })
-      );
-
-      if (response.error) {
-        setMessagesError(response.message || "Failed to send message");
-        return;
-      }
-
-      setMessages((prev) => [...prev, response.data]);
-      setTextMessage("");
-    } catch (error) {
-      setMessagesError("An error occurred while sending message");
-      console.error("Error sending message:", error);
-    }
-  }, []);
 
   // Update current chat
   const updateCurrentChat = useCallback((chatId: string | null | undefined) => {
@@ -226,7 +191,6 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
         messages,
         isMessagesLoading,
         messagesError,
-        sendTextMessage,
         socket,
         sendMessage,
         clearChat,

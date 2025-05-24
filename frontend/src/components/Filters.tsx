@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Dropdown from "./Dropdown";
 import { Link } from "react-router-dom";
 import FilterButton from "./FilterButton";

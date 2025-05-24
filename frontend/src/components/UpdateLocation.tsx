@@ -1,4 +1,3 @@
-import { MapPin, MapPinOff } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useUserStore } from "../store/useUserStore";
 
@@ -117,7 +116,7 @@ const UpdateLocation: React.FC = () => {
     getGpsLocation();
   }, []);
 
-  return <div></div>;
+  return <div className="hidden">{location?.city} {error}</div>;
 };
 
 export default UpdateLocation;

@@ -4,7 +4,7 @@ interface FilterFooterProps {
     toggleFilters: () => void;
   }
 
-const FilterFooter: React.FC<FilterFooterProps> = ({ toggleFilters }) => {
+const FilterFooter: React.FC<FilterFooterProps> = ({ }) => {
     const {getSuggestions} = useBrowsingStore();
 
     const showResults = () => {

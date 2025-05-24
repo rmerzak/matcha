@@ -7,10 +7,9 @@ interface SortByProps {
 }
 
 function SortBy({
-  selectedSort: initialSelectedSort,
   onSortChange,
 }: SortByProps) {
-  const { sortBy, setSortBy, sortOrder, setSortOrder } = useBrowsingStore();
+  const { sortBy, setSortBy, setSortOrder } = useBrowsingStore();
   const [selectedSort, setSelectedSort] = useState<string | null>(sortBy);
 
   const sortByItems = [

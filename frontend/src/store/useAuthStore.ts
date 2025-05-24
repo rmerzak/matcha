@@ -19,6 +19,7 @@ export type AuthUserType = {
   birthDate?: Date;
   latitude?: string;
   longitude?: string;
+  age: string;
 };
 
 type SignUpDataType = {
@@ -200,6 +201,7 @@ const useAuthStore = create<AuthState>((set) => ({
             firstName: first_name,
             lastName: last_name,
             gender,
+            age,
             sexualPref: sexual_preferences,
             bio,
             interests: labledInterests,
@@ -219,6 +221,7 @@ const useAuthStore = create<AuthState>((set) => ({
             firstName: first_name,
             lastName: last_name,
             gender,
+            age,
             sexualPref: sexual_preferences,
             bio,
             pictures,

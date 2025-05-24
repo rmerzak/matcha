@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import { useUserStore } from "../store/useUserStore";
 import Age from "../components/Age";
 import Gender from "../components/Gender";
-import SexualPreference from "../components/SexualPreference";
+// import SexualPreference from "../components/SexualPreference";
 import { useAnalyticsStore } from "../store/useAnalyticsStore";
 import LikeButton from "../components/LikeButton";
 import BlockButton from "../components/BlockButton";

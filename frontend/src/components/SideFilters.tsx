@@ -1,7 +1,6 @@
 import { useState } from "react";
 import AgeRangeSlider from "./AgeRangeSlider";
 import useAuthStore from "../store/useAuthStore";
-import { useMatchStore } from "../store/useMatchStore";
 import { useBrowsingStore } from "../store/useBrowsingStore";
 
 interface CheckedItems {
@@ -10,10 +9,10 @@ interface CheckedItems {
 
 
 function SideFilters() {
-  const {minAge, maxAge, setMinAge, setMaxAge, getSuggestions } = useBrowsingStore();
+  const {setMinAge, setMaxAge, getSuggestions } = useBrowsingStore();
   const { authUser } = useAuthStore();
-  const [ageRangeValues, setAgeRangeValues] = useState({ min: 18, max: 80 });
-  const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
+  const [, setAgeRangeValues] = useState({ min: 18, max: 80 });
+  // const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
 
   const [checkedCommonTags, setCheckedCommonTags] = useState<CheckedItems>({});
 

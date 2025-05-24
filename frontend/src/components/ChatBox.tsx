@@ -5,7 +5,6 @@ import InputEmoji from "react-input-emoji";
 import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
 import { ChatContext, MessageType } from "../context/ChatContext";
-import { SignalZero } from "lucide-react";
 
 export const ChatBox = () => {
   const { authUser } = useAuthStore();

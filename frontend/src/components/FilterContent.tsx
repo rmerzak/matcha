@@ -2,7 +2,6 @@ import { useState } from "react";
 import SortBy from "./SortBy";
 import AgeRangeSlider from "./AgeRangeSlider";
 import CommonTags from "./CommonTags";
-import { useMatchStore } from "../store/useMatchStore";
 
 interface FilterContentProps {
     filter: string;
@@ -15,18 +14,14 @@ interface FilterContentProps {
 
 const FilterContent: React.FC<FilterContentProps> = ({
   filter,
-  ageRangeValues,
-  frRangeValues,
   handleAgeRangeChange,
   handleFrRangeChange,
 }) => {
-  const {setSortBy} = useMatchStore()
   const [selectedSort, setSelectedSort] = useState<string | null>(null);
 
 
   const handleSortChange = (newSelection: string | null) => {
     setSelectedSort(newSelection);
-    setSortBy(newSelection)
   };
 
   return (
