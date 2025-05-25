@@ -1,6 +1,12 @@
-import { createContext, useCallback, useEffect, useState, ReactNode } from "react";
-import { getRequest, baseUrl,  } from "../utils/services";
-import useAuthStore  from "../store/useAuthStore";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { getRequest, baseUrl } from "../utils/services";
+import useAuthStore from "../store/useAuthStore";
 import { io, Socket } from "socket.io-client";
 import { SendMessagePayload } from "../types/socket";
 
@@ -14,6 +20,19 @@ export interface MessageType {
   sent_at: string;
 }
 
+// Define proper types for notifications
+export interface NotificationType {
+  content: string;
+  created_at: string;
+  id: string;
+  is_read: boolean;
+  profile_picture: string;
+  sender_id: string;
+  type: string;
+  user_id: string;
+  username: string;
+}
+
 // Define proper types for the context
 interface ChatContextType {
   updateCurrentChat: (chatId: string | null | undefined) => void;
@@ -21,9 +40,13 @@ interface ChatContextType {
   isMessagesLoading: boolean;
   messagesError: string | null;
   currentChatId: string | null | undefined;
+  notifications: NotificationType[];
+  isNotificationsLoading: boolean;
+  notificationsError: string | null;
+  getNotifications: () => void;
 
   sendMessage: (
-    payload: SendMessagePayload, 
+    payload: SendMessagePayload,
     setTextMessage: React.Dispatch<React.SetStateAction<string>>
   ) => void;
   socket: Socket | null;
@@ -39,6 +62,10 @@ export const ChatContext = createContext<ChatContextType>({
   sendMessage: () => {},
   socket: null,
   clearChat: () => {},
+  notifications: [],
+  notificationsError: null,
+  isNotificationsLoading: false,
+  getNotifications: () => {}
 });
 
 interface ChatContextProviderProps {
@@ -46,18 +73,25 @@ interface ChatContextProviderProps {
 }
 
 export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
+  const authToken = localStorage.getItem("jwt");
   const { authUser } = useAuthStore();
-  const [currentChatId, setCurrentChatId] = useState<string | null| undefined>(null);
+  const [currentChatId, setCurrentChatId] = useState<string | null | undefined>(
+    null
+  );
+  const [socket, setSocket] = useState<Socket | null>(null);
+
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState<string | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const authToken = localStorage.getItem("jwt");
+
+  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const [isNotificationsLoading, setIsNotificationsLoading] = useState(false);
+  const [notificationsError, setNotificationsError] = useState<string | null>(null);
 
   // Initialize socket connection
   useEffect(() => {
     if (!authToken) return;
-    
+
     const newSocket = io("http://localhost:8000", {
       extraHeaders: {
         Authorization: `Bearer ${authToken}`,
@@ -70,7 +104,7 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       reconnection: true,
       reconnectionDelay: 1000,
     });
-    
+
     setSocket(newSocket);
 
     // Socket event listeners
@@ -110,24 +144,27 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
   // Get chat history
   const getMessages = async () => {
     if (!currentChatId) return;
-    
+
     setIsMessagesLoading(true);
     setMessagesError(null);
 
     try {
-      const response = await getRequest(`${baseUrl}/message/history/${currentChatId}`);
-      
+      const response = await getRequest(
+        `${baseUrl}/message/history/${currentChatId}`
+      );
+
       if (response.error) {
         setMessagesError(response.message || "Failed to load messages");
         setIsMessagesLoading(false);
         return;
       }
-      
+
       // Sort messages by date (newest last)
-      const sortedMessages = response.data.messages.sort((a: MessageType, b: MessageType) => 
-        new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
+      const sortedMessages = response.data.messages.sort(
+        (a: MessageType, b: MessageType) =>
+          new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
       );
-      
+
       setMessages(sortedMessages);
     } catch (error) {
       setMessagesError("An error occurred while fetching messages");
@@ -138,37 +175,40 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
   };
 
   // Send message via socket
-  const sendMessage = useCallback((
-    payload: SendMessagePayload, 
-    setTextMessage: React.Dispatch<React.SetStateAction<string>>
-  ) => {
-    if (!socket || !authUser?.id || !payload.content.trim()) return;
-    
-    // Optimistically add message to UI
-    const tempMessage: MessageType = {
-      id: `temp-${Date.now()}`,
-      sender: authUser.id,
-      receiver: payload.receiver_id,
-      content: payload.content,
-      is_read: false,
-      sent_at: new Date().toISOString(),
-    };
-    
-    setMessages((prev) => [...prev, tempMessage]);
-    setTextMessage("");
-    
-    // Send via socket
-    socket.emit("send_message", payload, (response: any) => {
-      if (response?.error) {
-        console.error("Error sending message:", response.error);
-        // Remove the temp message if there was an error
-        setMessages((prev) => prev.filter(msg => msg.id !== tempMessage.id));
-        return;
-      }
-    });
-  }, [socket, authUser?.id]);
+  const sendMessage = useCallback(
+    (
+      payload: SendMessagePayload,
+      setTextMessage: React.Dispatch<React.SetStateAction<string>>
+    ) => {
+      if (!socket || !authUser?.id || !payload.content.trim()) return;
 
+      // Optimistically add message to UI
+      const tempMessage: MessageType = {
+        id: `temp-${Date.now()}`,
+        sender: authUser.id,
+        receiver: payload.receiver_id,
+        content: payload.content,
+        is_read: false,
+        sent_at: new Date().toISOString(),
+      };
 
+      setMessages((prev) => [...prev, tempMessage]);
+      setTextMessage("");
+
+      // Send via socket
+      socket.emit("send_message", payload, (response: any) => {
+        if (response?.error) {
+          console.error("Error sending message:", response.error);
+          // Remove the temp message if there was an error
+          setMessages((prev) =>
+            prev.filter((msg) => msg.id !== tempMessage.id)
+          );
+          return;
+        }
+      });
+    },
+    [socket, authUser?.id]
+  );
 
   // Update current chat
   const updateCurrentChat = useCallback((chatId: string | null | undefined) => {
@@ -183,6 +223,37 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
     setMessagesError(null);
   }, []);
 
+  // Get notifications history
+  const getNotifications = async () => {
+    setIsNotificationsLoading(true);
+    setNotificationsError(null)
+
+    try {
+      const response = await getRequest(
+        `${baseUrl}/notification/get-notifications`
+      );
+      
+      if (response.error) {
+        setNotificationsError(response.message || "Failed to load messages");
+        setIsNotificationsLoading(false);
+        return;
+      }
+
+      // // Sort messages by date (newest last)
+      // const sortedMessages = response.data.messages.sort(
+      //   (a: MessageType, b: MessageType) =>
+      //     new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
+      // );
+
+      setNotifications(response.data);
+    } catch (error) {
+      setNotificationsError("An error occurred while fetching notifications");
+      console.error("Error fetching notifications:", error);
+    } finally {
+      setIsNotificationsLoading(false);
+    }
+  };
+
   return (
     <ChatContext.Provider
       value={{
@@ -194,6 +265,10 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
         socket,
         sendMessage,
         clearChat,
+        notifications,
+        isNotificationsLoading,
+        notificationsError,
+        getNotifications,
       }}
     >
       {children}

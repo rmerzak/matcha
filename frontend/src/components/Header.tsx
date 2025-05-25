@@ -1,13 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 import { Bell, LogOut, Menu, User } from "lucide-react";
+import { ChatContext } from "../context/ChatContext";
 
 export const Header = () => {
   const { authUser, signOut } = useAuthStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const { getNotifications, notifications } = useContext(ChatContext);
+
+  useEffect(() => {
+    getNotifications();
+  }, []);
 
   useEffect(() => {
     const handleClickOutsie = (event: any) => {
@@ -88,9 +94,11 @@ export const Header = () => {
           <div className="md:hidden flex gap-4">
             <Link to="/notifications" className="text-white relative p-2">
               <Bell className="size-7 " />
-              <span className="bg-gray-400 font-bold text-sm w-5 h-5 text-center inline-block rounded-full absolute top-0 right-1
-              align-baseline ">
-                0
+              <span
+                className="bg-gray-400 font-bold text-sm w-5 h-5 text-center inline-block rounded-full absolute top-0 right-1
+              align-baseline "
+              >
+                {notifications.length}
               </span>
             </Link>
             <button

@@ -1,0 +1,60 @@
+import { Sidebar } from "../components/Sidebar";
+import { Header } from "../components/Header";
+import { useContext, useEffect } from "react";
+import PageTitle from "../components/PageTitle";
+import { ChatContext } from "../context/ChatContext";
+
+function NotificationsPage() {
+  const { getNotifications, notifications } = useContext(ChatContext);
+  useEffect(() => {
+    getNotifications();
+  }, []);
+
+  return (
+    <div
+      className="flex flex-col lg:flex-row 
+    bg-gradient-to-br bg-gray-50 overflow-hidden"
+    >
+      <Sidebar />
+      <div className="flex flex-grow flex-col h-screen ">
+        <Header />
+        <div className="flex flex-col gap-2 overflow-auto">6
+          <PageTitle title="Notifications" />
+          <div className="bg-white p-4 rounded shadow-md">
+            {notifications && notifications.length > 0 ? (
+              <ul className="space-y-4">
+                {notifications.map((notification) => (
+                  <li
+                    key={notification.id}
+                    className="flex items-start gap-4 p-3 border-b"
+                  >
+                    <img
+                      src={notification.profile_picture}
+                      alt={notification.username}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-sm">
+                        {notification.username}
+                      </span>
+                      <span className="text-gray-700">
+                        {notification.content}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(notification.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No notifications found.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default NotificationsPage;
