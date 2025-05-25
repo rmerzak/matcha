@@ -1,6 +1,6 @@
 import { Heart, Loader, MessageCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useMatchStore } from "../store/useMatchStore";
 
 export const Sidebar = () => {
@@ -9,6 +9,8 @@ export const Sidebar = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const { getMyMatches, matches, isLoadingMyMatches } = useMatchStore();
+
+  const { id } = useParams();
 
   useEffect(() => {
     getMyMatches();
@@ -43,8 +45,10 @@ export const Sidebar = () => {
               matches.map((match) => (
                 <Link key={match.id} to={`/chat/${match.id}`}>
                   <div
-                    className="flex items-center mb-4 cursor-pointer hover:bg-purple-50 p-2 rounded-lg
-                transition-colors duration-300"
+                    className={`flex items-center mb-4 cursor-pointer hover:bg-purple-200 p-2 rounded-lg
+                transition-colors duration-300 ${
+                  match.id === id && "bg-purple-100"
+                } `}
                   >
                     <img
                       src={match.profile_picture || "/avatar.png"}

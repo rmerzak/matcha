@@ -88,7 +88,10 @@ export const ChatBox = () => {
   }
 
   return (
-    <Stack gap={4} className="chat-box h-full border rounded-lg flex flex-col lg:mx-auto lg:w-3xl lg:max-w-3xl">
+    <Stack
+      gap={4}
+      className="chat-box h-full border rounded-lg flex flex-col lg:mx-auto lg:w-full lg:max-w-3xl"
+    >
       {/* Chat Header */}
       <div className="chat-header border-b p-4 bg-gray-100 flex items-center gap-3">
         {user?.profile_picture && (
@@ -162,7 +165,6 @@ export const ChatBox = () => {
               borderColor="#e2e8f0"
               shouldReturn={true}
               shouldConvertEmojiToImage={false}
-
             />
           </div>
           <button
@@ -191,5 +193,6 @@ export const ChatBox = () => {
         </div>
       </div>
     </Stack>
+    // <div></div>
   );
 };

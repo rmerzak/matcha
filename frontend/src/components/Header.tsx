@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { Link } from "react-router-dom";
-import { LogOut, Menu, User } from "lucide-react";
+import { Bell, LogOut, Menu, User } from "lucide-react";
 
 export const Header = () => {
   const { authUser, signOut } = useAuthStore();
@@ -44,7 +44,9 @@ export const Header = () => {
                     className="h-10 w-10 object-cover rounded-full border-2 border-white"
                     alt="User image"
                   />
-                  <span className="text-white font-medium">{authUser.username}</span>
+                  <span className="text-white font-medium">
+                    {authUser.username}
+                  </span>
                 </button>
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
@@ -83,12 +85,19 @@ export const Header = () => {
               </>
             )}
           </div>
-          <div className="md:hidden">
+          <div className="md:hidden flex gap-4">
+            <Link to="/notifications" className="text-white relative p-2">
+              <Bell className="size-7 " />
+              <span className="bg-gray-400 font-bold text-sm w-5 h-5 text-center inline-block rounded-full absolute top-0 right-1
+              align-baseline ">
+                0
+              </span>
+            </Link>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-white focus:outline-none"
             >
-              <Menu className="size-6" />
+              <Menu className="size-7" />
             </button>
           </div>
         </div>
