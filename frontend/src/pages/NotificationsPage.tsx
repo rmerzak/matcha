@@ -6,6 +6,11 @@ import { ChatContext } from "../context/ChatContext";
 
 function NotificationsPage() {
   const { getNotifications, notifications } = useContext(ChatContext);
+  
+  // useEffect(() => {
+  //   console.log(notifications.length)
+  // }, [notifications])
+  
   useEffect(() => {
     getNotifications();
   }, []);
@@ -18,15 +23,15 @@ function NotificationsPage() {
       <Sidebar />
       <div className="flex flex-grow flex-col h-screen ">
         <Header />
-        <div className="flex flex-col gap-2 overflow-auto">6
+        <div className="flex flex-col gap-2 overflow-auto">
           <PageTitle title="Notifications" />
           <div className="bg-white p-4 rounded shadow-md">
             {notifications && notifications.length > 0 ? (
-              <ul className="space-y-4">
+              <ul className="space-y-4 flex-col-reverse flex">
                 {notifications.map((notification) => (
                   <li
                     key={notification.id}
-                    className="flex items-start gap-4 p-3 border-b"
+                    className={`flex items-start gap-4 p-3 border-b ${!notification.is_read ? 'bg-gray-100' : ''}`}
                   >
                     <img
                       src={notification.profile_picture}

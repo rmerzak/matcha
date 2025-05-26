@@ -22,15 +22,15 @@ export interface MessageType {
 
 // Define proper types for notifications
 export interface NotificationType {
-  content: string;
-  created_at: string;
   id: string;
-  is_read: boolean;
-  profile_picture: string;
-  sender_id: string;
-  type: string;
   user_id: string;
+  sender_id: string;
+  content: string;
   username: string;
+  profile_picture: string;
+  type: string;
+  is_read: boolean;
+  created_at: string;
 }
 
 // Define proper types for the context
@@ -65,7 +65,7 @@ export const ChatContext = createContext<ChatContextType>({
   notifications: [],
   notificationsError: null,
   isNotificationsLoading: false,
-  getNotifications: () => {}
+  getNotifications: () => {},
 });
 
 interface ChatContextProviderProps {
@@ -86,7 +86,9 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
 
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [isNotificationsLoading, setIsNotificationsLoading] = useState(false);
-  const [notificationsError, setNotificationsError] = useState<string | null>(null);
+  const [notificationsError, setNotificationsError] = useState<string | null>(
+    null
+  );
 
   // Initialize socket connection
   useEffect(() => {
@@ -125,6 +127,22 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       if (data.sender !== authUser?.id) {
         setMessages((prev) => [...prev, data]);
       }
+    });
+
+    newSocket.on("view", (data) => {
+      console.log("Someone viewed your profile", data);
+      // if (data.sender !== authUser?.id) {
+      //   setMessages((prev) => [...prev, data]);
+      // }
+    });
+
+    newSocket.on("new_like", (data) => {
+      console.log("Someone liked your profile", data.data);
+      setNotifications((prev) => [...prev, data.data]);
+
+      // if (data.sender !== authUser?.id) {
+      //   setMessages((prev) => [...prev, data]);
+      // }
     });
 
     return () => {
@@ -226,26 +244,26 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
   // Get notifications history
   const getNotifications = async () => {
     setIsNotificationsLoading(true);
-    setNotificationsError(null)
+    setNotificationsError(null);
 
     try {
       const response = await getRequest(
         `${baseUrl}/notification/get-notifications`
       );
-      
+
       if (response.error) {
         setNotificationsError(response.message || "Failed to load messages");
         setIsNotificationsLoading(false);
         return;
       }
 
-      // // Sort messages by date (newest last)
-      // const sortedMessages = response.data.messages.sort(
-      //   (a: MessageType, b: MessageType) =>
-      //     new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
-      // );
+      // Sort notifications by date (newest last)
+      const sortedNotifications = response.data.sort(
+        (a: NotificationType, b: NotificationType) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
 
-      setNotifications(response.data);
+      setNotifications(sortedNotifications);
     } catch (error) {
       setNotificationsError("An error occurred while fetching notifications");
       console.error("Error fetching notifications:", error);

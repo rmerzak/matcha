@@ -3,6 +3,7 @@ import useAuthStore from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 import { Bell, LogOut, Menu, User } from "lucide-react";
 import { ChatContext } from "../context/ChatContext";
+import { Notification } from "./Notification";
 
 export const Header = () => {
   const { authUser, signOut } = useAuthStore();
@@ -39,6 +40,7 @@ export const Header = () => {
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-4">
+            <Notification />
             {authUser ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -92,16 +94,8 @@ export const Header = () => {
             )}
           </div>
           <div className="md:hidden flex gap-4">
-            <Link to="/notifications" className="text-white relative p-2">
-              <Bell className="size-7 " />
-              <span
-                className="bg-gray-400 font-bold text-sm w-5 h-5 text-center inline-block rounded-full absolute top-0 right-1
-              align-baseline "
-              >
-                {notifications.length}
-              </span>
-            </Link>
-            <button
+              <Notification />
+              <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-white focus:outline-none"
             >
