@@ -75,11 +75,11 @@ function AgeRangeSlider({
     <span className="w-full flex items-center justify-center flex-col space-y-14 lg:space-y-5">
       {/* Display the min and max values */}
       <div className="w-[200px] px-4 flex items-center justify-between gap-x-5">
-        <p className="text-base lg:text-sm text-black font-semibold">
+        <p className="text-base lg:text-md text-black font-semibold">
           min: {minVal}
         </p>
         <div className="flex-1 border-dashed border border-neutral-500 mt-1"></div>
-        <p className="text-base lg:text-sm text-black font-semibold">
+        <p className="text-base lg:text-md text-black font-semibold">
           max: {maxVal}
         </p>
       </div>
