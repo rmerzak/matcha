@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { Link } from "react-router-dom";
-import { Bell, LogOut, Menu, User } from "lucide-react";
+import { LogOut, Menu, User } from "lucide-react";
 import { ChatContext } from "../context/ChatContext";
 import { Notification } from "./Notification";
 
@@ -10,7 +10,7 @@ export const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const { getNotifications, notifications } = useContext(ChatContext);
+  const { getNotifications } = useContext(ChatContext);
 
   useEffect(() => {
     getNotifications();
