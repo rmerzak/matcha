@@ -59,7 +59,7 @@ async def browse_profiles(
     try:
         logger.info(f"Browsing profiles for user {current_user}")
         # return {"message": "Browsing profiles"}
-        result = await service.browse_profiles(
+        return await service.browse_profiles(
             user_id=current_user["id"],
             page=page,
             items_per_page=items_per_page,
@@ -69,7 +69,6 @@ async def browse_profiles(
             sort_by=sort_by,
             sort_order=sort_order.value if sort_order else "desc"
         )
-        return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}
 

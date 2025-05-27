@@ -25,3 +25,6 @@ class INotificationService(ABC):
     @abstractmethod
     async def mark_notification_as_read(self, notification_id: str):
         pass
+    @abstractmethod
+    async def mark_as_read(self, user_id: str):
+        pass

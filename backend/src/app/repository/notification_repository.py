@@ -36,6 +36,17 @@ class NotificationRepository(BaseRepository):
         result = await self.db.fetch_one(query, {"notification_id": notification_id})
         return bool(result)
     
+    async def mark_all_notifications_as_read(self, user_id: str) -> bool:
+        """Mark all notifications as read for a user"""
+        query = """
+            UPDATE notifications
+            SET is_read = TRUE
+            WHERE user_id = :user_id AND is_read = FALSE
+            RETURNING id
+        """
+        results = await self.db.fetch_all(query, {"user_id": user_id})
+        return len(results) > 0
+    
     async def get_user_notifications(self, user_id: str) -> List[Dict]:
         """Get all notifications for a user without pagination"""
         query = """

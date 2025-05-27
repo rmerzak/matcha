@@ -139,3 +139,26 @@ class NotificationServiceImp(BaseService, INotificationService):
                 f"Error marking notification as read: {str(e)}",
                 status_code=500
             )
+
+    async def mark_as_read(self, user_id: str):
+        """Mark all notifications as read for a user"""
+        try:
+            user = await self.user_service.get_user_by_id(user_id)
+            if not user:
+                return error_response("User not found", "User does not exist", 404)
+            
+            success = await self.notification_repository.mark_all_notifications_as_read(user_id)
+            if not success:
+                return error_response("Not found", "No unread notifications found", 404)
+            
+            return success_response(
+                data={"user_id": user_id},
+                message="All notifications marked as read",
+                status_code=200
+            )
+        except Exception as e:
+            return error_response(
+                "Internal server error",
+                f"Error marking notifications as read: {str(e)}",
+                status_code=500
+            )

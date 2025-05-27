@@ -32,3 +32,15 @@ async def get_notifications(
         return notifications
     except Exception as e:
         return error_response(str(e), "Error getting notifications", 500)
+    
+@router.put("/mark-as-read")
+@inject
+async def mark_as_read(
+    current_user: User = Depends(get_current_user_info),
+    service: INotificationService = Depends(Provide[Container.notification_service])
+):
+    try:
+        await service.mark_as_read(current_user["id"])
+        return success_response("Notifications marked as read")
+    except Exception as e:
+        return error_response(str(e), "Error marking notifications as read", 500)
