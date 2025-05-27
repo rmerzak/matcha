@@ -525,39 +525,31 @@ END $$;
 DROP FUNCTION IF EXISTS generate_test_users(INTEGER);
 DROP FUNCTION IF EXISTS generate_random_interactions(INTEGER);
 
--- Create triggers to automatically create notifications
+-- Drop existing triggers and functions first
+DROP TRIGGER IF EXISTS after_like_insert ON likes;
+DROP TRIGGER IF EXISTS after_like_delete ON likes;
+DROP TRIGGER IF EXISTS after_view_insert ON views;
+DROP TRIGGER IF EXISTS after_message_insert ON messages;
 
--- Trigger for likes
+DROP FUNCTION IF EXISTS create_like_notification();
+DROP FUNCTION IF EXISTS create_unlike_notification();
+DROP FUNCTION IF EXISTS create_view_notification();
+DROP FUNCTION IF EXISTS create_message_notification();
+
+-- Fixed trigger for likes - only creates notifications, doesn't handle matches
 CREATE OR REPLACE FUNCTION create_like_notification() RETURNS TRIGGER AS $$
 BEGIN
-  -- Insert notification for receiving a like
+  -- Only insert notification for receiving a like
+  -- Don't check for matches here since the application handles that logic
   INSERT INTO notifications (user_id, sender_id, type, content)
-  VALUES (NEW.liked, NEW.liker, 'like_received', 'Someone liked your profile');
-  
-  -- Check if this creates a match (both users liked each other)
-  IF EXISTS (SELECT 1 FROM likes WHERE liker = NEW.liked AND liked = NEW.liker) THEN
-    -- Create match notification
-    INSERT INTO notifications (user_id, sender_id, type, content)
-    VALUES 
-      (NEW.liked, NEW.liker, 'match_created', 'You have a new match!'),
-      (NEW.liker, NEW.liked, 'match_created', 'You have a new match!');
-    
-    -- Update both like records to show they're connected
-    UPDATE likes SET is_connected = TRUE 
-    WHERE (liker = NEW.liker AND liked = NEW.liked) 
-       OR (liker = NEW.liked AND liked = NEW.liker);
-  END IF;
+  VALUES (NEW.liked, NEW.liker, 'like_received', 'Someone liked your profile')
+  ON CONFLICT DO NOTHING; -- Prevent duplicates if somehow called twice
   
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_like_insert
-  AFTER INSERT ON likes
-  FOR EACH ROW
-  EXECUTE FUNCTION create_like_notification();
-
--- Trigger for unlikes (when a row is deleted from likes table)
+-- Fixed trigger for unlikes - only handles connection breaking
 CREATE OR REPLACE FUNCTION create_unlike_notification() RETURNS TRIGGER AS $$
 BEGIN
   -- Only create notification if they were previously matched
@@ -566,7 +558,8 @@ BEGIN
     IF EXISTS (SELECT 1 FROM likes WHERE liker = OLD.liked AND liked = OLD.liker) THEN
       -- Create unlike notification
       INSERT INTO notifications (user_id, sender_id, type, content)
-      VALUES (OLD.liked, OLD.liker, 'match_broken', 'A match has been broken');
+      VALUES (OLD.liked, OLD.liker, 'match_broken', 'A match has been broken')
+      ON CONFLICT DO NOTHING;
       
       -- Update the remaining like to show they're no longer connected
       UPDATE likes SET is_connected = FALSE 
@@ -578,40 +571,68 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_like_delete
-  AFTER DELETE ON likes
-  FOR EACH ROW
-  EXECUTE FUNCTION create_unlike_notification();
-
--- Trigger for profile views
+-- Fixed trigger for profile views
 CREATE OR REPLACE FUNCTION create_view_notification() RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO notifications (user_id, sender_id, type, content)
-  VALUES (NEW.viewed, NEW.viewer, 'profile_viewed', 'Someone viewed your profile');
+  -- Prevent self-views and duplicate notifications
+  IF NEW.viewer != NEW.viewed THEN
+    INSERT INTO notifications (user_id, sender_id, type, content)
+    VALUES (NEW.viewed, NEW.viewer, 'profile_viewed', 'Someone viewed your profile')
+    ON CONFLICT DO NOTHING;
+  END IF;
   
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_view_insert
-  AFTER INSERT ON views
-  FOR EACH ROW
-  EXECUTE FUNCTION create_view_notification();
-
--- Trigger for messages
+-- Fixed trigger for messages
 CREATE OR REPLACE FUNCTION create_message_notification() RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO notifications (user_id, sender_id, type, content)
-  VALUES (NEW.receiver, NEW.sender, 'message_received', 'You received a new message');
+  -- Prevent self-messages and duplicate notifications
+  IF NEW.sender != NEW.receiver THEN
+    INSERT INTO notifications (user_id, sender_id, type, content)
+    VALUES (NEW.receiver, NEW.sender, 'message_received', 'You received a new message')
+    ON CONFLICT DO NOTHING;
+  END IF;
   
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_message_insert
-  AFTER INSERT ON messages
-  FOR EACH ROW
-  EXECUTE FUNCTION create_message_notification();
+-- Create the triggers (but don't activate them yet)
+-- We'll comment these out so your application handles notifications
+-- Uncomment only if you want database-level notification creation
+
+-- CREATE TRIGGER after_like_insert
+--   AFTER INSERT ON likes
+--   FOR EACH ROW
+--   EXECUTE FUNCTION create_like_notification();
+
+-- CREATE TRIGGER after_like_delete
+--   AFTER DELETE ON likes
+--   FOR EACH ROW
+--   EXECUTE FUNCTION create_unlike_notification();
+
+-- CREATE TRIGGER after_view_insert
+--   AFTER INSERT ON views
+--   FOR EACH ROW
+--   EXECUTE FUNCTION create_view_notification();
+
+-- CREATE TRIGGER after_message_insert
+--   AFTER INSERT ON messages
+--   FOR EACH ROW
+--   EXECUTE FUNCTION create_message_notification();
+
+-- Add a unique constraint to prevent duplicate notifications
+-- This will help prevent duplicates even if both triggers and application code run
+ALTER TABLE notifications 
+ADD CONSTRAINT unique_notification_per_action 
+UNIQUE (user_id, sender_id, type, created_at);
+
+-- If the above constraint is too restrictive, use this alternative:
+-- CREATE UNIQUE INDEX idx_unique_recent_notifications 
+-- ON notifications (user_id, sender_id, type) 
+-- WHERE created_at > NOW() - INTERVAL '1 minute';
 
 -- Create trigger to automatically update age when date_of_birth changes
 CREATE OR REPLACE FUNCTION update_age_from_dob() RETURNS TRIGGER AS $$

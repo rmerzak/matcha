@@ -2,6 +2,8 @@ from app.repository.base_repository import BaseRepository
 from typing import List, Optional, Dict
 from datetime import datetime
 from uuid import UUID
+import logging
+logger = logging.getLogger(__name__)
 
 class NotificationRepository(BaseRepository):
     def __init__(self, db):
@@ -15,6 +17,7 @@ class NotificationRepository(BaseRepository):
             VALUES (:user_id, :sender_id, :type, :content)
             RETURNING id, user_id, sender_id, type, content, is_read, created_at
         """
+        logger.info(f"Creating notification for user {user_id} with sender {sender_id}, type {notification_type}, and content {content}")
         values = {
             "user_id": user_id,
             "sender_id": sender_id,

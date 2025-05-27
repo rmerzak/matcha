@@ -25,7 +25,6 @@ async def add_like(
     try:
         return await service.add_like(current_user["id"], liked_user_id)
     except Exception as e:
-        logger.error(f"Error in add_like endpoint: {str(e)}")
         return error_response("Internal server error", str(e), status_code=500)
 
 @router.delete("/unlike/{unliked_user_id}")

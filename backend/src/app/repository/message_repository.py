@@ -11,9 +11,22 @@ class MessageRepository(BaseRepository):
         """Create a new message"""
         try:
             query = """
-                INSERT INTO messages (sender, receiver, content)
-                VALUES (:sender_id, :receiver_id, :content)
-                RETURNING id, sender, receiver, content, is_read, sent_at
+                WITH new_message AS (
+                    INSERT INTO messages (sender, receiver, content)
+                    VALUES (:sender_id, :receiver_id, :content)
+                    RETURNING id, sender, receiver, content, is_read, sent_at
+                )
+                SELECT 
+                    nm.id,
+                    nm.sender,
+                    nm.receiver,
+                    nm.content,
+                    nm.is_read,
+                    nm.sent_at,
+                    u.username as sender_username,
+                    u.profile_picture as sender_profile_picture
+                FROM new_message nm
+                JOIN users u ON nm.sender = u.id
             """
             result = await self.db.fetch_one(
                 query=query,

@@ -14,6 +14,8 @@ class INotificationService(ABC):
     async def send_match_notification(self, user_id: str, sender_id: str):
         pass
     @abstractmethod
+    async def send_message_notification(self, message: dict, user_id: str):
+        pass
     # async def send_view_notification(self, message: dict, user_id: str):
     #     pass
     # @abstractmethod
