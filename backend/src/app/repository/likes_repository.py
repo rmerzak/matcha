@@ -143,6 +143,7 @@ class LikesRepository(BaseRepository):
         """
         Get all users who have liked the current user, including their profile information
         Optional filtering by connection status (connected or not connected)
+        Excludes users who have blocked the current user
         """
         offset = (page - 1) * items_per_page
         
@@ -154,6 +155,9 @@ class LikesRepository(BaseRepository):
         if connection_status is not None:
             where_clause += " AND l.is_connected = :is_connected"
             params["is_connected"] = connection_status
+        
+        # Add condition to exclude users who have blocked the current user
+        where_clause += " AND NOT EXISTS (SELECT 1 FROM blocks b WHERE b.blocker = l.liker AND b.blocked = :user_id)"
         
         count_query = f"""
             SELECT COUNT(*) 

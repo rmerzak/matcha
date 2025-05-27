@@ -211,6 +211,7 @@ class UserRepository(BaseRepository):
 
     async def search_users(
         self,
+        current_user_id: str,
         age_min: int = None,
         age_max: int = None,
         fame_min: float = None,
@@ -221,7 +222,10 @@ class UserRepository(BaseRepository):
     ):
         try:
             conditions = ["1=1"]
-            values = {}
+            values = {"current_user_id": current_user_id}
+            
+            # Exclude users who have blocked the current user
+            conditions.append("NOT EXISTS (SELECT 1 FROM blocks b WHERE b.blocker = users.id AND b.blocked = :current_user_id)")
             
             if age_min is not None:
                 conditions.append("age >= :age_min")
@@ -262,7 +266,7 @@ class UserRepository(BaseRepository):
         except Exception as e:
             raise DatabaseError(f"Failed to search users: {str(e)}")
 
-    async def search_users_by_username(self, username_prefix: str):
+    async def search_users_by_username(self, username_prefix: str, current_user_id: str):
         try:
             query = """
                 SELECT id, username, first_name, last_name, email, gender, 
@@ -270,12 +274,16 @@ class UserRepository(BaseRepository):
                     location, latitude, address, age, bio, date_of_birth
                 FROM users 
                 WHERE username ILIKE :username_prefix
+                AND NOT EXISTS (SELECT 1 FROM blocks b WHERE b.blocker = users.id AND b.blocked = :current_user_id)
                 ORDER BY username ASC
             """
             
             results = await self.fetch_all(
                 query=query, 
-                values={"username_prefix": f"{username_prefix}%"}
+                values={
+                    "username_prefix": f"{username_prefix}%",
+                    "current_user_id": current_user_id
+                }
             )
             return [dict(row) for row in results]
             
@@ -306,8 +314,13 @@ class UserRepository(BaseRepository):
             print("Current user data retrieved")
             if not current_user:
                 raise DatabaseError("User not found")
+            
             conditions = ["users.id != :user_id"]
             values = {"user_id": user_id, "offset": (page - 1) * items_per_page, "limit": items_per_page}
+            
+            # Exclude users who have blocked the current user
+            conditions.append("NOT EXISTS (SELECT 1 FROM blocks b WHERE b.blocker = users.id AND b.blocked = :user_id)")
+            
             gender = current_user["gender"]
             preference = current_user["sexual_preferences"] or "bisexual"
             if preference == "heterosexual":
@@ -318,6 +331,7 @@ class UserRepository(BaseRepository):
             elif preference == "homosexual":
                 if gender:
                     conditions.append(f"gender = '{gender}'")
+            
             if min_age is not None:
                 conditions.append("age >= :min_age")
                 values["min_age"] = min_age
@@ -330,6 +344,7 @@ class UserRepository(BaseRepository):
             if max_fame is not None:
                 conditions.append("fame_rating <= :max_fame")
                 values["max_fame"] = max_fame
+            
             user_interests = current_user["interests"] or []
             has_interests = len(user_interests) > 0
             has_location = False
@@ -352,6 +367,7 @@ class UserRepository(BaseRepository):
                         power(69.1 * (:user_long - longitude) * cos(latitude / 57.3), 2)) <= :max_distance)
                     """)
                     values["max_distance"] = max_distance
+            
             if sort_by == "age":
                 order_clause = f"ORDER BY age {sort_order}"
             elif sort_by == "fame_rating":
@@ -365,6 +381,7 @@ class UserRepository(BaseRepository):
                     order_clause = "ORDER BY distance_km ASC, fame_rating DESC"
                 else:
                     order_clause = "ORDER BY fame_rating DESC"
+            
             query = f"""
                 SELECT
                     id, username, first_name, last_name, gender,
@@ -382,6 +399,7 @@ class UserRepository(BaseRepository):
                 FROM users
                 WHERE {' AND '.join(conditions)}
             """
+            
             total_count = 0
             try:
                 total_result = await self.fetch_one(query=count_query, values=values)
@@ -390,6 +408,7 @@ class UserRepository(BaseRepository):
                 print("Total count:", total_count)
             except Exception as e:
                 print("Error in count query:", str(e))
+            
             try:
                 results = await self.fetch_all(query=query, values=values)
                 print("Found profiles:", len(results))
@@ -405,9 +424,11 @@ class UserRepository(BaseRepository):
                         profile["common_tag_count"] = 0
                         profile["common_tags"] = []
                     profiles.append(profile)
+                
                 if sort_by == "common_tags":
                     reverse_sort = sort_order.lower() == "desc"
                     profiles = sorted(profiles, key=lambda x: x.get("common_tag_count", 0), reverse=reverse_sort)
+                
                 if min_tags is not None and min_tags > 0:
                     profiles = [p for p in profiles if p.get("common_tag_count", 0) >= min_tags]
                     filtered_count = len(profiles)
@@ -415,6 +436,7 @@ class UserRepository(BaseRepository):
                     end_idx = start_idx + items_per_page
                     profiles = profiles[start_idx:end_idx]
                     total_count = filtered_count
+                
                 return {
                     "profiles": profiles,
                     "total": total_count,

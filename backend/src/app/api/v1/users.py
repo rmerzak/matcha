@@ -96,7 +96,7 @@ async def search_users(
             sort_order=sort_order
         )
         
-        result = await service.search_users(search_params)
+        result = await service.search_users(search_params, current_user["id"])
         return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}
@@ -109,7 +109,7 @@ async def search_users_by_username(
     current_user: User = Depends(get_current_user_info)
 ):
     try:
-        result = await service.search_users_by_username(username)
+        result = await service.search_users_by_username(username, current_user["id"])
         return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}

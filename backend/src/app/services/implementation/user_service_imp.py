@@ -57,9 +57,10 @@ class UserServiceImp(BaseService, IUserService):
         
         except Exception as e:
             return error_response("An error occurred", str(e), status_code=500)
-    async def search_users(self, search_params: UserSearchParams):
+    async def search_users(self, search_params: UserSearchParams, current_user_id: str):
         try:
             result = await self.user_repository.search_users(
+                current_user_id=current_user_id,
                 age_min=search_params.age_min,
                 age_max=search_params.age_max,
                 fame_min=search_params.fame_min,
@@ -84,9 +85,9 @@ class UserServiceImp(BaseService, IUserService):
         except Exception as e:
             return error_response("An error occurred", str(e), status_code=500)
     
-    async def search_users_by_username(self, username: str):
+    async def search_users_by_username(self, username: str, current_user_id: str):
         try:
-            result = await self.user_repository.search_users_by_username(username)
+            result = await self.user_repository.search_users_by_username(username, current_user_id)
             
             if isinstance(result, dict) and 'error' in result:
                 return error_response("Search Failed", result['error'], status_code=500)
