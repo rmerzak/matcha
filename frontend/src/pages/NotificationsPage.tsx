@@ -5,16 +5,21 @@ import PageTitle from "../components/PageTitle";
 import { ChatContext } from "../context/ChatContext";
 
 function NotificationsPage() {
-  const { getNotifications, notifications } = useContext(ChatContext);
+  const { getNotifications, notifications, readNotifications } = useContext(ChatContext);
   
   // useEffect(() => {
   //   console.log(notifications.length)
   // }, [notifications])
   
   useEffect(() => {
-    getNotifications();
+    const fetchData = async () => {
+      await getNotifications();
+      readNotifications();
+    };
+  
+    fetchData();
   }, []);
-
+  
   return (
     <div
       className="flex flex-col lg:flex-row 

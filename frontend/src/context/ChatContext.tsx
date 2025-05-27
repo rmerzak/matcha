@@ -5,7 +5,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { getRequest, baseUrl } from "../utils/services";
+import { getRequest, baseUrl, putRequest } from "../utils/services";
 import useAuthStore from "../store/useAuthStore";
 import { io, Socket } from "socket.io-client";
 import { SendMessagePayload } from "../types/socket";
@@ -19,6 +19,18 @@ export interface MessageType {
   is_read: boolean;
   sent_at: string;
 }
+
+type dataType = {
+  id: string;
+  type: string; // You could narrow it to specific values like 'like_received' if needed
+  content: string;
+  created_at: string; // Could also be Date if you parse it
+  sender: {
+    id: string;
+    username: string;
+    profile_picture: string;
+  };
+};
 
 // Define proper types for notifications
 export interface NotificationType {
@@ -44,6 +56,7 @@ interface ChatContextType {
   isNotificationsLoading: boolean;
   notificationsError: string | null;
   getNotifications: () => void;
+  readNotifications: () => void;
 
   sendMessage: (
     payload: SendMessagePayload,
@@ -66,6 +79,7 @@ export const ChatContext = createContext<ChatContextType>({
   notificationsError: null,
   isNotificationsLoading: false,
   getNotifications: () => {},
+  readNotifications: () => {},
 });
 
 interface ChatContextProviderProps {
@@ -136,9 +150,23 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       // }
     });
 
-    newSocket.on("new_like", (data) => {
-      console.log("Someone liked your profile", data.data);
-      setNotifications((prev) => [...prev, data.data]);
+    newSocket.on("new_like", (obj) => {
+      const data: dataType = obj.data;
+      console.log("Someone liked your profile", data);
+      setNotifications((prev) => [
+        ...prev,
+        {
+          id: data.id,
+          content: data.content,
+          created_at: data.created_at,
+          is_read: false,
+          profile_picture: data.sender.profile_picture,
+          sender_id: data.sender.id,
+          type: data.type,
+          user_id: data.sender.id,
+          username: data.sender.username,
+        },
+      ]);
 
       // if (data.sender !== authUser?.id) {
       //   setMessages((prev) => [...prev, data]);
@@ -264,11 +292,25 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       );
 
       setNotifications(sortedNotifications);
+      console.log("sorted", sortedNotifications);
     } catch (error) {
       setNotificationsError("An error occurred while fetching notifications");
       console.error("Error fetching notifications:", error);
     } finally {
       setIsNotificationsLoading(false);
+    }
+  };
+
+  // Get notifications history
+  const readNotifications = async () => {
+    try {
+      const response = await putRequest(`${baseUrl}/notification/mark-as-read`);
+      if (response.error) {
+        console.log(response.error);
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
     }
   };
 
@@ -287,6 +329,7 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
         isNotificationsLoading,
         notificationsError,
         getNotifications,
+        readNotifications,
       }}
     >
       {children}
