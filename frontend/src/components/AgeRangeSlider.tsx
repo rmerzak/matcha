@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useBrowsingStore } from "../store/useBrowsingStore";
 
 interface Props {
   min: any;
@@ -33,6 +34,8 @@ function AgeRangeSlider({
   const minValRef = useRef(min);
   const maxValRef = useRef(max);
   const range: any = useRef(null);
+
+  const { getSuggestions } = useBrowsingStore();
 
   // Convert to percentage
   const getPercent = useCallback(
@@ -100,9 +103,16 @@ function AgeRangeSlider({
             width,
             zIndex: minVal > max - 100 || minVal === maxVal ? 5 : undefined,
           }}
+          onMouseUp={() => {
+            console.log("test---->");
+            getSuggestions();
+          }}
         />
-
         <input
+          onMouseUp={() => {
+            console.log("test---->");
+            getSuggestions();
+          }}
           type="range"
           min={min}
           max={max}
@@ -118,14 +128,17 @@ function AgeRangeSlider({
           }}
         />
 
-          <div className="slider">
-            <div className="track-slider" style={{backgroundColor: trackColor}}/>
-            <div className="range-slider" 
-              ref={range}
-            style={{backgroundColor: rangeColor}}/>
-
-          </div>
-
+        <div className="slider">
+          <div
+            className="track-slider"
+            style={{ backgroundColor: trackColor }}
+          />
+          <div
+            className="range-slider"
+            ref={range}
+            style={{ backgroundColor: rangeColor }}
+          />
+        </div>
       </div>
     </span>
   );

@@ -27,7 +27,7 @@ function HomePage() {
             <SideFilters />
             <main className="flex-grow flex flex-col gap-10 p-4 relative h-screen ">
               {suggestions.length > 0 && !isLoadingSuggestions && (
-                <SuggestionsList suggestions={suggestions.slice(0, 10)} />
+                <SuggestionsList suggestions={suggestions} />
               )}
               {suggestions.length === 0 && !isLoadingSuggestions && (
                 <NoMoreProfiles />

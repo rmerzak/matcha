@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AgeRangeSlider from "./AgeRangeSlider";
 import useAuthStore from "../store/useAuthStore";
 import { useBrowsingStore } from "../store/useBrowsingStore";
@@ -7,11 +7,10 @@ interface CheckedItems {
   [key: string]: boolean;
 }
 
-
 function SideFilters() {
   const {setMinAge, setMaxAge, getSuggestions } = useBrowsingStore();
   const { authUser } = useAuthStore();
-  const [, setAgeRangeValues] = useState({ min: 18, max: 80 });
+  const [ageRangeValues, setAgeRangeValues] = useState({ min: 18, max: 80 });
   // const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
 
   const [checkedCommonTags, setCheckedCommonTags] = useState<CheckedItems>({});
@@ -27,7 +26,7 @@ function SideFilters() {
     setAgeRangeValues(value);
     setMinAge(value.min);
     setMaxAge(value.max);
-    getSuggestions();
+    // getSuggestions();
   };
 
   const handleFrRangeChange = (value: any) => {
@@ -41,7 +40,7 @@ function SideFilters() {
         <div className="flex flex-col space-y-10 divide-y divide-gray-400">
           <div className="flex flex-col gap-2 pt-3">
             <h3 className="text-lg font-bold text-gray-800">Age:</h3>
-            <AgeRangeSlider min={18} max={80} onChange={handleAgeRangeChange} />
+            <AgeRangeSlider min={18} max={80} onChange={handleAgeRangeChange}/>
           </div>
           {/* <div>
             <h3 className="text-lg font-semibold text-gray-800">Location: </h3>
