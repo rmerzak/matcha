@@ -7,12 +7,14 @@ from app.repository.user_repository import UserRepository
 from app.services.user_views_interface import IUserViewsService
 from app.services.socketio_manager_interface import ISocketIOManager
 from app.repository.blocks_repository import BlocksRepository
+from app.services.notification_interface import INotificationService
 class UserViewsServiceImp(BaseService, IUserViewsService):
-    def __init__(self, user_views_repository: UserViewsRepository, user_repository: UserRepository, socketio_manager: ISocketIOManager, blocks_repository: BlocksRepository):
+    def __init__(self, user_views_repository: UserViewsRepository, user_repository: UserRepository, socketio_manager: ISocketIOManager, blocks_repository: BlocksRepository, notification_service: INotificationService):
         self.user_views_repository = user_views_repository
         self.user_repository = user_repository
         self.socketio_manager = socketio_manager
         self.blocks_repository = blocks_repository
+        self.notification_service = notification_service
     async def add_view(self, viewed: str, viewer_id: str):
         try:
             print(viewed, viewer_id)
@@ -34,7 +36,7 @@ class UserViewsServiceImp(BaseService, IUserViewsService):
             
             cleaned_viewed = str(viewed).replace('UUID(\'', '').replace('\')', '')
             cleaned_viewer_id = str(viewer_id).replace('UUID(\'', '').replace('\')', '')
-            await self.socketio_manager.send_event("view", {"viewed": cleaned_viewed, "viewer": cleaned_viewer_id}, cleaned_viewed)
+            await self.notification_service.send_view_notification({"viewed": cleaned_viewed, "viewer": cleaned_viewer_id}, cleaned_viewed)
             await self.user_views_repository.add_view(viewed, viewer_id)
             return success_response({"viewed": viewed, "viewer": viewer_id},"View added successfully", status_code=200)
         except Exception as e:

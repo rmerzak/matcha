@@ -48,7 +48,7 @@ class Container(containers.DeclarativeContainer):
     cloudinary = providers.Factory(CloudinaryService)
     user_service = providers.Factory(UserServiceImp, user_repository=user_repository, cloudinary_service=cloudinary, blocks_repository=blocks_repository)
     notification_service = providers.Factory(NotificationServiceImp, notification_repository=notification_repository, socketio_manager=socketio_manager, user_service=user_service)
-    user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository, socketio_manager=socketio_manager, blocks_repository=blocks_repository)
+    user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository, socketio_manager=socketio_manager, blocks_repository=blocks_repository, notification_service=notification_service)
     likes_service = providers.Factory(LikesServiceImp, user_repository=user_repository, likes_repository=likes_repository, notification_service=notification_service)
     blocks_service = providers.Factory(BlocksServiceImp, blocks_repository=blocks_repository, socketio_manager=socketio_manager, user_repository=user_repository)
     message_service = providers.Factory(MessageServiceImp, message_repository=message_repository, socketio_manager=socketio_manager, user_service=user_service, likes_service=likes_service, blocks_service=blocks_service)

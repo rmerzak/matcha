@@ -647,3 +647,12 @@ CREATE TRIGGER update_user_age
     FOR EACH ROW
     WHEN (NEW.date_of_birth IS NOT NULL)
     EXECUTE FUNCTION update_age_from_dob();
+
+-- Update the notification_type enum to include all the types your application uses
+ALTER TYPE notification_type ADD VALUE IF NOT EXISTS 'view_received';
+ALTER TYPE notification_type ADD VALUE IF NOT EXISTS 'match_broken';
+
+-- Alternative: Drop and recreate the enum with all needed values
+-- (Use this if the ADD VALUE approach doesn't work)
+-- DROP TYPE IF EXISTS notification_type CASCADE;
+-- CREATE TYPE notification_type AS ENUM ('like_received', 'profile_viewed', 'view_received', 'message_received', 'match_created', 'match_broken');

@@ -107,6 +107,16 @@ class NotificationServiceImp(BaseService, INotificationService):
             message["content"],
             "new_message"
         )
+    async def send_view_notification(self, message: dict, user_id: str):
+        """Send notification when a user receives a view"""
+        logger.info(f"send_view_notification {message} user_id {user_id}")
+        return await self.create_and_send_notification(
+            user_id,
+            message["viewer"],
+            "profile_viewed",
+            "Someone viewed your profile",
+            "new_view"
+        )
     async def get_user_notifications(self, user_id: str):
         """Get all notifications for a user"""
         try:

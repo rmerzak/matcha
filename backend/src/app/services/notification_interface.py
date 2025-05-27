@@ -16,11 +16,10 @@ class INotificationService(ABC):
     @abstractmethod
     async def send_message_notification(self, message: dict, user_id: str):
         pass
-    # async def send_view_notification(self, message: dict, user_id: str):
-    #     pass
-    # @abstractmethod
-    # async def send_message_notification(self, message: dict, user_id: str):
-    #     pass
+    @abstractmethod
+    async def send_view_notification(self, message: dict, user_id: str):
+        pass
+
     @abstractmethod
     async def get_user_notifications(self, user_id: str):
         pass
