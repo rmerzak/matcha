@@ -46,7 +46,9 @@ class UserRepository(BaseRepository):
 
     async def get_user_by_username(self, username: str):
         try:
-            query = "SELECT * FROM users WHERE username = :username"
+            query = """SELECT id, username, first_name, last_name, email, gender, 
+                    sexual_preferences, interests, pictures, profile_picture, fame_rating, 
+                    location, latitude, address, age, bio, date_of_birth FROM users WHERE username = :username"""
             return await self.fetch_one(query=query, values={"username": username})
         except Exception as e:
             return {"error": "An error occurred while fetching user by username" + str(e)}

@@ -94,7 +94,7 @@ class BlocksRepository(BaseRepository):
         result = await self.db.fetch_one(query, user_id, other_user_id)
         return result is not None
         
-    async def add_block(self, blocker_id: str, blocked_id: str) -> str:
+    async def add_block(self, blocker_id: str, blocked_id: str) -> dict:
         """Create a new block between users"""
         try:
             block_id = str(uuid.uuid4())
@@ -102,14 +102,14 @@ class BlocksRepository(BaseRepository):
             query = """
                 INSERT INTO blocks (id, blocker, blocked, block_time)
                 VALUES (:block_id, :blocker_id, :blocked_id, NOW())
-                RETURNING id
+                RETURNING id, blocker, blocked, block_time
             """
             result = await self.db.fetch_one(query, {
                 "block_id": block_id,
                 "blocker_id": blocker_id,
                 "blocked_id": blocked_id
             })
-            return result["id"] if result else None
+            return dict(result) if result else None
         except Exception as e:
             raise Exception(f"Error creating block: {str(e)}")
     
