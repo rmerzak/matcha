@@ -83,7 +83,6 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
       set({ isLoadingSuggestions: true });
       const res = await axiosInstance.get("/users/browse", config);
       const profiles = res.data.data.profiles || [];
-      console.log(profiles)
       set({
         suggestions: profiles,
         isLoadingSuggestions: false,
