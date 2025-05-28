@@ -128,8 +128,6 @@ class UserServiceImp(BaseService, IUserService):
     async def browse_profiles(
         self,
         user_id: str,
-        page: int = 1,
-        items_per_page: int = 10,
         min_age: int = None,
         max_age: int = None,
         max_distance: int = None,
@@ -139,8 +137,6 @@ class UserServiceImp(BaseService, IUserService):
         try:
             result = await self.user_repository.get_matching_profiles(
                 user_id=user_id,
-                page=page,
-                items_per_page=items_per_page,
                 min_age=min_age,
                 max_age=max_age,
                 max_distance=max_distance,

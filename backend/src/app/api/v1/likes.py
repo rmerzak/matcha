@@ -69,8 +69,6 @@ async def get_likes_statistics(
 @router.get("/received")
 @inject
 async def get_users_who_liked_me(
-    page: int = 1,
-    items_per_page: int = 10,
     connected: Optional[str] = None,
     current_user: User = Depends(get_current_user_info),
     service: ILikesService = Depends(Provide[Container.likes_service]),
@@ -85,8 +83,6 @@ async def get_users_who_liked_me(
             
         return await service.get_users_who_liked_me(
             current_user["id"], 
-            page, 
-            items_per_page,
             connection_status
         )
     except Exception as e:

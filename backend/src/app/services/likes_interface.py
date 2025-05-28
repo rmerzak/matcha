@@ -22,8 +22,6 @@ class ILikesService(ABC):
     async def get_users_who_liked_me(
         self, 
         user_id: str, 
-        page: int = 1, 
-        items_per_page: int = 10,
         connection_status: Optional[bool] = None
     ):
         pass

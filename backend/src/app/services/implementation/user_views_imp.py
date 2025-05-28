@@ -41,9 +41,9 @@ class UserViewsServiceImp(BaseService, IUserViewsService):
             return success_response({"viewed": viewed, "viewer": viewer_id},"View added successfully", status_code=200)
         except Exception as e:
             return error_response("Internal server error", 'An error occurred while adding view', status_code=500, details={"error": str(e)})
-    async def get_my_views(self, user_id: str, page: int = 1, item_per_page: int = 10):
+    async def get_my_views(self, user_id: str):
         try:
-            result = await self.user_views_repository.get_my_views(user_id, page, item_per_page)
+            result = await self.user_views_repository.get_my_views(user_id)
             return success_response(
                 result,
                 "Views retrieved successfully",

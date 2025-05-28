@@ -87,14 +87,10 @@ class BlocksServiceImp(BaseService, IBlocksService):
         except Exception as e:
             return error_response("Internal server error", str(e), 500)
     
-    async def get_blocked_users(self, blocker_id: str, page: int = 1, items_per_page: int = 10):
+    async def get_blocked_users(self, blocker_id: str):
         try:
-            # Get blocked users with pagination
-            result = await self.blocks_repository.get_blocked_users(
-                blocker_id, 
-                page, 
-                items_per_page
-            )
+            # Get all blocked users without pagination
+            result = await self.blocks_repository.get_blocked_users(blocker_id)
             
             return success_response(
                 message="Blocked users retrieved successfully",

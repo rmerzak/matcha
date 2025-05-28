@@ -136,8 +136,6 @@ class LikesRepository(BaseRepository):
     async def get_users_who_liked_me(
         self, 
         user_id: str, 
-        page: int = 1, 
-        items_per_page: int = 10,
         connection_status: Optional[bool] = None
     ):
         """
@@ -145,8 +143,6 @@ class LikesRepository(BaseRepository):
         Optional filtering by connection status (connected or not connected)
         Excludes users who have blocked the current user
         """
-        offset = (page - 1) * items_per_page
-        
         where_clause = "l.liked = :user_id"
         params = {
             "user_id": user_id
@@ -173,7 +169,6 @@ class LikesRepository(BaseRepository):
             JOIN users u ON l.liker = u.id
             WHERE {where_clause}
             ORDER BY l.like_time DESC
-            LIMIT {items_per_page} OFFSET {offset}
         """
         
         total_count = await self.db.fetch_val(count_query, params)
@@ -181,8 +176,6 @@ class LikesRepository(BaseRepository):
         
         return {
             "total": total_count,
-            "page": page,
-            "items_per_page": items_per_page,
             "users": results
         }
 

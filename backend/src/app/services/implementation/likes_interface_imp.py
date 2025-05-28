@@ -193,8 +193,6 @@ class LikesServiceImp(BaseService, ILikesService):
     async def get_users_who_liked_me(
         self, 
         user_id: str, 
-        page: int = 1, 
-        items_per_page: int = 10,
         connection_status: Optional[bool] = None
     ):
         try:
@@ -204,13 +202,8 @@ class LikesServiceImp(BaseService, ILikesService):
             
             likes_data = await self.likes_repository.get_users_who_liked_me(
                 user_id, 
-                page, 
-                items_per_page,
                 connection_status
             )
-            
-            total = likes_data["total"]
-            has_more = total > (page * items_per_page)
             
             formatted_users = []
             for user in likes_data["users"]:
@@ -222,9 +215,6 @@ class LikesServiceImp(BaseService, ILikesService):
             return success_response(
                 data={
                     "total": likes_data["total"],
-                    "page": likes_data["page"],
-                    "items_per_page": likes_data["items_per_page"],
-                    "has_more": has_more,
                     "users": formatted_users,
                     "connection_filter": connection_status
                 },

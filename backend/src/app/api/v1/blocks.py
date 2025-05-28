@@ -45,13 +45,11 @@ async def unblock_user(
 @router.get("/get-blocked-users")
 @inject
 async def get_blocked_users(
-    page: int = 1,
-    items_per_page: int = 10,
     current_user: User = Depends(get_current_user_info),
     service: IBlocksService = Depends(Provide[Container.blocks_service]),
 ):
     try:
-        return await service.get_blocked_users(current_user["id"], page, items_per_page)
+        return await service.get_blocked_users(current_user["id"])
     except Exception as e:
         logger.error(f"Error getting blocked users: {e}")
         return error_response("Internal server error", str(e), status_code=500)

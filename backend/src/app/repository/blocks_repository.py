@@ -43,44 +43,46 @@ class BlocksRepository(BaseRepository):
         except Exception as e:
             raise Exception(f"Error getting block: {str(e)}")
     
-    async def get_blocked_users(self, user_id: str, page: int = 1, items_per_page: int = 10) -> Tuple[List[Dict[str, Any]], int]:
-        """Get all users blocked by a specific user with pagination"""
-        offset = (page - 1) * items_per_page
-        
-        # Get blocked users with user details
-        query = """
-            SELECT b.id, b.user_id, b.blocked_user_id, b.created_at,
-                   u.username, u.email, u.avatar_url, u.full_name
-            FROM blocks b
-            JOIN users u ON b.blocked_user_id = u.id
-            WHERE b.user_id = $1
-            ORDER BY b.created_at DESC
-            LIMIT $2 OFFSET $3
-        """
-        results = await self.db.fetch_all(query, user_id, items_per_page, offset)
-        
-        # Get total count
-        count_query = """
-            SELECT COUNT(*) as total
-            FROM blocks
-            WHERE user_id = $1
-        """
-        count_result = await self.db.fetch_one(count_query, user_id)
-        total = count_result["total"] if count_result else 0
-        
-        # Format results
-        blocked_users = []
-        for row in results:
-            blocked_users.append({
-                "block_id": row["id"],
-                "user_id": row["blocked_user_id"],
-                "username": row["username"],
-                "full_name": row["full_name"],
-                "avatar_url": row["avatar_url"],
-                "blocked_at": row["created_at"]
-            })
-        
-        return blocked_users, total
+    async def get_blocked_users(self, user_id: str) -> dict:
+        """Get all users blocked by the current user"""
+        try:
+            count_query = """
+                SELECT COUNT(*) 
+                FROM blocks
+                WHERE blocker = :user_id
+            """
+            
+            query = """
+                SELECT u.id, u.username, u.first_name, u.last_name, 
+                       u.gender, u.profile_picture, u.fame_rating, u.age, u.bio,
+                       b.block_time, b.id as block_id
+                FROM blocks b
+                JOIN users u ON b.blocked = u.id
+                WHERE b.blocker = :user_id
+                ORDER BY b.block_time DESC
+            """
+            
+            total_count = await self.db.fetch_val(
+                query=count_query, 
+                values={"user_id": user_id}
+            )
+            
+            results = await self.db.fetch_all(
+                query=query, 
+                values={"user_id": user_id}
+            )
+            
+            users_list = []
+            for row in results:
+                user_dict = dict(row)
+                users_list.append(user_dict)
+            
+            return {
+                "total": total_count,
+                "users": users_list
+            }
+        except Exception as e:
+            raise Exception(f"Error getting blocked users: {str(e)}")
     
     async def is_user_blocked(self, user_id: str, other_user_id: str) -> bool:
         """Check if either user has blocked the other"""
@@ -172,59 +174,4 @@ class BlocksRepository(BaseRepository):
             return result
         except Exception as e:
             raise Exception(f"Error checking block: {str(e)}")
-    
-    async def get_blocked_users(
-        self, 
-        user_id: str, 
-        page: int = 1, 
-        items_per_page: int = 10
-    ) -> dict:
-        """Get all users blocked by the current user"""
-        try:
-            offset = (page - 1) * items_per_page
-            
-            count_query = """
-                SELECT COUNT(*) 
-                FROM blocks
-                WHERE blocker = :user_id
-            """
-            
-            query = """
-                SELECT u.id, u.username, u.first_name, u.last_name, 
-                       u.gender, u.profile_picture, u.fame_rating, u.age, u.bio,
-                       b.block_time, b.id as block_id
-                FROM blocks b
-                JOIN users u ON b.blocked = u.id
-                WHERE b.blocker = :user_id
-                ORDER BY b.block_time DESC
-                LIMIT :limit OFFSET :offset
-            """
-            
-            total_count = await self.db.fetch_val(
-                query=count_query, 
-                values={"user_id": user_id}
-            )
-            
-            results = await self.db.fetch_all(
-                query=query, 
-                values={
-                    "user_id": user_id, 
-                    "limit": items_per_page, 
-                    "offset": offset
-                }
-            )
-            
-            users_list = []
-            for row in results:
-                user_dict = dict(row)
-                users_list.append(user_dict)
-            
-            return {
-                "total": total_count,
-                "page": page,
-                "items_per_page": items_per_page,
-                "users": users_list
-            }
-        except Exception as e:
-            raise Exception(f"Error getting blocked users: {str(e)}")
         

@@ -293,8 +293,6 @@ class UserRepository(BaseRepository):
     async def get_matching_profiles(
         self,
         user_id: str,
-        page: int = 1,
-        items_per_page: int = 10,
         min_age: int = None,
         max_age: int = None,
         max_distance: int = None,
@@ -316,7 +314,7 @@ class UserRepository(BaseRepository):
                 raise DatabaseError("User not found")
             
             conditions = ["users.id != :user_id"]
-            values = {"user_id": user_id, "offset": (page - 1) * items_per_page, "limit": items_per_page}
+            values = {"user_id": user_id}
             
             # Exclude users who have blocked the current user
             conditions.append("NOT EXISTS (SELECT 1 FROM blocks b WHERE b.blocker = users.id AND b.blocked = :user_id)")
@@ -391,7 +389,6 @@ class UserRepository(BaseRepository):
                 FROM users
                 WHERE {' AND '.join(conditions)}
                 {order_clause}
-                LIMIT :limit OFFSET :offset
             """
             print("Query built successfully")
             count_query = f"""
@@ -431,18 +428,10 @@ class UserRepository(BaseRepository):
                 
                 if min_tags is not None and min_tags > 0:
                     profiles = [p for p in profiles if p.get("common_tag_count", 0) >= min_tags]
-                    filtered_count = len(profiles)
-                    start_idx = (page - 1) * items_per_page
-                    end_idx = start_idx + items_per_page
-                    profiles = profiles[start_idx:end_idx]
-                    total_count = filtered_count
                 
                 return {
                     "profiles": profiles,
-                    "total": total_count,
-                    "page": page,
-                    "items_per_page": items_per_page,
-                    "pages": (total_count // items_per_page) + (1 if total_count % items_per_page > 0 else 0)
+                    "total": total_count
                 }
             except Exception as e:
                 print("Error in main query:", str(e))

@@ -20,17 +20,15 @@ class UserViewsRepository(BaseRepository):
         except Exception as e:
             raise e
 
-    async def get_my_views(self, user_id: str, page: int = 1, item_per_page: int = 10):
+    async def get_my_views(self, user_id: str):
         try:
-            offset = (page - 1) * item_per_page
             query = """
                 SELECT v.id, v.viewer, v.viewed, v.view_time, 
                     u.username as viewer_username, u.profile_picture as viewer_profile_picture
                 FROM views v
                 JOIN users u ON v.viewer = u.id
                 WHERE v.viewed = :user_id
-                ORDER BY v.view_time DESC
-                LIMIT :limit OFFSET :offset;
+                ORDER BY v.view_time DESC;
             """            
             count_query = """
                 SELECT COUNT(*) as total
@@ -38,11 +36,7 @@ class UserViewsRepository(BaseRepository):
                 WHERE viewed = :user_id;
             """
             
-            values = {
-                "user_id": user_id,
-                "limit": item_per_page,
-                "offset": offset
-            }
+            values = {"user_id": user_id}
             
             views_records = await self.fetch_all(query=query, values=values)
             total_count = await self.fetch_one(query=count_query, values={"user_id": user_id})            
@@ -59,14 +53,9 @@ class UserViewsRepository(BaseRepository):
                     view_dict['view_time'] = view_dict['view_time'].isoformat()
                 views.append(view_dict)
             
-            has_more = (total_count["total"] > offset + len(views))
-            
             return {
                 "result": views,
-                "total": total_count["total"],
-                "has_more": has_more,
-                "page": page,
-                "item_per_page": item_per_page
+                "total": total_count["total"]
             }
         except Exception as e:
             raise e
