@@ -3,23 +3,25 @@ import { Header } from "../components/Header";
 import { useContext, useEffect } from "react";
 import PageTitle from "../components/PageTitle";
 import { ChatContext } from "../context/ChatContext";
+import { Link } from "react-router-dom";
 
 function NotificationsPage() {
-  const { getNotifications, notifications, readNotifications } = useContext(ChatContext);
-  
+  const { getNotifications, notifications, readNotifications } =
+    useContext(ChatContext);
+
   // useEffect(() => {
   //   console.log(notifications.length)
   // }, [notifications])
-  
+
   useEffect(() => {
     const fetchData = async () => {
       await getNotifications();
       readNotifications();
     };
-  
+
     fetchData();
   }, []);
-  
+
   return (
     <div
       className="flex flex-col lg:flex-row 
@@ -36,7 +38,9 @@ function NotificationsPage() {
                 {notifications.map((notification) => (
                   <li
                     key={notification.id}
-                    className={`flex items-start gap-4 p-3 border-b ${!notification.is_read ? 'bg-gray-100' : ''}`}
+                    className={`flex items-start gap-4 p-3 border-b ${
+                      !notification.is_read ? "bg-gray-100" : ""
+                    }`}
                   >
                     <img
                       src={notification.profile_picture}
@@ -44,9 +48,11 @@ function NotificationsPage() {
                       className="w-10 h-10 rounded-full object-cover"
                     />
                     <div className="flex flex-col">
-                      <span className="font-semibold text-sm">
-                        {notification.username}
-                      </span>
+                      <Link to={`/users/${notification.username}`} className="hover:underline">
+                        <span className="font-semibold text-sm">
+                          {notification.username}
+                        </span>
+                      </Link>
                       <span className="text-gray-700">
                         {notification.content}
                       </span>

@@ -143,11 +143,23 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       }
     });
 
-    newSocket.on("view", (data) => {
-      console.log("Someone viewed your profile", data);
-      // if (data.sender !== authUser?.id) {
-      //   setMessages((prev) => [...prev, data]);
-      // }
+    newSocket.on("new_view", (obj) => {
+      const data: dataType = obj.data;
+      console.log("Someone liked your profile", data);
+      setNotifications((prev) => [
+        ...prev,
+        {
+          id: data.id,
+          content: data.content,
+          created_at: data.created_at,
+          is_read: false,
+          profile_picture: data.sender.profile_picture,
+          sender_id: data.sender.id,
+          type: data.type,
+          user_id: data.sender.id,
+          username: data.sender.username,
+        },
+      ]);
     });
 
     newSocket.on("new_like", (obj) => {
@@ -292,7 +304,6 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       );
 
       setNotifications(sortedNotifications);
-      console.log("sorted", sortedNotifications);
     } catch (error) {
       setNotificationsError("An error occurred while fetching notifications");
       console.error("Error fetching notifications:", error);

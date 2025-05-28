@@ -9,7 +9,6 @@ export const Notification = () => {
   useEffect(() => {
     getNotifications();
   }, []);
-  console.log(notifications);
   return (
     <Link to="/notifications" className="text-white relative p-2">
       <Bell className="size-7 " />

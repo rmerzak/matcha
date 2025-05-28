@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "../components/Header";
 import Bio from "../components/Bio";
 import Interests from "../components/Interests";
@@ -24,7 +24,7 @@ interface LabeledInterest {
 export default function UsersPage() {
   const { username } = useParams();
   const { user, getUserByUsername } = useUserStore();
-  const {addView} = useAnalyticsStore();
+  const { addView } = useAnalyticsStore();
   const [labeledInterests, setLabeledInterests] = useState<LabeledInterest[]>(
     []
   );
@@ -34,10 +34,15 @@ export default function UsersPage() {
       getUserByUsername(username);
     }
   }, [username, getUserByUsername]);
-  
+
+  const hasViewedRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (user) {
-      addView(user.id)
+      if (hasViewedRef.current !== user.id) {
+        addView(user.id);
+        hasViewedRef.current = user.id;
+      }
       if (user?.interests) {
         const newLabeledInterests = user.interests.map((interest: string) => ({
           value: interest,
@@ -89,9 +94,9 @@ export default function UsersPage() {
             <Bio bio={user.bio || ""} />
             <Interests interests={labeledInterests} />
             <ProfilePictures pictures={user.pictures || []} />
-          <div className="items-center justify-center flex">
-            <BlockButton  userId={user.id}  />
-          </div>
+            <div className="items-center justify-center flex">
+              <BlockButton userId={user.id} />
+            </div>
           </div>
         </div>
       </div>
