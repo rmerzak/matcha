@@ -46,8 +46,6 @@ async def update_profile(
 @router.get("/browse")
 @inject
 async def browse_profiles(
-    page: int = 1,
-    items_per_page: int = 10,
     min_age: Optional[int] = None,
     max_age: Optional[int] = None,
     max_distance: Optional[int] = None,
@@ -61,8 +59,6 @@ async def browse_profiles(
         # return {"message": "Browsing profiles"}
         return await service.browse_profiles(
             user_id=current_user["id"],
-            page=page,
-            items_per_page=items_per_page,
             min_age=min_age,
             max_age=max_age,
             max_distance=max_distance,
@@ -96,7 +92,7 @@ async def search_users(
             sort_order=sort_order
         )
         
-        result = await service.search_users(search_params)
+        result = await service.search_users(search_params, current_user["id"])
         return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}
@@ -109,7 +105,7 @@ async def search_users_by_username(
     current_user: User = Depends(get_current_user_info)
 ):
     try:
-        result = await service.search_users_by_username(username)
+        result = await service.search_users_by_username(username, current_user["id"])
         return result
     except Exception as e:
         return {"error": str(e), "status_code": 500}

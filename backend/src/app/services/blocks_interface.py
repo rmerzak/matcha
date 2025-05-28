@@ -11,7 +11,7 @@ class IBlocksService(ABC):
         pass
     
     @abstractmethod
-    async def get_blocked_users(self, blocker_id: str, page: int = 1, items_per_page: int = 10):
+    async def get_blocked_users(self, blocker_id: str):
         pass
     
     @abstractmethod

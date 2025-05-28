@@ -9,6 +9,8 @@ from app.services.user_views_interface import IUserViewsService
 from app.services.socketio_manager_interface import ISocketIOManager
 from app.services.likes_interface import ILikesService
 from app.services.notification_interface import INotificationService
+import logging
+logger = logging.getLogger(__name__)
 class LikesServiceImp(BaseService, ILikesService):
     def __init__(self, user_repository: UserRepository, likes_repository: LikesRepository, notification_service: INotificationService):
         self.user_repository = user_repository
@@ -36,34 +38,32 @@ class LikesServiceImp(BaseService, ILikesService):
             #     )
             
             # Add the like
+            logger.info(f"Adding like for user {user_id} and liked_user_id {liked_user_id}")
             new_like = await self.likes_repository.add_like(user_id, liked_user_id)
             if not new_like:
                 return success_response("Already liked", "You have already liked this user")
 
-            # Send like notification
-
-            # Check for mutual like (match)
+            # Check for mutual like AFTER adding the new like
             mutual_like = await self.likes_repository.check_mutual_like(user_id, liked_user_id)
             if mutual_like:
-                # Update connection status for both users
                 await self.likes_repository.update_connection_status(user_id, liked_user_id)
                 
-                # Send match notifications to both users
+                # Send match notification to the user who was just liked
                 await self.notification_service.send_match_notification(liked_user_id, user_id)
-                await self.notification_service.send_match_notification(user_id, liked_user_id)
                 
                 return success_response(
                     data={"is_match": True, "liked_user_id": liked_user_id},
                     message="Match created! You can now chat with this user.",
                     status_code=200
                 )
-                
-            await self.notification_service.send_like_notification(liked_user_id, user_id)
-            return success_response(
-                data={"is_match": False, "liked_user_id": liked_user_id},
-                message="Like added",
-                status_code=200
-            )
+            else:
+                # Only send like notification if it's NOT a mutual like
+                await self.notification_service.send_like_notification(liked_user_id, user_id)
+                return success_response(
+                    data={"is_match": False, "liked_user_id": liked_user_id},
+                    message="Like added",
+                    status_code=200
+                )
         except Exception as e:
             return error_response(
                 "Internal server error", 
@@ -193,8 +193,6 @@ class LikesServiceImp(BaseService, ILikesService):
     async def get_users_who_liked_me(
         self, 
         user_id: str, 
-        page: int = 1, 
-        items_per_page: int = 10,
         connection_status: Optional[bool] = None
     ):
         try:
@@ -204,13 +202,8 @@ class LikesServiceImp(BaseService, ILikesService):
             
             likes_data = await self.likes_repository.get_users_who_liked_me(
                 user_id, 
-                page, 
-                items_per_page,
                 connection_status
             )
-            
-            total = likes_data["total"]
-            has_more = total > (page * items_per_page)
             
             formatted_users = []
             for user in likes_data["users"]:
@@ -222,9 +215,6 @@ class LikesServiceImp(BaseService, ILikesService):
             return success_response(
                 data={
                     "total": likes_data["total"],
-                    "page": likes_data["page"],
-                    "items_per_page": likes_data["items_per_page"],
-                    "has_more": has_more,
                     "users": formatted_users,
                     "connection_filter": connection_status
                 },

@@ -10,6 +10,7 @@ from app.services.implementation.likes_interface_imp import LikesServiceImp
 from app.services.implementation.blocks_interface_imp import BlocksServiceImp
 from app.services.implementation.message_interface_imp import MessageServiceImp
 from app.services.message_interface import IMessageService
+from app.services.notification_interface import INotificationService
 from dependency_injector.wiring import Provide
 from typing import Dict, Optional
 import logging
@@ -86,7 +87,8 @@ async def handle_message(
     socketio_manager: ISocketIOManager = Depends(Provide[Container.socketio_manager]),
     message_service: IMessageService = Depends(Provide[Container.message_service]),
     likes_service: LikesServiceImp = Depends(Provide[Container.likes_service]),
-    blocks_service: BlocksServiceImp = Depends(Provide[Container.blocks_service])
+    blocks_service: BlocksServiceImp = Depends(Provide[Container.blocks_service]),
+    notification_service: INotificationService = Depends(Provide[Container.notification_service])
 ) -> None:
     """
     Handle real-time message sending
@@ -142,16 +144,33 @@ async def handle_message(
             await socketio_manager.send_error("Failed to send message", sid)
             return
         # logger.info(f"result: {result}")
-        serializable_result = {
-            'id': str(result['id']),
-            'sender': str(result['sender']),
-            'receiver': str(result['receiver']),
-            'content': result['content'],
-            'is_read': result['is_read'],
-            'sent_at': result['sent_at'].isoformat() if result['sent_at'] else None
-        }
-        
-        await socketio_manager.send_event("new_message", serializable_result, user_id=receiver_id)
-
+        # serializable_result = {
+        #     'id': str(result['id']),
+        #     'sender_id': str(result['sender']),
+        #     'user_id': str(result['receiver']),
+        #     'content': result['content'],
+        #     'username': result['sender_username'],
+        #     'profile_picture': result['sender_profile_picture'],
+        #     'type': 'message',
+        #     'is_read': result['is_read'],
+        #     'created_at': result['sent_at'].isoformat() if result['sent_at'] else None
+        # }
+        notification_data = await notification_service.send_message_notification(result, receiver_id)
+        # notification_data = {
+        #     "event": "new_message",
+        #     "data": {
+        #         "id": str(result['id']),
+        #         "type": "message",
+        #         "content": result['content'],
+        #         "sender": {
+        #             "id": str(result['sender']),
+        #             "username": result['sender_username'],
+        #             "profile_picture": result['sender_profile_picture']
+        #         },
+        #         "created_at": result['sent_at'].isoformat() if result['sent_at'] else None
+        #     }
+        # }
+        # await socketio_manager.send_event("new_message", serializable_result, user_id=receiver_id)
+        await socketio_manager.send_event("new_message", notification_data, user_id=receiver_id)
     except Exception as e:
         await socketio_manager.send_error("Failed to process message", sid)

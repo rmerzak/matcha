@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS "views" (
   CONSTRAINT fk_viewed FOREIGN KEY ("viewed") REFERENCES "users" ("id")
 );
 
-
 CREATE TABLE IF NOT EXISTS "likes" (
   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   "liker" UUID,
@@ -122,11 +121,8 @@ CREATE TABLE IF NOT EXISTS "notifications" (
 );
 
 CREATE INDEX idx_user_location ON users (latitude, longitude);
-
 CREATE INDEX idx_fame_rating ON users (fame_rating);
-
 CREATE INDEX idx_user_age ON users (age);
-
 CREATE INDEX idx_notification_user ON notifications (user_id);
 CREATE INDEX idx_notification_read ON notifications (user_id, is_read);
 
@@ -143,7 +139,74 @@ CREATE TRIGGER update_user_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
--- Create function to generate test users
+-- Create function to generate random interactions
+CREATE OR REPLACE FUNCTION generate_random_interactions(num_interactions INTEGER) RETURNS VOID AS $$
+DECLARE
+  i INTEGER;
+  user1_id UUID;
+  user2_id UUID;
+  all_users UUID[];
+  user_count INTEGER;
+  interaction_type INTEGER;
+BEGIN
+  -- Get all user IDs
+  SELECT array_agg(id) INTO all_users FROM users;
+  user_count := array_length(all_users, 1);
+  
+  IF user_count < 2 THEN
+    RAISE NOTICE 'Not enough users to generate interactions';
+    RETURN;
+  END IF;
+  
+  FOR i IN 1..num_interactions LOOP
+    BEGIN
+      -- Select two different random users
+      user1_id := all_users[1 + floor(random() * user_count)];
+      user2_id := all_users[1 + floor(random() * user_count)];
+      
+      -- Ensure they're different users
+      WHILE user1_id = user2_id LOOP
+        user2_id := all_users[1 + floor(random() * user_count)];
+      END LOOP;
+      
+      -- Random interaction type: 1=view, 2=like, 3=message (if connected)
+      interaction_type := 1 + floor(random() * 3);
+      
+      IF interaction_type = 1 THEN
+        -- Create a view (if not exists)
+        INSERT INTO views (viewer, viewed)
+        VALUES (user1_id, user2_id)
+        ON CONFLICT DO NOTHING;
+        
+      ELSIF interaction_type = 2 THEN
+        -- Create a like (if not exists)
+        INSERT INTO likes (liker, liked)
+        VALUES (user1_id, user2_id)
+        ON CONFLICT DO NOTHING;
+        
+      ELSIF interaction_type = 3 THEN
+        -- Create a message only if users are connected
+        IF EXISTS (
+          SELECT 1 FROM likes l1 
+          JOIN likes l2 ON l1.liker = l2.liked AND l1.liked = l2.liker 
+          WHERE (l1.liker = user1_id AND l1.liked = user2_id)
+        ) THEN
+          INSERT INTO messages (sender, receiver, content)
+          VALUES (user1_id, user2_id, 'Hey there! How are you doing?');
+        END IF;
+      END IF;
+      
+    EXCEPTION WHEN OTHERS THEN
+      -- Continue with next interaction if this one fails
+      CONTINUE;
+    END;
+  END LOOP;
+  
+  RAISE NOTICE 'Generated % random interactions', num_interactions;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create function to generate test users with improved logic
 CREATE OR REPLACE FUNCTION generate_test_users(num_users INTEGER) RETURNS VOID AS $$
 DECLARE
   i INTEGER;
@@ -182,51 +245,83 @@ DECLARE
     ARRAY[39.7392, -104.9903], -- Denver
     ARRAY[42.3601, -71.0589]  -- Boston
   ];
-  first_names TEXT[] := ARRAY['John', 'Jane', 'Michael', 'Emily', 'David', 'Sarah', 'Alex', 'Olivia', 
-    'Daniel', 'Sophia', 'Matthew', 'Emma', 'Christopher', 'Ava', 'Andrew', 'Mia', 'Joshua', 'Isabella', 
-    'James', 'Charlotte', 'Ryan', 'Amelia', 'Ethan', 'Harper', 'William', 'Evelyn', 'Joseph', 'Abigail', 
-    'Thomas', 'Elizabeth', 'Nathan', 'Sofia', 'Kevin', 'Ella', 'Benjamin', 'Grace', 'Robert', 'Victoria', 
-    'Jacob', 'Scarlett', 'Steven', 'Madison', 'Carlos', 'Luna', 'Miguel', 'Layla', 'Raj', 'Zoe', 'Omar', 'Lily'];
-  last_names TEXT[] := ARRAY['Smith', 'Johnson', 'Williams', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 
-    'Moore', 'Taylor', 'Anderson', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin', 'Thompson', 'Garcia', 
-    'Martinez', 'Robinson', 'Clark', 'Rodriguez', 'Lewis', 'Lee', 'Walker', 'Hall', 'Allen', 'Young', 
-    'Hernandez', 'King', 'Wright', 'Lopez', 'Hill', 'Scott', 'Green', 'Adams', 'Baker', 'Gonzalez', 
-    'Nelson', 'Carter', 'Mitchell', 'Perez', 'Roberts', 'Turner', 'Phillips', 'Campbell', 'Parker', 'Evans', 
-    'Edwards', 'Collins'];
-  bio_templates TEXT[] := ARRAY[
-    'Passionate about %s and %s. Looking for someone who shares my interests.',
-    'Love to %s in my free time. %s enthusiast and adventure seeker.',
-    '%s lover and %s aficionado. Let''s chat and see where it goes!',
-    'When I''m not busy with %s, I enjoy %s. Looking for genuine connections.',
-    'My friends describe me as a %s person with a love for %s.',
-    'Big fan of %s and %s. Looking for someone to share adventures with.',
-    'Life motto: %s and enjoy %s. Would love to meet like-minded people.',
-    '%s by day, %s enthusiast by night. Let''s get to know each other!',
-    'Exploring life through %s and %s. Looking for a companion on this journey.',
-    'Passionate about %s and discovering new %s experiences.'
-  ];
-  profile_pics TEXT[] := ARRAY[
-    'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
+  
+  -- Gender-specific names
+  male_first_names TEXT[] := ARRAY['Alexander', 'Benjamin', 'Christopher', 'Daniel', 'Ethan', 'Felix', 
+    'Gabriel', 'Henry', 'Isaac', 'James', 'Kevin', 'Liam', 'Michael', 'Nathan', 'Oliver', 'Patrick', 
+    'Quinn', 'Ryan', 'Samuel', 'Thomas', 'Victor', 'William', 'Xavier', 'Zachary', 'Adrian', 'Blake', 
+    'Connor', 'David', 'Eric', 'Frank', 'George', 'Hunter', 'Ian', 'Jack', 'Kyle', 'Lucas', 'Mason', 
+    'Noah', 'Owen', 'Peter', 'Robert', 'Sebastian', 'Tyler', 'Vincent', 'Wesley', 'Xander', 'Yusuf', 'Zane'];
+    
+  female_first_names TEXT[] := ARRAY['Abigail', 'Bella', 'Charlotte', 'Diana', 'Emma', 'Faith', 'Grace', 
+    'Hannah', 'Isabella', 'Julia', 'Katherine', 'Luna', 'Mia', 'Natalie', 'Olivia', 'Penelope', 'Quinn', 
+    'Rachel', 'Sophia', 'Taylor', 'Victoria', 'Willow', 'Ximena', 'Yasmin', 'Zoe', 'Aria', 'Brooke', 
+    'Chloe', 'Delilah', 'Elena', 'Fiona', 'Gabriella', 'Hazel', 'Iris', 'Jasmine', 'Kimberly', 'Lily', 
+    'Madison', 'Nicole', 'Paige', 'Rose', 'Samantha', 'Tessa', 'Uma', 'Violet', 'Wendy', 'Yara'];
+    
+  nonbinary_first_names TEXT[] := ARRAY['Alex', 'Avery', 'Blake', 'Cameron', 'Drew', 'Emery', 'Finley', 
+    'Gray', 'Harper', 'Indigo', 'Jordan', 'Kai', 'Logan', 'Morgan', 'Nova', 'Ocean', 'Parker', 'Quinn', 
+    'River', 'Sage', 'Taylor', 'Unity', 'Vale', 'Winter', 'Xen', 'Yuki', 'Zen'];
+    
+  last_names TEXT[] := ARRAY['Anderson', 'Brown', 'Clark', 'Davis', 'Evans', 'Foster', 'Garcia', 'Harris', 
+    'Johnson', 'King', 'Lee', 'Martinez', 'Nelson', 'O''Connor', 'Parker', 'Rodriguez', 'Smith', 'Taylor', 
+    'Wilson', 'Young', 'Adams', 'Baker', 'Cooper', 'Edwards', 'Fisher', 'Green', 'Hall', 'Jackson', 
+    'Lewis', 'Miller', 'Moore', 'Phillips', 'Roberts', 'Thompson', 'Turner', 'Walker', 'White', 'Wright'];
+    
+  -- Gender-specific profile pictures
+  male_profile_pics TEXT[] := ARRAY[
     'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d',
-    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80',
     'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-    'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e',
     'https://images.unsplash.com/photo-1568602471122-7832951cc4c5',
-    'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df',
     'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
-    'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6',
     'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7',
-    'https://images.unsplash.com/photo-1544005313-94ddf0286df2',
     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
     'https://images.unsplash.com/photo-1534030347209-467a5b0ad3e6',
     'https://images.unsplash.com/photo-1519699047748-de8e457a634e',
-    'https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2',
+    'https://images.unsplash.com/photo-1480455624313-e29b44bbfde1',
+    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e',
+    'https://images.unsplash.com/photo-1560250097-0b93528c311a',
+    'https://images.unsplash.com/photo-1566492031773-4f4e44671d66'
+  ];
+  
+  female_profile_pics TEXT[] := ARRAY[
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
+    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80',
+    'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e',
+    'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df',
+    'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
     'https://images.unsplash.com/photo-1517365830460-955ce3ccd263',
     'https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e',
-    'https://images.unsplash.com/photo-1480455624313-e29b44bbfde1',
-    'https://images.unsplash.com/photo-1554780336-390462301acf'
+    'https://images.unsplash.com/photo-1554780336-390462301acf',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2',
+    'https://images.unsplash.com/photo-1580489944761-15a19d654956'
   ];
+  
+  nonbinary_profile_pics TEXT[] := ARRAY[
+    'https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2',
+    'https://images.unsplash.com/photo-1463453091185-61582044d556',
+    'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126',
+    'https://images.unsplash.com/photo-1551836022-deb4988cc6c0',
+    'https://images.unsplash.com/photo-1601455763557-db1bea8a9a5a',
+    'https://images.unsplash.com/photo-1607746882042-944635dfe10e'
+  ];
+  
+  -- Logical bio templates based on interests
+  bio_templates TEXT[] := ARRAY[
+    'Passionate %s enthusiast who loves %s. Looking for someone to share adventures with!',
+    'When I''m not busy with %s, you''ll find me %s. Let''s explore the world together!',
+    'Life is about %s and %s. Seeking genuine connections with like-minded people.',
+    'Professional by day, %s lover by night. Also enjoy %s in my free time.',
+    'Adventure seeker with a passion for %s and %s. Coffee dates or hiking trails?',
+    'Creative soul who finds joy in %s and %s. Looking for my partner in crime!',
+    'Fitness enthusiast who also loves %s and %s. Balance is key in life and love.',
+    'Foodie and %s lover seeking someone who appreciates %s as much as I do.',
+    'Bookworm and %s enthusiast. Perfect date: %s followed by deep conversations.',
+    'Tech-savvy professional with a love for %s and %s. Let''s build something amazing together!'
+  ];
+  
   user_id UUID;
   random_city INTEGER;
   random_lat NUMERIC;
@@ -244,60 +339,126 @@ DECLARE
   interest1 TEXT;
   interest2 TEXT;
   pic_index INTEGER;
+  selected_first_names TEXT[];
+  selected_profile_pics TEXT[];
+  
+  -- Gender-based interest preferences
+  male_preferred_interests TEXT[] := ARRAY['fitness', 'sports', 'technology', 'gaming', 'hiking', 'photography'];
+  female_preferred_interests TEXT[] := ARRAY['art', 'fashion', 'yoga', 'reading', 'dancing', 'cooking'];
+  common_interests TEXT[] := ARRAY['travel', 'movies', 'music', 'food', 'photography', 'hiking'];
+  
 BEGIN
-  -- For debugging - print a message to confirm function is executing
   RAISE NOTICE 'Starting to generate % test users', num_users;
 
   FOR i IN 1..num_users LOOP
     BEGIN
-      -- Generate random data for this user
-      random_first := first_names[1 + floor(random() * array_length(first_names, 1))];
+      -- Select random gender first
+      random_gender := gender_options[1 + floor(random() * array_length(gender_options, 1))];
+      
+      -- Choose appropriate names and pictures based on gender
+      IF random_gender = 'male' THEN
+        selected_first_names := male_first_names;
+        selected_profile_pics := male_profile_pics;
+      ELSIF random_gender = 'female' THEN
+        selected_first_names := female_first_names;
+        selected_profile_pics := female_profile_pics;
+      ELSE
+        selected_first_names := nonbinary_first_names;
+        selected_profile_pics := nonbinary_profile_pics;
+      END IF;
+      
+      -- Generate logical names
+      random_first := selected_first_names[1 + floor(random() * array_length(selected_first_names, 1))];
       random_last := last_names[1 + floor(random() * array_length(last_names, 1))];
-      username := lower(random_first || random_last || floor(random() * 1000)::TEXT);
+      username := lower(random_first || random_last || floor(random() * 100)::TEXT);
       first_name := random_first;
       last_name := random_last;
       email := lower(random_first || '.' || random_last || floor(random() * 1000)::TEXT || '@example.com');
       
-      -- Select random gender and sexual preference
-      random_gender := gender_options[1 + floor(random() * array_length(gender_options, 1))];
-      random_sexual_pref := sexual_pref_options[1 + floor(random() * array_length(sexual_pref_options, 1))];
+      -- Logical sexual preference based on gender (with some randomness)
+      IF random_gender = 'male' THEN
+        IF random() < 0.85 THEN
+          random_sexual_pref := 'heterosexual';
+        ELSIF random() < 0.95 THEN
+          random_sexual_pref := 'homosexual';
+        ELSE
+          random_sexual_pref := 'bisexual';
+        END IF;
+      ELSIF random_gender = 'female' THEN
+        IF random() < 0.80 THEN
+          random_sexual_pref := 'heterosexual';
+        ELSIF random() < 0.90 THEN
+          random_sexual_pref := 'homosexual';
+        ELSE
+          random_sexual_pref := 'bisexual';
+        END IF;
+      ELSE
+        -- Non-binary users more likely to be bisexual or other
+        IF random() < 0.50 THEN
+          random_sexual_pref := 'bisexual';
+        ELSIF random() < 0.70 THEN
+          random_sexual_pref := 'other';
+        ELSIF random() < 0.85 THEN
+          random_sexual_pref := 'heterosexual';
+        ELSE
+          random_sexual_pref := 'homosexual';
+        END IF;
+      END IF;
       
-      -- Generate random age between 18 and 50
-      random_age := 18 + floor(random() * 32);
+      -- Generate realistic age between 18 and 55
+      random_age := 18 + floor(random() * 37);
       
       -- Calculate date of birth based on age
       random_dob := CURRENT_DATE - (random_age * INTERVAL '1 year') - (floor(random() * 365) * INTERVAL '1 day');
       
-      -- Select random interests (between 2 and 5)
-      num_interests := 2 + floor(random() * 4);
+      -- Generate logical interests based on gender and age
       user_interests := ARRAY[]::TEXT[];
+      num_interests := 3 + floor(random() * 3); -- 3-5 interests
       
-      FOR j IN 1..num_interests LOOP
+      -- Add some gender-preferred interests (30% chance each)
+      IF random_gender = 'male' THEN
+        FOR j IN 1..array_length(male_preferred_interests, 1) LOOP
+          IF random() < 0.3 THEN
+            user_interests := array_append(user_interests, male_preferred_interests[j]);
+          END IF;
+        END LOOP;
+      ELSIF random_gender = 'female' THEN
+        FOR j IN 1..array_length(female_preferred_interests, 1) LOOP
+          IF random() < 0.3 THEN
+            user_interests := array_append(user_interests, female_preferred_interests[j]);
+          END IF;
+        END LOOP;
+      END IF;
+      
+      -- Add common interests to reach desired count
+      WHILE array_length(user_interests, 1) < num_interests LOOP
         user_interests := array_append(user_interests, 
-          interests_all[1 + floor(random() * array_length(interests_all, 1))]);
+          CASE 
+            WHEN random() < 0.7 THEN common_interests[1 + floor(random() * array_length(common_interests, 1))]
+            ELSE interests_all[1 + floor(random() * array_length(interests_all, 1))]
+          END
+        );
       END LOOP;
       
-      -- Remove duplicates
-      user_interests := ARRAY(SELECT DISTINCT unnest(user_interests));
+      -- Remove duplicates and trim to desired length
+      user_interests := ARRAY(SELECT DISTINCT unnest(user_interests) LIMIT num_interests);
       
       -- Select random city and coordinates with slight randomization
       random_city := 1 + floor(random() * array_length(cities, 1));
       random_lat := city_coords[random_city][1] + (random() * 0.1 - 0.05);
       random_lng := city_coords[random_city][2] + (random() * 0.1 - 0.05);
       
-      -- Select a random profile picture from the Unsplash array
-      pic_index := 1 + floor(random() * array_length(profile_pics, 1));
-      profile_pic := profile_pics[pic_index];
+      -- Select appropriate profile picture
+      pic_index := 1 + floor(random() * array_length(selected_profile_pics, 1));
+      profile_pic := selected_profile_pics[pic_index];
       
-      -- Create random bio
-      interest1 := user_interests[1 + floor(random() * array_length(user_interests, 1))];
-      IF array_length(user_interests, 1) > 1 THEN
-        interest2 := user_interests[1 + floor(random() * array_length(user_interests, 1))];
-        WHILE interest2 = interest1 LOOP
-          interest2 := user_interests[1 + floor(random() * array_length(user_interests, 1))];
-        END LOOP;
+      -- Create logical bio based on interests
+      IF array_length(user_interests, 1) >= 2 THEN
+        interest1 := user_interests[1];
+        interest2 := user_interests[2];
       ELSE
-        interest2 := 'socializing';
+        interest1 := user_interests[1];
+        interest2 := 'meeting new people';
       END IF;
       
       random_bio := format(
@@ -313,178 +474,59 @@ BEGIN
         "fame_rating", "location", "latitude", "longitude", "age", "date_of_birth", "bio", "is_verified"
       ) VALUES (
         username, first_name, last_name, email, 
-        '$2b$12$ZasZYPAD8w0hauYrEziYcumcMy5DWadtS/voVz0XJGMjpLgWWXQdm', -- Same password for all test users
+        '$2b$12$ZasZYPAD8w0hauYrEziYcumcMy5DWadtS/voVz0XJGMjpLgWWXQdm',
         random_gender::gender_type, 
         random_sexual_pref::sexual_orientation,
         user_interests,
         profile_pic,
-        20 + floor(random() * 80)::INTEGER, -- Random fame rating between 20-100
+        CASE 
+          WHEN random_age BETWEEN 18 AND 25 THEN 20 + floor(random() * 40)::INTEGER
+          WHEN random_age BETWEEN 26 AND 35 THEN 40 + floor(random() * 40)::INTEGER
+          ELSE 60 + floor(random() * 40)::INTEGER
+        END, -- Age-based fame rating
         cities[random_city],
         random_lat,
         random_lng,
         random_age,
         random_dob,
         random_bio,
-        TRUE
+        random() < 0.8 -- 80% verified
       ) RETURNING id INTO user_id;
       
-      -- Debugging message
-      RAISE NOTICE 'Created user %: % %', i, first_name, last_name;
+      RAISE NOTICE 'Created user %: % % (%)', i, first_name, last_name, random_gender;
       
-      -- Insert user preferences
+      -- Insert logical user preferences
       INSERT INTO "user_preferences" (
         "user_id", "min_age", "max_age", "min_fame_rating", "max_fame_rating", 
         "preferred_distance", "preferred_tags"
       ) VALUES (
         user_id,
-        GREATEST(18, random_age - 5 - floor(random() * 5)::INTEGER),
-        random_age + 5 + floor(random() * 10)::INTEGER,
-        floor(random() * 50)::INTEGER,
+        GREATEST(18, random_age - 8),
+        LEAST(55, random_age + 10),
+        GREATEST(0, (SELECT fame_rating FROM users WHERE id = user_id) - 30),
         100,
-        10 + floor(random() * 90)::INTEGER,
+        CASE 
+          WHEN random_age BETWEEN 18 AND 25 THEN 25 + floor(random() * 25)::INTEGER
+          WHEN random_age BETWEEN 26 AND 35 THEN 15 + floor(random() * 35)::INTEGER
+          ELSE 10 + floor(random() * 40)::INTEGER
+        END, -- Age-based distance preference
         user_interests
       );
       
-      -- Handle errors for each user separately to continue processing
       EXCEPTION WHEN OTHERS THEN
         RAISE NOTICE 'Error creating user %: %', i, SQLERRM;
     END;
   END LOOP;
 
-  -- For debugging - print completion message
   RAISE NOTICE 'Finished generating users, now creating interactions';
 
-  -- Generate some random connections and interactions between users
   BEGIN
-    PERFORM generate_random_interactions(num_users / 10); -- Create interactions for about 10% of users
+    PERFORM generate_random_interactions(num_users / 10);
     EXCEPTION WHEN OTHERS THEN
       RAISE NOTICE 'Error generating interactions: %', SQLERRM;
   END;
   
   RAISE NOTICE 'Completed user generation process';
-END;
-$$ LANGUAGE plpgsql;
-
--- Create function to generate random interactions between users
-CREATE OR REPLACE FUNCTION generate_random_interactions(num_interactions INTEGER) RETURNS VOID AS $$
-DECLARE
-  user_ids UUID[];
-  user1_id UUID;
-  user2_id UUID;
-  is_match BOOLEAN;
-  user_count INTEGER;
-BEGIN
-  -- Get all user IDs
-  SELECT array_agg(id), COUNT(*) INTO user_ids, user_count FROM users;
-  
-  -- Debugging - print the number of users found
-  RAISE NOTICE 'Found % users for generating interactions', user_count;
-  
-  -- Exit if no users or only one user exists
-  IF user_count < 2 THEN
-    RAISE NOTICE 'Not enough users to generate interactions';
-    RETURN;
-  END IF;
-  
-  -- Generate random likes
-  FOR i IN 1..num_interactions*5 LOOP
-    BEGIN
-      user1_id := user_ids[1 + floor(random() * user_count)];
-      user2_id := user_ids[1 + floor(random() * user_count)];
-      
-      -- Ensure we're not creating a self-like
-      WHILE user1_id = user2_id LOOP
-        user2_id := user_ids[1 + floor(random() * user_count)];
-      END LOOP;
-      
-      -- Random chance for mutual like (match)
-      is_match := random() < 0.3; -- 30% chance of match
-
-      -- Insert first like
-      INSERT INTO "likes" ("liker", "liked", "is_connected")
-      VALUES (user1_id, user2_id, is_match)
-      ON CONFLICT DO NOTHING;
-
-      -- If match, insert the reverse like too
-      IF is_match THEN
-        INSERT INTO "likes" ("liker", "liked", "is_connected") 
-        VALUES (user2_id, user1_id, TRUE)
-        ON CONFLICT DO NOTHING;
-
-        -- Add some messages for matches
-        IF random() < 0.8 THEN -- 80% chance for messages in matches
-          INSERT INTO "messages" ("sender", "receiver", "content", "is_read")
-          VALUES 
-            (user1_id, user2_id, 'Hi there! How are you doing?', TRUE),
-            (user2_id, user1_id, 'Hey! I''m good, thanks for asking. How about you?', random() < 0.5);
-
-          IF random() < 0.6 THEN -- 60% chance for more messages
-            INSERT INTO "messages" ("sender", "receiver", "content", "is_read")
-            VALUES 
-              (user1_id, user2_id, 'I''m great! I noticed we both like similar things.', random() < 0.7),
-              (user2_id, user1_id, 'Yes, that''s awesome! Would love to chat more about it.', random() < 0.3);
-          END IF;
-        END IF;
-      END IF;
-
-      EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'Error creating interaction %: %', i, SQLERRM;
-    END;
-  END LOOP;
-  -- Generate some profile views
-  FOR i IN 1..num_interactions*10 LOOP
-    BEGIN
-      user1_id := user_ids[1 + floor(random() * user_count)];
-      user2_id := user_ids[1 + floor(random() * user_count)];
-      -- Ensure we're not creating a self-view
-      WHILE user1_id = user2_id LOOP
-        user2_id := user_ids[1 + floor(random() * user_count)];
-      END LOOP;
-      INSERT INTO "views" ("viewer", "viewed")
-      VALUES (user1_id, user2_id)
-      ON CONFLICT DO NOTHING;
-      EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'Error creating view %: %', i, SQLERRM;
-    END;
-  END LOOP;
-  
-  -- Generate some direct notifications (in addition to those created by triggers)
-  FOR i IN 1..num_interactions*3 LOOP
-    BEGIN
-      user1_id := user_ids[1 + floor(random() * user_count)];
-      user2_id := user_ids[1 + floor(random() * user_count)];
-      
-      -- Ensure we're not creating a self-notification
-      WHILE user1_id = user2_id LOOP
-        user2_id := user_ids[1 + floor(random() * user_count)];
-      END LOOP;
-      
-      -- Create random notification with random read status
-      INSERT INTO "notifications" (
-        "user_id", 
-        "sender_id", 
-        "type", 
-        "content", 
-        "is_read"
-      )
-      VALUES (
-        user1_id,
-        user2_id,
-        (ARRAY['like_received', 'profile_viewed', 'message_received', 'match_created', 'match_broken'])[1 + floor(random() * 5)]::notification_type,
-        CASE 
-          WHEN random() < 0.2 THEN 'Someone liked your profile'
-          WHEN random() < 0.4 THEN 'Someone viewed your profile'
-          WHEN random() < 0.6 THEN 'You received a new message'
-          WHEN random() < 0.8 THEN 'You have a new match!'
-          ELSE 'A match has been broken'
-        END,
-        random() < 0.5  -- 50% chance of being read
-      );
-      
-      EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'Error creating notification %: %', i, SQLERRM;
-    END;
-  END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 

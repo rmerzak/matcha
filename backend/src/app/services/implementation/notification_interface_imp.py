@@ -20,10 +20,10 @@ class NotificationServiceImp(BaseService, INotificationService):
         self.user_service = user_service
 
     async def create_and_send_notification(
-        self, 
-        user_id: str, 
-        sender_id: str, 
-        notification_type: str, 
+        self,
+        user_id: str,
+        sender_id: str,
+        notification_type: str,
         content: str,
         event_name: str = "notification"
     ) -> Dict:
@@ -35,12 +35,14 @@ class NotificationServiceImp(BaseService, INotificationService):
             )
             
             if not notification:
+                logger.error(f"Failed to create notification for user {user_id}")
                 return None
                 
             # Get sender details for the notification payload
             sender = await self.user_service.get_user_by_id_data(sender_id)
-            logger.info(f"sender {sender['id']}")
+            logger.info(f"sender {sender['id'] if sender else 'None'}")
             if not sender:
+                logger.warning(f"Sender {sender_id} not found, notification created but no WebSocket event sent")
                 return notification
                 
             # Prepare notification data for WebSocket
@@ -58,16 +60,12 @@ class NotificationServiceImp(BaseService, INotificationService):
                     "created_at": notification["created_at"].isoformat() if notification["created_at"] else None
                 }
             }
-            
-            # Send notification via WebSocket
-            logger.info("notification_data" ,notification_data)
-            logger.info("user_id" ,user_id)
             await self.socketio_manager.send_event(event_name, notification_data, user_id)
             
             return notification
             
         except Exception as e:
-            print(f"Error creating/sending notification: {str(e)}")
+            logger.error(f"Error creating/sending notification: {str(e)}")
             return None
 
     async def send_like_notification(self, user_id: str, sender_id: str) -> Dict:
@@ -99,7 +97,26 @@ class NotificationServiceImp(BaseService, INotificationService):
             "A match has been broken",
             "connection_broken"
         )
-        
+    
+    async def send_message_notification(self, message: dict, user_id: str):
+        """Send notification when a user receives a message"""
+        return await self.create_and_send_notification(
+            user_id,
+            message["sender"],
+            "message_received",
+            message["content"],
+            "new_message"
+        )
+    async def send_view_notification(self, message: dict, user_id: str):
+        """Send notification when a user receives a view"""
+        logger.info(f"send_view_notification {message} user_id {user_id}")
+        return await self.create_and_send_notification(
+            user_id,
+            message["viewer"],
+            "profile_viewed",
+            "Someone viewed your profile",
+            "new_view"
+        )
     async def get_user_notifications(self, user_id: str):
         """Get all notifications for a user"""
         try:
