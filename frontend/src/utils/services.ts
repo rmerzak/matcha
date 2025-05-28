@@ -46,3 +46,27 @@ export const getRequest = async (url: string) => {
 	}
 	return data;
 };
+
+export const putRequest = async (url: string, body?: any) => {
+	const token = localStorage.getItem("jwt");
+
+	const response = await fetch(url, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			...(token ? { Authorization: `Bearer ${token}` } : {}),
+		},
+		body: body ? JSON.stringify(body) : undefined,
+	});
+
+	const data = await response.json();
+
+	if (!response.ok) {
+		let message = "An error occurred...";
+		if (data?.message) {
+			message = data.message;
+		}
+		return { error: true, message };
+	}
+	return data;
+};
