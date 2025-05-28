@@ -9,6 +9,7 @@ import { getRequest, baseUrl, putRequest } from "../utils/services";
 import useAuthStore from "../store/useAuthStore";
 import { io, Socket } from "socket.io-client";
 import { SendMessagePayload } from "../types/socket";
+import { useLocation, useParams } from "react-router-dom";
 
 // Define proper types for messages
 export interface MessageType {
@@ -104,6 +105,9 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
     null
   );
 
+  const location = useLocation();
+  const {id} = useParams();
+
   // Initialize socket connection
   useEffect(() => {
     if (!authToken) return;
@@ -136,59 +140,52 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
       console.error("Socket error:", error);
     });
 
-    newSocket.on("new_message", (data) => {
-      console.log("New message received:", data);
-      if (data.sender !== authUser?.id) {
-        setMessages((prev) => [...prev, data]);
+    newSocket.on("new_message", (obj) => {
+      if (obj.data.sender !== authUser?.id) {
+        setMessages((prev) => [...prev, obj.data]);
+      }
+      if (!location.pathname.startsWith("/chat")) {
+        addNotifacation(obj.data);
       }
     });
 
     newSocket.on("new_view", (obj) => {
-      const data: dataType = obj.data;
-      console.log("Someone liked your profile", data);
-      setNotifications((prev) => [
-        ...prev,
-        {
-          id: data.id,
-          content: data.content,
-          created_at: data.created_at,
-          is_read: false,
-          profile_picture: data.sender.profile_picture,
-          sender_id: data.sender.id,
-          type: data.type,
-          user_id: data.sender.id,
-          username: data.sender.username,
-        },
-      ]);
+      addNotifacation(obj.data);
     });
 
     newSocket.on("new_like", (obj) => {
-      const data: dataType = obj.data;
-      console.log("Someone liked your profile", data);
-      setNotifications((prev) => [
-        ...prev,
-        {
-          id: data.id,
-          content: data.content,
-          created_at: data.created_at,
-          is_read: false,
-          profile_picture: data.sender.profile_picture,
-          sender_id: data.sender.id,
-          type: data.type,
-          user_id: data.sender.id,
-          username: data.sender.username,
-        },
-      ]);
+      addNotifacation(obj.data);
+    });
 
-      // if (data.sender !== authUser?.id) {
-      //   setMessages((prev) => [...prev, data]);
-      // }
+    newSocket.on("connection_broken", (obj) => {
+      addNotifacation(obj.data);
+    });
+        newSocket.on("new_match", (obj) => {
+      addNotifacation(obj.data);
     });
 
     return () => {
       newSocket.disconnect();
     };
-  }, [authToken, authUser?.id]);
+  }, [authToken, authUser?.id, id, location.pathname]);
+
+  const addNotifacation = (data: dataType) => {
+      setNotifications((prev) => [
+        ...prev,
+        {
+          id: data.id,
+          content: data.content,
+          created_at: data.created_at,
+          is_read: false,
+          profile_picture: data.sender.profile_picture,
+          sender_id: data.sender.id,
+          type: data.type,
+          user_id: data.sender.id,
+          username: data.sender.username,
+        },
+      ]);
+
+  }
 
   // Fetch messages when current chat changes
   useEffect(() => {

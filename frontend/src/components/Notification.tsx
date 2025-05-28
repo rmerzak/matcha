@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 import { ChatContext } from "../context/ChatContext";
 
 export const Notification = () => {
-  const { getNotifications, notifications } = useContext(ChatContext);
+  const { notifications } = useContext(ChatContext);
 
   useEffect(() => {
-    getNotifications();
-  }, []);
+    // This effect can be used to fetch notifications or perform any side effects
+    // related to notifications when the component mounts.
+  }, [notifications]);
+
   return (
     <Link to="/notifications" className="text-white relative p-2">
       <Bell className="size-7 " />

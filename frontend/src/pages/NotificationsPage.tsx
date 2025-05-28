@@ -14,12 +14,11 @@ function NotificationsPage() {
   // }, [notifications])
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getNotifications();
+    getNotifications();
+
+    return () => {
       readNotifications();
     };
-
-    fetchData();
   }, []);
 
   return (
@@ -48,7 +47,10 @@ function NotificationsPage() {
                       className="w-10 h-10 rounded-full object-cover"
                     />
                     <div className="flex flex-col">
-                      <Link to={`/users/${notification.username}`} className="hover:underline">
+                      <Link
+                        to={`/users/${notification.username}`}
+                        className="hover:underline"
+                      >
                         <span className="font-semibold text-sm">
                           {notification.username}
                         </span>
