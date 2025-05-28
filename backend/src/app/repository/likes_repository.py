@@ -7,17 +7,26 @@ class LikesRepository(BaseRepository):
         super().__init__(db)
         self.db = db
         
-    async def add_like(self, liker_id: str, liked_id: str) -> dict:
+    async def add_like(self, liker_id: str, liked_id: str) -> bool:
         """Add a like from one user to another"""
         try:
+            # Check if like already exists
+            existing_like = await self.check_like_exists(liker_id, liked_id)
+            if existing_like:
+                return False
+            
+            # Insert the like (trigger will handle fame rating and notifications)
             query = """
-                INSERT INTO likes (liker, liked)
-                VALUES (:liker_id, :liked_id)
-                ON CONFLICT (liker, liked) DO NOTHING
-                RETURNING id, liker, liked, like_time, is_connected
+                INSERT INTO likes (liker, liked, like_time)
+                VALUES (:liker_id, :liked_id, NOW())
+                RETURNING id
             """
-            result = await self.db.fetch_one(query, {"liker_id": liker_id, "liked_id": liked_id})
-            return result
+            result = await self.db.fetch_one(query, {
+                "liker_id": liker_id,
+                "liked_id": liked_id
+            })
+            
+            return result is not None
         except Exception as e:
             raise Exception(f"Error adding like: {str(e)}")
     
@@ -182,12 +191,17 @@ class LikesRepository(BaseRepository):
     async def remove_like(self, liker_id: str, liked_id: str) -> bool:
         """Remove a like from one user to another"""
         try:
+            # Delete the like (trigger will handle fame rating updates)
             query = """
                 DELETE FROM likes
                 WHERE liker = :liker_id AND liked = :liked_id
                 RETURNING id
             """
-            result = await self.db.fetch_one(query, {"liker_id": liker_id, "liked_id": liked_id})
+            result = await self.db.fetch_one(query, {
+                "liker_id": liker_id, 
+                "liked_id": liked_id
+            })
+            
             return result is not None
         except Exception as e:
             raise Exception(f"Error removing like: {str(e)}")

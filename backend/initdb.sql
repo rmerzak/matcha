@@ -567,14 +567,24 @@ END $$;
 DROP FUNCTION IF EXISTS generate_test_users(INTEGER);
 DROP FUNCTION IF EXISTS generate_random_interactions(INTEGER);
 
--- Create triggers to automatically create notifications
+-- Create function to update fame rating
+CREATE OR REPLACE FUNCTION update_fame_rating(target_user_id UUID, rating_change NUMERIC) RETURNS VOID AS $$
+BEGIN
+    UPDATE users 
+    SET fame_rating = GREATEST(0, LEAST(100, fame_rating + rating_change))
+    WHERE id = target_user_id;
+END;
+$$ LANGUAGE plpgsql;
 
--- Trigger for likes
+-- Update the like trigger to include fame rating changes
 CREATE OR REPLACE FUNCTION create_like_notification() RETURNS TRIGGER AS $$
 BEGIN
   -- Insert notification for receiving a like
   INSERT INTO notifications (user_id, sender_id, type, content)
   VALUES (NEW.liked, NEW.liker, 'like_received', 'Someone liked your profile');
+  
+  -- Update fame rating for receiving a like (+2 points)
+  PERFORM update_fame_rating(NEW.liked, 2);
   
   -- Check if this creates a match (both users liked each other)
   IF EXISTS (SELECT 1 FROM likes WHERE liker = NEW.liked AND liked = NEW.liker) THEN
@@ -588,72 +598,89 @@ BEGIN
     UPDATE likes SET is_connected = TRUE 
     WHERE (liker = NEW.liker AND liked = NEW.liked) 
        OR (liker = NEW.liked AND liked = NEW.liker);
+       
+    -- Additional fame rating bonus for creating a match (+3 points each)
+    PERFORM update_fame_rating(NEW.liked, 3);
+    PERFORM update_fame_rating(NEW.liker, 3);
   END IF;
   
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_like_insert
-  AFTER INSERT ON likes
-  FOR EACH ROW
-  EXECUTE FUNCTION create_like_notification();
-
--- Trigger for unlikes (when a row is deleted from likes table)
-CREATE OR REPLACE FUNCTION create_unlike_notification() RETURNS TRIGGER AS $$
+-- Create trigger for unlike (fame rating decrease)
+CREATE OR REPLACE FUNCTION handle_unlike() RETURNS TRIGGER AS $$
 BEGIN
-  -- Only create notification if they were previously matched
-  IF OLD.is_connected = TRUE THEN
-    -- Check if the other person still has a like record
-    IF EXISTS (SELECT 1 FROM likes WHERE liker = OLD.liked AND liked = OLD.liker) THEN
-      -- Create unlike notification
-      INSERT INTO notifications (user_id, sender_id, type, content)
-      VALUES (OLD.liked, OLD.liker, 'match_broken', 'A match has been broken');
-      
-      -- Update the remaining like to show they're no longer connected
-      UPDATE likes SET is_connected = FALSE 
-      WHERE liker = OLD.liked AND liked = OLD.liker;
-    END IF;
+  -- Decrease fame rating for losing a like (-1 point)
+  PERFORM update_fame_rating(OLD.liked, -1);
+  
+  -- If they were connected, additional penalty (-2 points)
+  IF OLD.is_connected THEN
+    PERFORM update_fame_rating(OLD.liked, -2);
+    PERFORM update_fame_rating(OLD.liker, -2);
   END IF;
   
   RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
+-- Drop existing trigger if it exists and create with correct table name
+DROP TRIGGER IF EXISTS after_like_delete ON likes;
 CREATE TRIGGER after_like_delete
   AFTER DELETE ON likes
   FOR EACH ROW
-  EXECUTE FUNCTION create_unlike_notification();
+  EXECUTE FUNCTION handle_unlike();
 
--- Trigger for profile views
-CREATE OR REPLACE FUNCTION create_view_notification() RETURNS TRIGGER AS $$
+-- Create trigger for blocks (fame rating decrease)
+CREATE OR REPLACE FUNCTION handle_block() RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO notifications (user_id, sender_id, type, content)
-  VALUES (NEW.viewed, NEW.viewer, 'profile_viewed', 'Someone viewed your profile');
+  -- Decrease fame rating for being blocked (-5 points)
+  PERFORM update_fame_rating(NEW.blocked, -5);
   
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
+-- Drop existing trigger if it exists and create with correct table name
+DROP TRIGGER IF EXISTS after_block_insert ON blocks;
+CREATE TRIGGER after_block_insert
+  AFTER INSERT ON blocks
+  FOR EACH ROW
+  EXECUTE FUNCTION handle_block();
+
+-- Create trigger for unblocks (small fame rating recovery)
+CREATE OR REPLACE FUNCTION handle_unblock() RETURNS TRIGGER AS $$
+BEGIN
+  -- Small recovery for being unblocked (+1 point)
+  PERFORM update_fame_rating(OLD.blocked, 1);
+  
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Drop existing trigger if it exists and create with correct table name
+DROP TRIGGER IF EXISTS after_block_delete ON blocks;
+CREATE TRIGGER after_block_delete
+  AFTER DELETE ON blocks
+  FOR EACH ROW
+  EXECUTE FUNCTION handle_unblock();
+
+-- Fix the trigger for profile views (correct table name)
+CREATE OR REPLACE FUNCTION handle_profile_view() RETURNS TRIGGER AS $$
+BEGIN
+  -- Small increase for profile view (+0.5 points)
+  PERFORM update_fame_rating(NEW.viewed, 0.5);
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Drop existing trigger if it exists and create with correct table name
+DROP TRIGGER IF EXISTS after_view_insert ON views;
 CREATE TRIGGER after_view_insert
   AFTER INSERT ON views
   FOR EACH ROW
-  EXECUTE FUNCTION create_view_notification();
-
--- Trigger for messages
-CREATE OR REPLACE FUNCTION create_message_notification() RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO notifications (user_id, sender_id, type, content)
-  VALUES (NEW.receiver, NEW.sender, 'message_received', 'You received a new message');
-  
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER after_message_insert
-  AFTER INSERT ON messages
-  FOR EACH ROW
-  EXECUTE FUNCTION create_message_notification();
+  EXECUTE FUNCTION handle_profile_view();
 
 -- Create trigger to automatically update age when date_of_birth changes
 CREATE OR REPLACE FUNCTION update_age_from_dob() RETURNS TRIGGER AS $$

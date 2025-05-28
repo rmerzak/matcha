@@ -94,65 +94,38 @@ class BlocksRepository(BaseRepository):
         result = await self.db.fetch_one(query, user_id, other_user_id)
         return result is not None
         
-    async def add_block(self, blocker_id: str, blocked_id: str) -> dict:
-        """Add a block from one user to another
-        
-        This prevents a user from blocking someone who has already blocked them,
-        to avoid potential privacy issues where a user could circumvent being blocked.
-        """
+    async def add_block(self, blocker_id: str, blocked_id: str) -> str:
+        """Create a new block between users"""
         try:
-            # First check if the other user has already blocked this user
-            check_reverse_block_query = """
-                SELECT id FROM blocks
-                WHERE blocker = :blocked_id AND blocked = :blocker_id
-            """
-            existing_reverse_block = await self.db.fetch_one(
-                query=check_reverse_block_query, 
-                values={"blocker_id": blocker_id, "blocked_id": blocked_id}
-            )
-            
-            if existing_reverse_block:
-                raise Exception("Cannot block a user who has already blocked you")
-            
-            # Check if the block already exists
-            check_query = """
-                SELECT id FROM blocks
-                WHERE blocker = :blocker_id AND blocked = :blocked_id
-            """
-            existing_block = await self.db.fetch_one(
-                query=check_query, 
-                values={"blocker_id": blocker_id, "blocked_id": blocked_id}
-            )
-            
-            if existing_block:
-                return existing_block
-            
-            # If no existing block, create a new one
+            block_id = str(uuid.uuid4())
+            # Insert the block (trigger will handle fame rating updates)
             query = """
-                INSERT INTO blocks (blocker, blocked)
-                VALUES (:blocker_id, :blocked_id)
-                RETURNING id, blocker, blocked, block_time
+                INSERT INTO blocks (id, blocker, blocked, block_time)
+                VALUES (:block_id, :blocker_id, :blocked_id, NOW())
+                RETURNING id
             """
-            result = await self.db.fetch_one(
-                query=query, 
-                values={"blocker_id": blocker_id, "blocked_id": blocked_id}
-            )
-            return result
+            result = await self.db.fetch_one(query, {
+                "block_id": block_id,
+                "blocker_id": blocker_id,
+                "blocked_id": blocked_id
+            })
+            return result["id"] if result else None
         except Exception as e:
-            raise Exception(f"Error adding block: {str(e)}")
+            raise Exception(f"Error creating block: {str(e)}")
     
-    async def unblock_user(self, blocker_id: str, blocked_id: str) -> bool:
-        """Remove a block from one user to another"""
+    async def remove_block(self, blocker_id: str, blocked_id: str) -> bool:
+        """Remove a block between users"""
         try:
+            # Delete the block (trigger will handle fame rating updates)
             query = """
                 DELETE FROM blocks
                 WHERE blocker = :blocker_id AND blocked = :blocked_id
                 RETURNING id
             """
-            result = await self.db.fetch_one(
-                query=query, 
-                values={"blocker_id": blocker_id, "blocked_id": blocked_id}
-            )
+            result = await self.db.fetch_one(query, {
+                "blocker_id": blocker_id,
+                "blocked_id": blocked_id
+            })
             return result is not None
         except Exception as e:
             raise Exception(f"Error removing block: {str(e)}")
