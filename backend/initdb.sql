@@ -567,6 +567,13 @@ END $$;
 DROP FUNCTION IF EXISTS generate_test_users(INTEGER);
 DROP FUNCTION IF EXISTS generate_random_interactions(INTEGER);
 
+-- Drop the triggers used during data generation to avoid performance impact
+DROP TRIGGER IF EXISTS after_like_insert ON likes;
+DROP TRIGGER IF EXISTS after_view_insert ON views;
+DROP TRIGGER IF EXISTS after_block_insert ON blocks;
+DROP TRIGGER IF EXISTS after_block_delete ON blocks;
+DROP TRIGGER IF EXISTS after_like_delete ON likes;
+
 -- Create function to update fame rating
 CREATE OR REPLACE FUNCTION update_fame_rating(target_user_id UUID, rating_change NUMERIC) RETURNS VOID AS $$
 BEGIN
@@ -584,7 +591,7 @@ BEGIN
   VALUES (NEW.liked, NEW.liker, 'like_received', 'Someone liked your profile');
   
   -- Update fame rating for receiving a like (+2 points)
-  PERFORM update_fame_rating(NEW.liked, 2);
+  PERFORM update_fame_rating(NEW.liked, 1);
   
   -- Check if this creates a match (both users liked each other)
   IF EXISTS (SELECT 1 FROM likes WHERE liker = NEW.liked AND liked = NEW.liker) THEN
@@ -600,8 +607,8 @@ BEGIN
        OR (liker = NEW.liked AND liked = NEW.liker);
        
     -- Additional fame rating bonus for creating a match (+3 points each)
-    PERFORM update_fame_rating(NEW.liked, 3);
-    PERFORM update_fame_rating(NEW.liker, 3);
+    PERFORM update_fame_rating(NEW.liked, 1);
+    PERFORM update_fame_rating(NEW.liker, 1);
   END IF;
   
   RETURN NEW;
@@ -616,8 +623,8 @@ BEGIN
   
   -- If they were connected, additional penalty (-2 points)
   IF OLD.is_connected THEN
-    PERFORM update_fame_rating(OLD.liked, -2);
-    PERFORM update_fame_rating(OLD.liker, -2);
+    PERFORM update_fame_rating(OLD.liked, -1);
+    PERFORM update_fame_rating(OLD.liker, -1);
   END IF;
   
   RETURN OLD;
@@ -635,7 +642,7 @@ CREATE TRIGGER after_like_delete
 CREATE OR REPLACE FUNCTION handle_block() RETURNS TRIGGER AS $$
 BEGIN
   -- Decrease fame rating for being blocked (-5 points)
-  PERFORM update_fame_rating(NEW.blocked, -5);
+  PERFORM update_fame_rating(NEW.blocked, -1);
   
   RETURN NEW;
 END;

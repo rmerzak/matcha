@@ -14,11 +14,11 @@ class FameRatingServiceImp(BaseService, IFameRatingService):
     async def update_fame_rating(self, user_id: str, rating_change: float, reason: str = None):
         """
         Update fame rating with the following logic:
-        - Like received: +2 points
-        - Match created: +3 points (bonus)
+        - Like received: +1 points
+        - Match created: +1 points (bonus)
         - Unlike received: -1 point
-        - Match broken: -2 points
-        - Block received: -5 points
+        - Match broken: -1 point
+        - Block received: -1 points
         - Unblock: +1 point
         - Profile view: +0.5 points
         """
