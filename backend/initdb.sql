@@ -281,7 +281,6 @@ DECLARE
     'https://images.unsplash.com/photo-1480455624313-e29b44bbfde1',
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e',
     'https://images.unsplash.com/photo-1560250097-0b93528c311a',
-    'https://images.unsplash.com/photo-1566492031773-4f4e44671d66'
   ];
   
   female_profile_pics TEXT[] := ARRAY[
