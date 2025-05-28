@@ -1,4 +1,3 @@
-
 from urllib.parse import parse_qs
 from app.services.base_service import BaseService
 from app.services.socketio_manager_interface import ISocketIOManager
@@ -84,14 +83,6 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
     async def authenticate_connection(self, sid: str, token: str) -> Optional[dict]:
         """Authenticate and store user connection"""
         try:
-            # # Extract token
-            # http_headers = environ.get('HTTP_AUTHORIZATION', '')
-            # query = environ.get('QUERY_STRING', '')
-            # params = parse_qs(query)
-            # token = params.get('token', [None])[0]
-            # if not token and http_headers.startswith('Bearer '):
-            #     token = http_headers.split(' ')[1]
-
             if not token:
                 logger.error(f"No token for SID: {sid}")
                 return None
@@ -106,6 +97,10 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
             user_id = str(user_dict['id']).replace('UUID(\'', '').replace('\')', '')
             self._sid_to_user[sid] = user_dict
             await self.add_user_socket_connection(user_id, sid)
+            
+            # Set user online status to True
+            await self.set_user_online(user_id, True)
+            
             logger.info(f"Authentication successful - User: {user_id}, SID: {sid}")
             logger.info(f"Current state - sid_to_user: {self._sid_to_user}")
             return user_dict
@@ -123,8 +118,10 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
                 user_id = str(user['id']).replace('UUID(\'', '').replace('\')', '')
                 if user_id in self._user_uid_to_sid:
                     self._user_uid_to_sid[user_id].discard(sid)
+                    # Only set offline if no other active connections
                     if not self._user_uid_to_sid[user_id]:
                         del self._user_uid_to_sid[user_id]
+                        await self.set_user_online(user_id, False)
                 del self._sid_to_user[sid]
                 logger.info(f"Disconnected socket {sid} for user {user_id}")
                 logger.info(f"Current state - user_uid_to_sid: {self._user_uid_to_sid}")
@@ -132,6 +129,14 @@ class SocketIOManagerImp(BaseService, ISocketIOManager):
 
         except Exception as e:
             logger.error(f"Disconnect error: {str(e)}")
+
+    async def set_user_online(self, user_id: str, is_online: bool):
+        """Update user's online status in database"""
+        try:
+            await self.user_repository.update_user_online_status(user_id, is_online)
+            logger.info(f"Updated user {user_id} online status to {is_online}")
+        except Exception as e:
+            logger.error(f"Failed to update online status for user {user_id}: {str(e)}")
 
     async def send_event(self, event: str, data: Any, user_id: UUID) -> None:
         """Send event to client"""

@@ -50,3 +50,8 @@ class ISocketIOManager(ABC):
     @abstractmethod
     async def close_scoped_session(self):
         pass
+
+    @abstractmethod
+    async def set_user_online(self, user_id: str, is_online: bool):
+        """Update user's online status"""
+        pass
