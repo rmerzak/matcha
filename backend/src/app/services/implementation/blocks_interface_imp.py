@@ -6,10 +6,11 @@ from app.services.socketio_manager_interface import ISocketIOManager
 from app.repository.user_repository import UserRepository
 
 class BlocksServiceImp(BaseService, IBlocksService):
-    def __init__(self, blocks_repository: BlocksRepository, socketio_manager: ISocketIOManager, user_repository: UserRepository):
+    def __init__(self, blocks_repository: BlocksRepository, socketio_manager: ISocketIOManager, user_repository: UserRepository, fame_rating_service):
         self.blocks_repository = blocks_repository
         self.socketio_manager = socketio_manager
         self.user_repository = user_repository
+        self.fame_rating_service = fame_rating_service
     
     async def add_block(self, blocker_id: str, blocked_id: str):
         try:
@@ -43,6 +44,13 @@ class BlocksServiceImp(BaseService, IBlocksService):
             try:
                 block = await self.blocks_repository.add_block(blocker_id, blocked_id)
                 
+                # Update fame rating for being blocked (-5 points)
+                await self.fame_rating_service.update_fame_rating(
+                    blocked_id, 
+                    -5.0, 
+                    "Block received"
+                )
+                
                 # Notify through socket if needed
                 # await self.socketio_manager.send_to_user(
                 #     blocked_id, 
@@ -73,6 +81,13 @@ class BlocksServiceImp(BaseService, IBlocksService):
             
             if not success:
                 return error_response("Failed to unblock", "Could not unblock the user", 500)
+            
+            # Update fame rating for being unblocked (+1 point recovery)
+            await self.fame_rating_service.update_fame_rating(
+                blocked_id, 
+                1.0, 
+                "Unblock received"
+            )
             
             # Notify through socket if needed
             # await self.socketio_manager.send_to_user(

@@ -450,3 +450,29 @@ class UserRepository(BaseRepository):
         c = 2 * asin(sqrt(a))
         r = 6371
         return c * r
+
+    async def update_fame_rating(self, user_id: str, rating_change: float) -> bool:
+        """Update user's fame rating by a specific amount"""
+        try:
+            query = """
+                UPDATE users 
+                SET fame_rating = GREATEST(0, LEAST(100, fame_rating + :rating_change))
+                WHERE id = :user_id
+                RETURNING fame_rating
+            """
+            result = await self.db.fetch_one(query, {
+                "user_id": user_id,
+                "rating_change": rating_change
+            })
+            return result is not None
+        except Exception as e:
+            raise Exception(f"Error updating fame rating: {str(e)}")
+    
+    async def get_fame_rating(self, user_id: str) -> float:
+        """Get current fame rating for a user"""
+        try:
+            query = "SELECT fame_rating FROM users WHERE id = :user_id"
+            result = await self.db.fetch_val(query, {"user_id": user_id})
+            return result if result is not None else 0.0
+        except Exception as e:
+            raise Exception(f"Error getting fame rating: {str(e)}")

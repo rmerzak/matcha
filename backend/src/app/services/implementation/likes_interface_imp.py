@@ -9,13 +9,15 @@ from app.services.user_views_interface import IUserViewsService
 from app.services.socketio_manager_interface import ISocketIOManager
 from app.services.likes_interface import ILikesService
 from app.services.notification_interface import INotificationService
+from app.services.fame_rating_interface import IFameRatingService
 import logging
 logger = logging.getLogger(__name__)
 class LikesServiceImp(BaseService, ILikesService):
-    def __init__(self, user_repository: UserRepository, likes_repository: LikesRepository, notification_service: INotificationService):
+    def __init__(self, user_repository: UserRepository, likes_repository: LikesRepository, notification_service: INotificationService, fame_rating_service: IFameRatingService):
         self.user_repository = user_repository
         self.likes_repository = likes_repository
         self.notification_service = notification_service
+        self.fame_rating_service = fame_rating_service
     async def add_like(self, user_id: str, liked_user_id: str):
         try:
             # Get both users
@@ -43,10 +45,29 @@ class LikesServiceImp(BaseService, ILikesService):
             if not new_like:
                 return success_response("Already liked", "You have already liked this user")
 
+            # Update fame rating for receiving a like (+2 points)
+            await self.fame_rating_service.update_fame_rating(
+                liked_user_id,
+                1,
+                "Like received"
+            )
+
             # Check for mutual like AFTER adding the new like
             mutual_like = await self.likes_repository.check_mutual_like(user_id, liked_user_id)
             if mutual_like:
                 await self.likes_repository.update_connection_status(user_id, liked_user_id)
+                
+                # Update fame rating for match creation (+3 bonus points for both users)
+                await self.fame_rating_service.update_fame_rating(
+                    liked_user_id,
+                    1,
+                    "Match created"
+                )
+                await self.fame_rating_service.update_fame_rating(
+                    user_id,
+                    1,
+                    "Match created"
+                )
                 
                 # Send match notification to the user who was just liked
                 await self.notification_service.send_match_notification(liked_user_id, user_id)
@@ -97,7 +118,21 @@ class LikesServiceImp(BaseService, ILikesService):
             removed = await self.likes_repository.remove_like(user_id, unliked_user_id)
             
             if removed:
+                # Update fame rating for the person being unliked (-1 point)
+                await self.fame_rating_service.update_fame_rating(
+                    unliked_user_id, 
+                    -1, 
+                    "Unlike received"
+                )
+                
                 if was_connected:
+                    # Additional penalty only for the person who broke the match (-2 points)
+                    await self.fame_rating_service.update_fame_rating(
+                        user_id, 
+                        -1, 
+                        "Match broken by me"
+                    )
+                    
                     # Send notification about broken connection
                     await self.notification_service.send_unlike_notification(unliked_user_id, user_id)
                     
