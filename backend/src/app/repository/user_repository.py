@@ -48,10 +48,11 @@ class UserRepository(BaseRepository):
         try:
             query = """SELECT id, username, first_name, last_name, email, gender, 
                     sexual_preferences, interests, pictures, profile_picture, fame_rating, 
-                    location, latitude, address, age, bio, date_of_birth FROM users WHERE username = :username"""
-            return await self.fetch_one(query=query, values={"username": username})
+                    location, latitude, address, age, bio, date_of_birth, password FROM users WHERE username = :username"""
+            result = await self.fetch_one(query=query, values={"username": username})
+            return result
         except Exception as e:
-            return {"error": "An error occurred while fetching user by username" + str(e)}
+            raise DatabaseError(f"An error occurred while fetching user by username: {str(e)}")
 
     async def create_user_internal(self, user: UserCreateInternal):
         try:
