@@ -46,7 +46,9 @@ class UserRepository(BaseRepository):
 
     async def get_user_by_username(self, username: str):
         try:
-            query = "SELECT * FROM users WHERE username = :username"
+            query = """SELECT id, username, first_name, last_name, email, gender, 
+                    sexual_preferences, interests, pictures, profile_picture, fame_rating, 
+                    location, latitude, address, age, bio, date_of_birth FROM users WHERE username = :username"""
             return await self.fetch_one(query=query, values={"username": username})
         except Exception as e:
             return {"error": "An error occurred while fetching user by username" + str(e)}
@@ -476,3 +478,22 @@ class UserRepository(BaseRepository):
             return result if result is not None else 0.0
         except Exception as e:
             raise Exception(f"Error getting fame rating: {str(e)}")
+
+    async def update_user_online_status(self, user_id: str, is_online: bool):
+        """Update user's online status and last_connection timestamp"""
+        try:
+            query = """
+                UPDATE users 
+                SET online = :is_online, 
+                    last_connection = CURRENT_TIMESTAMP,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = :user_id
+                RETURNING id, online, last_connection
+            """
+            result = await self.execute(query=query, values={
+                "user_id": user_id, 
+                "is_online": is_online
+            })
+            return result
+        except Exception as e:
+            raise DatabaseError(f"Failed to update user online status: {str(e)}")

@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useBrowsingStore } from "../store/useBrowsingStore";
 
 interface Props {
-  min: any;
-  max: any;
-  trackColor?: any;
-  onChange?: any;
-  rangeColor?: any;
+  min?: number;
+  max?: number;
+  trackColor?: string;
+  onChange?: (value: { min: number, max: number }) => void;
+  rangeColor?: string;
   valueStyle?: any;
   width?: any;
   currencyText?: any;
@@ -23,9 +23,9 @@ interface Props {
 function AgeRangeSlider({
   min,
   max,
-  trackColor = "#cecece",
+  trackColor = "#C6C6C6",
   onChange,
-  rangeColor = "#a855f7",
+  rangeColor = "#7E22CE",
   // valueStyle = cssValues,
   width = "200px",
 }: Props) {
@@ -33,17 +33,17 @@ function AgeRangeSlider({
   const [maxVal, setMaxVal] = useState(max);
   const minValRef = useRef(min);
   const maxValRef = useRef(max);
-  const range: any = useRef(null);
+  const range = useRef<HTMLDivElement>(null);
 
   const { getSuggestions } = useBrowsingStore();
 
   // Convert to percentage
   const getPercent = useCallback(
-    (value: any) => Math.round(((value - min) / (max - min)) * 100),
+    (value: number) => Math.round(((value - min) / (max - min)) * 100),
     [min, max]
   );
 
-  // set width of the range to decreas/increase from the left side
+  // Set width of the range to decrease from the left side
   useEffect(() => {
     const minPercent = getPercent(minVal);
     const maxPercent = getPercent(maxValRef.current);
@@ -54,30 +54,68 @@ function AgeRangeSlider({
     }
   }, [minVal, getPercent]);
 
-  // set width of the range to decreas/increase from the right side
+  // Set width of the range to decrease from the right side
   useEffect(() => {
     const minPercent = getPercent(minValRef.current);
     const maxPercent = getPercent(maxVal);
 
     if (range.current) {
-      range.current.style.right = `${maxPercent}%`;
       range.current.style.width = `${maxPercent - minPercent}%`;
     }
   }, [maxVal, getPercent]);
 
-  // Get min and max values when their state changes
-  useEffect(() => {
-    if (minVal != minValRef.current || maxVal != maxValRef.current) {
-      onChange({ min: minVal, max: maxVal });
-      minValRef.current = minVal;
-      maxValRef.current = maxVal;
+  const handleMinSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.min(Number(event.target.value), maxVal - 1);
+    setMinVal(value);
+    minValRef.current = value;
+    // Call onChange directly
+    if (onChange) {
+      onChange({ min: value, max: maxVal });
     }
-  }, [minVal, maxVal, onChange]);
+  };
+
+  const handleMaxSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(Number(event.target.value), minVal + 1);
+    setMaxVal(value);
+    maxValRef.current = value;
+    // Call onChange directly
+    if (onChange) {
+      onChange({ min: minVal, max: value });
+    }
+  };
+
+  const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value <= maxVal - 1) {
+      setMinVal(value);
+      minValRef.current = value;
+      // Call onChange directly
+      if (onChange) {
+        onChange({ min: value, max: maxVal });
+      }
+    }
+  };
+
+  const handleMaxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value >= minVal + 1) {
+      setMaxVal(value);
+      maxValRef.current = value;
+      // Call onChange directly
+      if (onChange) {
+        onChange({ min: minVal, max: value });
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    getSuggestions();
+  };
 
   return (
     <span className="w-full flex items-center justify-center flex-col space-y-14 lg:space-y-5">
       {/* Display the min and max values */}
-      <div className="w-[200px] px-4 flex items-center justify-between gap-x-5">
+      {/* <div className="w-[200px] px-4 flex items-center justify-between gap-x-5">
         <p className="text-base lg:text-md text-black font-semibold">
           min: {minVal}
         </p>
@@ -85,58 +123,77 @@ function AgeRangeSlider({
         <p className="text-base lg:text-md text-black font-semibold">
           max: {maxVal}
         </p>
-      </div>
+      </div> */}
 
       {/* Stye the custom price range slider */}
-      <div className="price_range_slider" style={{ width }}>
+      {/* <div className={`relative`} style={{ width }}>
         <input
           type="range"
           min={min}
           max={max}
           value={minVal}
-          onChange={(e) => {
-            const value = Math.min(Number(e.target.value), maxVal - 1);
-            setMinVal(value);
-          }}
-          className="thumb thumb-left"
-          style={{
-            width,
-            zIndex: minVal > max - 100 || minVal === maxVal ? 5 : undefined,
-          }}
-          onMouseUp={() => {
-            console.log("test---->");
-            getSuggestions();
-          }}
+          onChange={handleMinSliderChange}
+          onMouseUp={handleBlur}
+          onTouchEnd={handleBlur}
+          className="thumb thumb--left absolute h-0 w-full outline-none"
+          style={{ zIndex: 3 }}
         />
         <input
-          onMouseUp={() => {
-            console.log("test---->");
-            getSuggestions();
-          }}
           type="range"
           min={min}
           max={max}
           value={maxVal}
-          onChange={(e) => {
-            const value = Math.max(Number(e.target.value), minVal + 1);
-            setMaxVal(value);
-          }}
-          className="thumb thumb-right"
-          style={{
-            width,
-            zIndex: minVal > max - 100 || minVal === maxVal ? 4 : undefined,
-          }}
+          onChange={handleMaxSliderChange}
+          onMouseUp={handleBlur}
+          onTouchEnd={handleBlur}
+          className="thumb thumb--right absolute h-0 w-full outline-none"
+          style={{ zIndex: 4 }}
         />
 
-        <div className="slider">
+        <div className="relative">
           <div
-            className="track-slider"
-            style={{ backgroundColor: trackColor }}
+            className="absolute h-1 rounded-md z-1"
+            style={{
+              backgroundColor: trackColor,
+              width: "100%",
+            }}
           />
           <div
-            className="range-slider"
             ref={range}
-            style={{ backgroundColor: rangeColor }}
+            className="absolute h-1 rounded-md z-2"
+            style={{
+              backgroundColor: rangeColor,
+            }}
+          />
+        </div>
+      </div> */}
+
+      {/* ... existing input fields code ... */}
+      <div className="w-[200px] flex items-center justify-between">
+        <div className="flex flex-col items-center gap-1">
+          <p className="text-sm text-gray-600 font-medium">Min</p>
+          <input
+            type="number"
+            min={1}
+            value={minVal}
+            onChange={handleMinInputChange}
+            onBlur={handleBlur}
+            className="w-16 px-2 py-1 text-center text-sm font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+        </div>
+        
+        <div className="flex-1 border-dashed border border-neutral-500 mt-6"></div>
+        
+        <div className="flex flex-col items-center gap-1">
+          <p className="text-sm text-gray-600 font-medium">Max</p>
+          <input
+            type="number"
+            // min={min}
+            // max={max}
+            value={maxVal}
+            onChange={handleMaxInputChange}
+            onBlur={handleBlur}
+            className="w-16 px-2 py-1 text-center text-sm font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           />
         </div>
       </div>

@@ -54,10 +54,8 @@ async def connect(
             logger.warning(f"Authentication failed for socket {sid}")
             await socketio_manager.send_error("Authentication failed", sid)
             return False
-        user_sid = socketio_manager.get_user_uid_to_sid()
-        logger.info(f"User sid: {user_sid}")
-        user = socketio_manager.get_user_uid_to_sid()
-        logger.info(f"User *****: {user}")
+        
+        logger.info(f"User {user['username']} connected and set online - SID: {sid}")
         return True
     except Exception as e:
         logger.error(f"Error during connection for SID {sid}: {str(e)}")
@@ -73,7 +71,7 @@ async def disconnect(sid: str,
         user = socketio_manager.get_user_for_sid(sid)
         await socketio_manager.disconnect_socket(sid)
         if user:
-            logger.info(f"User {user['username']} disconnected - SID: {sid}")
+            logger.info(f"User {user['username']} disconnected and potentially set offline - SID: {sid}")
         else:
             logger.info(f"Unknown user disconnected - SID: {sid}")
     except Exception as e:

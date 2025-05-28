@@ -47,7 +47,7 @@ class BlocksServiceImp(BaseService, IBlocksService):
                 # Update fame rating for being blocked (-5 points)
                 await self.fame_rating_service.update_fame_rating(
                     blocked_id, 
-                    -5.0, 
+                    -1, 
                     "Block received"
                 )
                 
@@ -77,7 +77,7 @@ class BlocksServiceImp(BaseService, IBlocksService):
                 return error_response("Not blocked", "You have not blocked this user", 400)
             
             # Remove block
-            success = await self.blocks_repository.unblock_user(blocker_id, blocked_id)
+            success = await self.blocks_repository.remove_block(blocker_id, blocked_id)
             
             if not success:
                 return error_response("Failed to unblock", "Could not unblock the user", 500)
