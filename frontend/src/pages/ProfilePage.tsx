@@ -32,7 +32,7 @@ export default function ProfilePage() {
                 </span>
                 <HybridLocationComponent />
                 <div className="flex text-gray-700 text-sm space-x-1 mt-3">
-                  <Star size={18} /> <span>Fame rating: {6.6}</span>
+                  <Star size={18} /> <span>Fame rating: {authUser?.fameRating}</span>
                 </div>
               </div>
               <EditProfileButton />

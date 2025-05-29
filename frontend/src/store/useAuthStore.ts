@@ -20,6 +20,7 @@ export type AuthUserType = {
   latitude?: string;
   longitude?: string;
   age: string;
+  fameRating?: number | undefined;
 };
 
 type SignUpDataType = {
@@ -171,6 +172,7 @@ const useAuthStore = create<AuthState>((set) => ({
         },
       };
       const response = await axiosInstance.get("/auth/me", config);
+      console.log(response.data);
       const {
         id,
         email,
@@ -186,7 +188,8 @@ const useAuthStore = create<AuthState>((set) => ({
         age,
         latitude,
         longitude,
-        date_of_birth
+        date_of_birth,
+        fame_rating
       } = response.data;
       if (interests) {
         const labledInterests = interests.map((interest: string) => ({
@@ -209,7 +212,8 @@ const useAuthStore = create<AuthState>((set) => ({
             pictures,
             latitude,
             longitude,
-            birthDate: new Date(date_of_birth)
+            birthDate: new Date(date_of_birth),
+            fameRating: fame_rating,
           },
         });
       } else {
@@ -228,7 +232,8 @@ const useAuthStore = create<AuthState>((set) => ({
             profilePicture: profile_picture,
             latitude,
             longitude,
-            birthDate: new Date(date_of_birth)
+            birthDate: new Date(date_of_birth),
+            fameRating: fame_rating,
           },
         });
       }

@@ -46,7 +46,6 @@ export const useAnalyticsStore = create<AnalyticsStoreType>((set) => ({
         }
       };
       const res = await axiosInstance.get("/views/get-my-views", config);
-      console.log(res)
       set({profileViews: res.data.data.result})
     } catch (error) {
       console.log(error)
