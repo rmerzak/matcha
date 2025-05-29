@@ -13,5 +13,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""), // Optional: Adjust the path if necessary
       },
     },
+    allowedHosts: true,
   },
 });

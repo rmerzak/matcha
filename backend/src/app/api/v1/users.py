@@ -27,16 +27,27 @@ router = fastapi.APIRouter(tags=["users"], prefix="/users", dependencies=[Depend
 @router.put("/update-profile")
 @inject
 async def update_profile(
+    request: Request,
     profile_data: ProfileUpdate,
     service: IUserService = Depends(Provide[Container.user_service]),
     current_user: User = Depends(get_current_user_info)
 ):
     try:
+        ip_address = request.headers.get("X-Forwarded-For")
+        if ip_address:
+            ip_address = ip_address.split(",")[0].strip()
+        else:
+            ip_address = request.headers.get("X-Real-IP")
+            if not ip_address:
+                ip_address = request.client.host
+        
+        print(f"IP Address: {ip_address} {type(ip_address)}")
         result = await service.update_profile(
             profile_data, 
             current_user['email'], 
             profile_data.profile_picture, 
-            profile_data.additional_pictures
+            profile_data.additional_pictures,
+            ip_address
         )
 
         return result

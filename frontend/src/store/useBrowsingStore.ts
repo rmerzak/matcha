@@ -90,12 +90,12 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
     // Build query parameters manually to handle arrays properly
     const params = new URLSearchParams();
     
-    if (get().sortBy) params.append('sort_by', get().sortBy);
-    if (get().sortOrder) params.append('sort_order', get().sortOrder);
-    if (get().minAge !== null) params.append('min_age', get().minAge.toString());
-    if (get().maxAge !== null) params.append('max_age', get().maxAge.toString());
-    if (get().minFameRating !== null) params.append('min_fame', get().minFameRating.toString());
-    if (get().maxFameRating !== null) params.append('max_fame', get().maxFameRating.toString());
+    if (get().sortBy) params.append('sort_by', get().sortBy as string);
+    if (get().sortOrder) params.append('sort_order', get().sortOrder as string);
+    if (get().minAge !== null && get().minAge !== undefined) params.append('min_age', String(get().minAge));
+    if (get().maxAge !== null && get().maxAge !== undefined) params.append('max_age', String(get().maxAge));
+    if (get().minFameRating !== null && get().minFameRating !== undefined) params.append('min_fame', String(get().minFameRating));
+    if (get().maxFameRating !== null && get().maxFameRating !== undefined) params.append('max_fame', String(get().maxFameRating));
     
     // Handle common_tags array properly
     get().commonTags.forEach(tag => {

@@ -8,21 +8,24 @@ from typing import List
 from app.core.responce import error_response, success_response
 from app.services.cloudinary_service import CloudinaryService
 from app.repository.blocks_repository import BlocksRepository
+from app.services.geolocation_service import GeolocationService
 
 class UserServiceImp(BaseService, IUserService):
-    def __init__(self, user_repository: UserRepository,cloudinary_service: CloudinaryService, blocks_repository: BlocksRepository):
+    def __init__(self, user_repository: UserRepository, cloudinary_service: CloudinaryService, blocks_repository: BlocksRepository, geolocation_service: GeolocationService):
         self.user_repository = user_repository
         self.cloudinary_service = cloudinary_service
         self.blocks_repository = blocks_repository
+        self.geolocation_service = geolocation_service
     
     async def close_scoped_session(self):
         await self.user_repository.close_session()
     
-    async def update_profile(self, 
-        profile_data: ProfileUpdate, 
+    async def update_profile(self,
+        profile_data: ProfileUpdate,
         email: str,
         profile_picture: Optional[UploadFile] = None,
         additional_pictures: List[UploadFile] = File([]),
+        ip_address: str = None
         ):
         try:
             if len(additional_pictures) > 4:
@@ -43,6 +46,30 @@ class UserServiceImp(BaseService, IUserService):
             for picture in additional_pictures:
                 additional_pictures_urls.append(await self.cloudinary_service.upload_image(picture))
             print("additional_pictures_urls" ,profile_picture_url)
+            
+            # Handle geolocation logic
+            profile_data.latitude = None
+            profile_data.longitude = None
+            if not profile_data.latitude or not profile_data.longitude:
+                if ip_address:
+                    print(f"No coordinates provided, attempting IP geolocation for {ip_address}")
+                    geo_info = self.geolocation_service.lookup_ip(ip_address)
+                    if geo_info and geo_info.get('lat') and geo_info.get('lon'):
+                        print(f"IP geolocation successful: {geo_info}")
+                        # Update profile_data with IP-based location
+                        if not profile_data.latitude:
+                            profile_data.latitude = geo_info['lat']
+                        if not profile_data.longitude:
+                            profile_data.longitude = geo_info['lon']
+                        if not profile_data.address and geo_info.get('address'):
+                            profile_data.address = geo_info['city']
+                        if not profile_data.location and geo_info.get('country'):
+                            profile_data.location = geo_info['country']
+                    else:
+                        print(f"IP geolocation failed for {ip_address}")
+                else:
+                    print("No IP address provided for geolocation")
+            
             result = await self.user_repository.update_profile(
                 profile_data, 
                 email, 
