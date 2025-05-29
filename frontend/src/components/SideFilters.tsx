@@ -8,13 +8,20 @@ interface CheckedItems {
 }
 
 function SideFilters() {
-  const { setMinAge, setMaxAge, getSuggestions, setMinFameRating, setMaxFameRating } = useBrowsingStore();
+  const {
+    setMinAge,
+    setMaxAge,
+    getSuggestions,
+    setMinFameRating,
+    setMaxFameRating,
+    setCommonTags
+  } = useBrowsingStore();
   const { authUser } = useAuthStore();
   const [ageRangeValues] = useState({
     min: 18,
     max: 80,
   });
-  const [frRangeValues,] = useState({
+  const [frRangeValues] = useState({
     min: 0,
     max: 500,
   });
@@ -40,6 +47,10 @@ function SideFilters() {
   };
 
   const showResults = () => {
+    const checked = Object.keys(checkedCommonTags).filter(
+      (key) => checkedCommonTags[key]
+    );
+    setCommonTags(checked.map((item) => item.replace(/^#/, "")));
     getSuggestions();
   };
 

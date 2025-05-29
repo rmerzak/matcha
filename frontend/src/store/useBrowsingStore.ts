@@ -18,6 +18,8 @@ type BrowsingStoreType = {
   maxFameRating: number | null;
   setMinFameRating: (minFameRating: number | null) => void;
   setMaxFameRating: (maxFameRating: number | null) => void;
+  commonTags: string[];
+  setCommonTags: (tags: string[]) => void;
 };
 
 type Suggestion = {
@@ -52,6 +54,11 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
   maxAge: null,
   minFameRating: null,
   maxFameRating: null,
+  commonTags: [],
+
+  setCommonTags: (tags: string[]) => {
+    set({ commonTags: tags });
+  },
 
   setMinAge: (age: number | null) => {
     set({ minAge: age });
@@ -90,8 +97,11 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
         max_age: get().maxAge,
         min_fame: get().minFameRating,
         max_fame: get().maxFameRating,
+        common_tags: get().commonTags
       },
     };
+    console.log(config);
+    
     try {
       set({ isLoadingSuggestions: true });
       const res = await axiosInstance.get("/users/browse", config);
