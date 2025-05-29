@@ -49,6 +49,8 @@ async def browse_profiles(
     min_age: Optional[int] = None,
     max_age: Optional[int] = None,
     max_distance: Optional[int] = None,
+    min_fame: Optional[int] = None,
+    max_fame: Optional[int] = None,
     sort_by: Optional[str] = Query(None, enum=["age", "distance", "fame_rating", "common_tags"]),
     sort_order: Optional[SortOrder] = SortOrder.DESC,
     service: IUserService = Depends(Provide[Container.user_service]),
@@ -62,6 +64,8 @@ async def browse_profiles(
             min_age=min_age,
             max_age=max_age,
             max_distance=max_distance,
+            min_fame=min_fame,
+            max_fame=max_fame,
             sort_by=sort_by,
             sort_order=sort_order.value if sort_order else "desc"
         )

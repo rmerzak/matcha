@@ -131,6 +131,8 @@ class UserServiceImp(BaseService, IUserService):
         min_age: int = None,
         max_age: int = None,
         max_distance: int = None,
+        min_fame: int = None,
+        max_fame: int = None,
         sort_by: str = None,
         sort_order: str = "desc"
     ):
@@ -140,6 +142,8 @@ class UserServiceImp(BaseService, IUserService):
                 min_age=min_age,
                 max_age=max_age,
                 max_distance=max_distance,
+                min_fame=min_fame,
+                max_fame=max_fame,
                 sort_by=sort_by,
                 sort_order=sort_order
             )

@@ -24,5 +24,5 @@ class IUserService(ABC):
     async def get_user_by_id_data(self, user_id: str):
         pass
     @abstractmethod
-    async def browse_profiles(self, user_id, min_age, max_age, max_distance, sort_by, sort_order):
+    async def browse_profiles(self, user_id, min_age, max_age, max_distance, min_fame, max_fame, sort_by, sort_order):
         pass
