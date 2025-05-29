@@ -25,14 +25,18 @@ export default function Dropdown() {
     if (value == "Suggestions") {
       setSortBy(null);
       setSortOrder(null);
-    }
-    else if (value == "Age: Low to High") {
+    } else if (value == "Age: Low to High") {
       setSortBy("age");
       setSortOrder("asc");
-    }
-    else if (value == "Age: High to Low") {
+    } else if (value == "Age: High to Low") {
       setSortBy("age");
       setSortOrder("desc");
+    } else if (value == "Fame rating: High to Low") {
+      setSortBy("fame_rating");
+      setSortOrder("desc");
+    } else if (value == "Fame rating: Low to High") {
+      setSortBy("fame_rating");
+      setSortOrder("asc");
     }
     getSuggestions();
     setIsOpen(false);

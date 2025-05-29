@@ -6,8 +6,8 @@ type BrowsingStoreType = {
   suggestions: Suggestion[];
   getSuggestions: (page?: number) => Promise<void>;
   isLoadingSuggestions: boolean;
-  sortBy: "age" | null;
-  setSortBy: (element: "age" | null) => void;
+  sortBy: "age" | "fame_rating" | null;
+  setSortBy: (element: "age" | null | "fame_rating") => void;
   sortOrder: "asc" | "desc" | null;
   setSortOrder: (order: "asc" | "desc" | null) => void;
   minAge: number | null;
@@ -69,7 +69,7 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
     set({ maxFameRating: maxFameRating });
   },
 
-  setSortBy: (element: "age" | null) => {
+  setSortBy: (element: "age" | "fame_rating" | null) => {
     set({ sortBy: element });
   },
 
@@ -88,6 +88,8 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
         sort_order: get().sortOrder,
         min_age: get().minAge,
         max_age: get().maxAge,
+        min_fame: get().minFameRating,
+        max_fame: get().maxFameRating,
       },
     };
     try {

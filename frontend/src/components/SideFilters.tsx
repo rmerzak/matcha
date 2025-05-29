@@ -8,7 +8,7 @@ interface CheckedItems {
 }
 
 function SideFilters() {
-  const { setMinAge, setMaxAge, getSuggestions } = useBrowsingStore();
+  const { setMinAge, setMaxAge, getSuggestions, setMinFameRating, setMaxFameRating } = useBrowsingStore();
   const { authUser } = useAuthStore();
   const [ageRangeValues] = useState({
     min: 18,
@@ -34,7 +34,10 @@ function SideFilters() {
     setMaxAge(value.max);
   };
 
-  const handleFrRangeChange = () => {};
+  const handleFrRangeChange = (value: any) => {
+    setMinFameRating(value.min);
+    setMaxFameRating(value.max);
+  };
 
   const showResults = () => {
     getSuggestions();
