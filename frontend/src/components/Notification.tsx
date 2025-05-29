@@ -6,10 +6,10 @@ import { ChatContext } from "../context/ChatContext";
 export const Notification = () => {
   const { notifications } = useContext(ChatContext);
 
-  useEffect(() => {
-    // This effect can be used to fetch notifications or perform any side effects
-    // related to notifications when the component mounts.
-  }, [notifications]);
+  // useEffect(() => {
+  //   // This effect can be used to fetch notifications or perform any side effects
+  //   // related to notifications when the component mounts.
+  // }, [notifications]);
 
   return (
     <Link to="/notifications" className="text-white relative p-2">

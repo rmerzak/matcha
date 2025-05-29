@@ -14,7 +14,10 @@ type BrowsingStoreType = {
   maxAge: number | null;
   setMinAge: (age: number | null) => void;
   setMaxAge: (age: number | null) => void;
-
+  minFameRating: number | null;
+  maxFameRating: number | null;
+  setMinFameRating: (minFameRating: number | null) => void;
+  setMaxFameRating: (maxFameRating: number | null) => void;
 };
 
 type Suggestion = {
@@ -47,13 +50,23 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
   sortOrder: null,
   minAge: null,
   maxAge: null,
+  minFameRating: null,
+  maxFameRating: null,
 
   setMinAge: (age: number | null) => {
-    set({minAge: age})
+    set({ minAge: age });
   },
 
   setMaxAge: (age: number | null) => {
-    set({maxAge: age})
+    set({ maxAge: age });
+  },
+
+  setMinFameRating: (minFameRating: number | null) => {
+    set({ minFameRating: minFameRating });
+  },
+
+  setMaxFameRating: (maxFameRating: number | null) => {
+    set({ maxFameRating: maxFameRating });
   },
 
   setSortBy: (element: "age" | null) => {
@@ -71,8 +84,6 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
         Authorization: `Bearer ${token}`,
       },
       params: {
-        page,
-        items_per_page: 900,
         sort_by: get().sortBy,
         sort_order: get().sortOrder,
         min_age: get().minAge,

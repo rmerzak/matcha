@@ -141,10 +141,11 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
     });
 
     newSocket.on("new_message", (obj) => {
-      if (obj.data.sender !== authUser?.id) {
+      if (obj.data.sender !== authUser?.id && location.pathname === `/chat/${obj.data.sender.id}`) {
+        console.log("New message received:", obj.data);
         setMessages((prev) => [...prev, obj.data]);
       }
-      if (!location.pathname.startsWith("/chat")) {
+      if (location.pathname !== `/chat/${obj.data.sender.id}`) {
         addNotifacation(obj.data);
       }
     });
