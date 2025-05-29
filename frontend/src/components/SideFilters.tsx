@@ -10,11 +10,11 @@ interface CheckedItems {
 function SideFilters() {
   const { setMinAge, setMaxAge, getSuggestions } = useBrowsingStore();
   const { authUser } = useAuthStore();
-  const [ageRangeValues, setAgeRangeValues] = useState({
+  const [ageRangeValues] = useState({
     min: 18,
     max: 80,
   });
-  const [frRangeValues, setFrRangeValues] = useState({
+  const [frRangeValues,] = useState({
     min: 0,
     max: 500,
   });
@@ -34,7 +34,7 @@ function SideFilters() {
     setMaxAge(value.max);
   };
 
-  const handleFrRangeChange = (value: any) => {};
+  const handleFrRangeChange = () => {};
 
   const showResults = () => {
     getSuggestions();
@@ -99,7 +99,7 @@ function SideFilters() {
         </div>
         <button
           onClick={showResults}
-          className="py-2 rounded-full text-gray-900 font-semibold bg-yellow-300 mt-6 hover:bg-yellow-400 transition-colors duration-300"
+          className="py-1 max-w-96 rounded-full text-gray-900 font-semibold bg-yellow-300 mt-6 hover:bg-yellow-400 transition-colors duration-300"
         >
           Show results
         </button>

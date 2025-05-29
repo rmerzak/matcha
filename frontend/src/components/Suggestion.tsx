@@ -25,7 +25,7 @@ const Suggestion = ({ user }: Props) => {
   lg:w-full lg:flex lg:flex-row lg:space-x-4 grid"
     >
       <img
-        src={user.profile_picture}
+        src={user.profile_picture || "./avatar.png"}
         // className="h-44 w-full object-contain rounded-lg "
         className="h-44 w-44 object-cover rounded-lg "
         alt=""

@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { ChatContext } from "../context/ChatContext";
 

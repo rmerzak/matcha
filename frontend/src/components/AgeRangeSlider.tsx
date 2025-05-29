@@ -23,11 +23,8 @@ interface Props {
 function AgeRangeSlider({
   min,
   max,
-  trackColor = "#C6C6C6",
   onChange,
-  rangeColor = "#7E22CE",
   // valueStyle = cssValues,
-  width = "200px",
 }: Props) {
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
@@ -35,7 +32,7 @@ function AgeRangeSlider({
   const maxValRef = useRef(max);
   const range = useRef<HTMLDivElement>(null);
 
-  const { getSuggestions } = useBrowsingStore();
+  const {  } = useBrowsingStore();
 
   // Convert to percentage
   const getPercent = useCallback(

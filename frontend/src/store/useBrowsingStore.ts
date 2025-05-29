@@ -77,7 +77,7 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
     set({ sortOrder: order });
   },
 
-  getSuggestions: async (page = 1) => {
+  getSuggestions: async () => {
     const token = localStorage.getItem("jwt");
     const config = {
       headers: {
