@@ -12,7 +12,14 @@ interface CheckedItems {
 
 function SearchPage() {
   const { authUser } = useAuthStore();
-  const { getSuggestions, setMinAge, setMaxAge } = useBrowsingStore();
+  const {
+    getSuggestions,
+    setMinAge,
+    setMaxAge,
+    setMinFameRating,
+    setMaxFameRating,
+    setCommonTags
+  } = useBrowsingStore();
 
   const [ageRangeValues, setAgeRangeValues] = useState({ min: 18, max: 80 });
   // const [frRangeValues, setFrRangeValues] = useState({ min: 4, max: 10 });
@@ -25,7 +32,8 @@ function SearchPage() {
   };
 
   const handleFrRangeChange = (value: any) => {
-    setAgeRangeValues(value);
+    setMinFameRating(value.min);
+    setMaxFameRating(value.max);
   };
 
   const [checkedCommonTags, setCheckedCommonTags] = useState<CheckedItems>({});
@@ -38,6 +46,10 @@ function SearchPage() {
   };
 
   const showResults = () => {
+    const checked = Object.keys(checkedCommonTags).filter(
+      (key) => checkedCommonTags[key]
+    );
+    setCommonTags(checked.map((item) => item.replace(/^#/, "")));
     getSuggestions();
     navigate("/");
   };
@@ -62,7 +74,7 @@ function SearchPage() {
             <h1 className="text-lg font-semibold">
               Select a <span className="text-purple-600">fame rating</span> gap:
             </h1>
-            <AgeRangeSlider min={4} max={10} onChange={handleFrRangeChange} />
+            <AgeRangeSlider min={0} max={500} onChange={handleFrRangeChange} />
           </div>
           <div className="flex flex-col gap-2 ">
             <h1 className="text-lg font-semibold">
@@ -87,7 +99,7 @@ function SearchPage() {
                     checked={checkedCommonTags[option.label] || false}
                     onChange={handleChange}
                   />
-                  <label className="text-sm" htmlFor={option.label}>
+                  <label className="text-md" htmlFor={option.label}>
                     {option.label}
                   </label>
                 </div>
