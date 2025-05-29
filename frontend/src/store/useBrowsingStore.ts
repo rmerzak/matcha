@@ -86,25 +86,33 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
 
   getSuggestions: async () => {
     const token = localStorage.getItem("jwt");
+    
+    // Build query parameters manually to handle arrays properly
+    const params = new URLSearchParams();
+    
+    if (get().sortBy) params.append('sort_by', get().sortBy);
+    if (get().sortOrder) params.append('sort_order', get().sortOrder);
+    if (get().minAge !== null) params.append('min_age', get().minAge.toString());
+    if (get().maxAge !== null) params.append('max_age', get().maxAge.toString());
+    if (get().minFameRating !== null) params.append('min_fame', get().minFameRating.toString());
+    if (get().maxFameRating !== null) params.append('max_fame', get().maxFameRating.toString());
+    
+    // Handle common_tags array properly
+    get().commonTags.forEach(tag => {
+      params.append('common_tags', tag);
+    });
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      params: {
-        sort_by: get().sortBy,
-        sort_order: get().sortOrder,
-        min_age: get().minAge,
-        max_age: get().maxAge,
-        min_fame: get().minFameRating,
-        max_fame: get().maxFameRating,
-        common_tags: get().commonTags
-      },
     };
-    console.log(config);
+    
+    console.log(params.toString());
     
     try {
       set({ isLoadingSuggestions: true });
-      const res = await axiosInstance.get("/users/browse", config);
+      const res = await axiosInstance.get(`/users/browse?${params.toString()}`, config);
       const profiles = res.data.data.profiles || [];
       set({
         suggestions: profiles,
