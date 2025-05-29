@@ -302,6 +302,7 @@ class UserRepository(BaseRepository):
         min_fame: int = None,
         max_fame: int = None,
         min_tags: int = None,
+        common_tags: List[str] = None,
         sort_by: str = None,
         sort_order: str = "desc"
     ):
@@ -346,6 +347,11 @@ class UserRepository(BaseRepository):
                 conditions.append("fame_rating <= :max_fame")
                 values["max_fame"] = max_fame
             
+            # Add common_tags filtering
+            if common_tags and len(common_tags) > 0:
+                conditions.append("interests && :common_tags")
+                values["common_tags"] = common_tags
+
             user_interests = current_user["interests"] or []
             has_interests = len(user_interests) > 0
             has_location = False

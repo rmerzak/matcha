@@ -133,6 +133,7 @@ class UserServiceImp(BaseService, IUserService):
         max_distance: int = None,
         min_fame: int = None,
         max_fame: int = None,
+        common_tags: List[str] = None,
         sort_by: str = None,
         sort_order: str = "desc"
     ):
@@ -144,6 +145,7 @@ class UserServiceImp(BaseService, IUserService):
                 max_distance=max_distance,
                 min_fame=min_fame,
                 max_fame=max_fame,
+                common_tags=common_tags or [],
                 sort_by=sort_by,
                 sort_order=sort_order
             )
