@@ -48,8 +48,8 @@ class UserServiceImp(BaseService, IUserService):
             print("additional_pictures_urls" ,profile_picture_url)
             
             # Handle geolocation logic
-            profile_data.latitude = None
-            profile_data.longitude = None
+            # profile_data.latitude = None
+            # profile_data.longitude = None
             if not profile_data.latitude or not profile_data.longitude:
                 if ip_address:
                     print(f"No coordinates provided, attempting IP geolocation for {ip_address}")
