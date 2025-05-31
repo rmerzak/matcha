@@ -2,6 +2,8 @@ import { useState } from "react";
 import AgeRangeSlider from "./AgeRangeSlider";
 import useAuthStore from "../store/useAuthStore";
 import { useBrowsingStore } from "../store/useBrowsingStore";
+import MaxDistanceInput from "./MaxDistanceInput";
+import { max } from "moment";
 
 interface CheckedItems {
   [key: string]: boolean;
@@ -25,6 +27,8 @@ function SideFilters() {
     min: 0,
     max: 500,
   });
+
+  const [maxDistance, setMaxDistance] = useState(20000);
 
   const [checkedCommonTags, setCheckedCommonTags] = useState<CheckedItems>({});
 
@@ -79,6 +83,7 @@ function SideFilters() {
           </div>
           <div className="flex flex-col gap-2  pt-3">
             <h3 className="text-lg font-semibold text-gray-800">Location: </h3>
+            <MaxDistanceInput maxDistance={maxDistance} onChange={setMaxDistance} />
           </div>
           <div className="flex flex-col gap-2  pt-3">
             <h3 className="text-lg font-semibold text-gray-800">
