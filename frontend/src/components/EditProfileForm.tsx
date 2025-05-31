@@ -122,6 +122,10 @@ function EditProfileForm() {
             onValidityChange={setIsBirthDateValid} // Pass callback to update validity
           />
           <EditLocationComponent
+            latitude={latitude}
+            setLatitude={setLatitude}
+            longitude={longitude}
+            setLongitude={setLongitude}
           />
           <GenderSelect gender={gender} setGender={setGender} />
           {/* <SexualPreferenceSelect

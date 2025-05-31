@@ -13,9 +13,19 @@ interface GpsLocation {
 
 export type Location = GpsLocation;
 
-interface EditLocationProps {}
+interface EditLocationProps {
+  latitude: string;
+  longitude: string;
+  setLatitude: (lat: string) => void;
+  setLongitude: (lon: string) => void;
+}
 
-const EditLocationComponent: React.FC<EditLocationProps> = ({}) => {
+const EditLocationComponent: React.FC<EditLocationProps> = ({
+  latitude,
+  longitude,
+  setLatitude,
+  setLongitude,
+}) => {
   const [location, setLocation] = useState<Location | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { updateLocation } = useUserStore();
@@ -45,6 +55,8 @@ const EditLocationComponent: React.FC<EditLocationProps> = ({}) => {
               (prev: any) =>
                 ({ ...prev, country, city, neighborhood } as GpsLocation)
             );
+            setLatitude(latitude.toString());
+            setLongitude(longitude.toString());
           } catch (err) {
             setError("Error fetching neighborhood from Nominatim");
           }
@@ -77,6 +89,17 @@ const EditLocationComponent: React.FC<EditLocationProps> = ({}) => {
         >
           <span>Update Location</span>
         </button>
+        {location && (
+          <div className="mt-2 text-sm text-gray-600">
+            <p>Latitude: {location.latitude}</p>
+            <p>Longitude: {location.longitude}</p>
+            {/* <p>Country: {location.country || "Not available"}</p>
+            <p>City: {location.city || "Not available"}</p>
+            <p>
+              Neighborhood: {location.neighborhood || "Not available"}
+            </p> */}
+          </div>
+        )}
       </div>
     </div>
   );
