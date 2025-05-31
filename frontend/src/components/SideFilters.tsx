@@ -14,7 +14,7 @@ function SideFilters() {
     getSuggestions,
     setMinFameRating,
     setMaxFameRating,
-    setCommonTags
+    setCommonTags,
   } = useBrowsingStore();
   const { authUser } = useAuthStore();
   const [ageRangeValues] = useState({
@@ -67,9 +67,6 @@ function SideFilters() {
               onChange={handleAgeRangeChange}
             />
           </div>
-          {/* <div>
-            <h3 className="text-lg font-semibold text-gray-800">Location: </h3>
-          </div> */}
           <div className="flex flex-col gap-2  pt-3">
             <h3 className="text-lg font-semibold text-gray-800">
               Fame rating:
@@ -79,6 +76,9 @@ function SideFilters() {
               max={frRangeValues.max}
               onChange={handleFrRangeChange}
             />
+          </div>
+          <div className="flex flex-col gap-2  pt-3">
+            <h3 className="text-lg font-semibold text-gray-800">Location: </h3>
           </div>
           <div className="flex flex-col gap-2  pt-3">
             <h3 className="text-lg font-semibold text-gray-800">

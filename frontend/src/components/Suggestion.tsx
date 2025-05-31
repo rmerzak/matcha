@@ -12,7 +12,7 @@ export type User = {
   bio: string;
   fame_rating: number;
   age: number;
-  distance_km: number;
+  distance_km: number | null;
 };
 
 interface Props {
@@ -32,16 +32,23 @@ const Suggestion = ({ user }: Props) => {
         alt=""
       />
       <div className="flex flex-col justify-between">
-        <span className="text-xl font-bold mb-1">
-          {user?.first_name} {user?.last_name}
-        </span>
-        <div className="flex flex-col text-gray-700 text-sm">
-          <span className="font-semibold">Age: {user?.age}</span>
+        <div className="flex flex-col mb-1">
+          <span className="text-xl font-bold">
+            {user?.first_name} {user?.last_name}
+          </span>
+          <div className="flex flex-col text-gray-700 text-md">
+            <span className="font-semibold">Age: {user?.age}</span>
+          </div>
         </div>
         <div className="flex flex-col text-gray-700 text-sm">
           <div className="flex space-x-1 items-center">
-            <LandPlot className="size-4"/>{""}
-            <span className="">Distance: {user.distance_km}</span>
+            <LandPlot className="size-4" />
+            {""}
+            <span className="">
+              Distance:{" "}
+              {user.distance_km !== null ? user.distance_km.toFixed(0) : "N/A"}{" "}
+              km away
+            </span>
           </div>
           <div className="flex space-x-1 items-center">
             <MapPin className="size-4" /> <span>{user?.location}</span>

@@ -6,9 +6,10 @@ const options = [
   "Suggestions",
   "Age: Low to High",
   "Age: High to Low",
-  "Location",
   "Fame rating: Low to High",
   "Fame rating: High to Low",
+  "Location: Low to High",
+  "Location: High to Low",
   "Common tags",
 ];
 
@@ -36,6 +37,12 @@ export default function Dropdown() {
       setSortOrder("desc");
     } else if (value == "Fame rating: Low to High") {
       setSortBy("fame_rating");
+      setSortOrder("asc");
+    } else if (value == "Location: High to Low") {
+      setSortBy("distance");
+      setSortOrder("desc");
+    } else if (value == "Location: Low to High") {
+      setSortBy("distance");
       setSortOrder("asc");
     }
     getSuggestions();
