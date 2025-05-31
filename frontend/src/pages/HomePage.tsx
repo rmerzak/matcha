@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
 import Filters from "../components/Filters";
@@ -8,9 +8,12 @@ import SuggestionsList from "../components/SuggestionsList";
 import { NoMoreProfiles } from "../components/NoMoreProfiles";
 import { LoadingUI } from "../components/LoadingUI";
 
+
+
 function HomePage() {
   const { suggestions, isLoadingSuggestions, getSuggestions } =
     useBrowsingStore();
+ 
 
   useEffect(() => {
     getSuggestions();

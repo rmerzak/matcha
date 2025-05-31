@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,18 @@ import ProfilePictureUpload from "./ProfilePictureUpload";
 import PicturesUpload from "./PicturesUpload";
 import SubmitButton from "./SubmitButton";
 import BirthDatePicker from "./BirthDatePicker";
-import UpdateLocation from "./UpdateLocation";
+
+// Define types for location data
+interface GpsLocation {
+  latitude: number;
+  longitude: number;
+  country?: string;
+  city?: string;
+  neighborhood?: string;
+  method: "GPS";
+}
+
+type Location = GpsLocation;
 
 function FillProfileForm() {
   const [profilePicture, setProfilePicture] = useState<
@@ -30,6 +41,47 @@ function FillProfileForm() {
 
   const { checkAuth } = useAuthStore();
   const { loading, updateProfile } = useUserStore();
+  const [location, setLocation] = useState<Location | null>(null);
+
+  const getGpsLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position: GeolocationPosition) => {
+          const { latitude, longitude } = position.coords;
+          const gpsData: GpsLocation = { latitude, longitude, method: "GPS" };
+          setLocation(gpsData);
+          // Reverse geocode with Nominatim
+            try {
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=18`
+              );
+              const data = await response.json();
+              const country = data.address.country || "Country not found";
+              const city = data.address.city || "City not found";
+              const neighborhood =
+                data.address.neighbourhood ||
+                data.address.suburb ||
+                data.address.quarter ||
+                "Neighborhood not found";
+              setLocation(
+                (prev) =>
+                  ({ ...prev, country, city, neighborhood } as GpsLocation)
+              );
+            } catch (err) {
+              // setError("Error fetching neighborhood from Nominatim");
+            }
+
+
+        },
+        (err: GeolocationPositionError) => {
+          // console.error("GPS Error:", err.message);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +100,16 @@ function FillProfileForm() {
         profile_picture: profilePicture,
         additional_pictures: pictures,
         date_of_birth: birthDate,
+        latitude:
+          location?.latitude !== undefined
+            ? String(location.latitude)
+            : undefined,
+        longitude:
+          location?.longitude !== undefined
+            ? String(location.longitude)
+            : undefined,
+        location: location?.country || "Unknown",
+        address: location?.city || "Unknown",
       });
       checkAuth();
       navigate("/", { replace: true });
@@ -55,6 +117,10 @@ function FillProfileForm() {
       console.error("Submission failed:", error);
     }
   };
+
+  useEffect(() => {
+    getGpsLocation();
+  }, []);
 
   const options = [
     { value: "technology", label: "#technology" },
@@ -70,7 +136,7 @@ function FillProfileForm() {
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
         <form onSubmit={handleSubmit} className="space-y-5">
-          <UpdateLocation />
+          {/* <UpdateLocation /> */}
           <ProfilePictureUpload
             profilePicture={profilePicture}
             setProfilePicture={setProfilePicture}

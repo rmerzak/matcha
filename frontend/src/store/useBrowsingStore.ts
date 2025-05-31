@@ -107,9 +107,7 @@ export const useBrowsingStore = create<BrowsingStoreType>((set, get) => ({
         Authorization: `Bearer ${token}`,
       },
     };
-    
-    console.log(params.toString());
-    
+        
     try {
       set({ isLoadingSuggestions: true });
       const res = await axiosInstance.get(`/users/browse?${params.toString()}`, config);

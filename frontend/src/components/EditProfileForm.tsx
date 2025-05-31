@@ -99,7 +99,7 @@ function EditProfileForm() {
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
         <form onSubmit={handleSubmit} className="space-y-5">
-          <UpdateLocation />
+          {/* <UpdateLocation /> */}
           <ProfilePictureUpload
             profilePicture={profilePicture}
             setProfilePicture={setProfilePicture}
@@ -122,10 +122,6 @@ function EditProfileForm() {
             onValidityChange={setIsBirthDateValid} // Pass callback to update validity
           />
           <EditLocationComponent
-            latitude={latitude}
-            longitude={longitude}
-            setLatitude={setLatitude}
-            setLongitude={setLongitude}
           />
           <GenderSelect gender={gender} setGender={setGender} />
           {/* <SexualPreferenceSelect

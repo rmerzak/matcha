@@ -17,15 +17,17 @@ type DataType = {
   first_name?: string;
   last_name?: string;
   email?: string;
-  gender: string;
-  interests: string[];
-  sexual_preferences: string;
-  bio: string;
-  profile_picture: string | ArrayBuffer | null | "";
-  additional_pictures: string[];
-  date_of_birth: Date | string;
+  gender?: string;
+  interests?: string[];
+  sexual_preferences?: string;
+  bio?: string;
+  profile_picture?: string | ArrayBuffer | null | "";
+  additional_pictures?: string[];
+  date_of_birth?: Date | string;
   latitude?: string;
   longitude?: string;
+  location?: string;
+  address?: string;
 };
 
 type Location = {

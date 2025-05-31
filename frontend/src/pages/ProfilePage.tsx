@@ -30,7 +30,7 @@ export default function ProfilePage() {
                 <span className="text-2xl font-bold mb-1">
                   {authUser?.firstName} {authUser?.lastName}
                 </span>
-                <HybridLocationComponent />
+                {/* <HybridLocationComponent /> */}
                 <div className="flex text-gray-700 text-sm space-x-1 mt-3">
                   <Star size={18} /> <span>Fame rating: {authUser?.fameRating}</span>
                 </div>
