@@ -6,6 +6,7 @@ interface SuggestionsListProps {
 }
 
 const SuggestionsList: React.FC<SuggestionsListProps> = ({ suggestions }) => {
+  console.log("SuggestionsList rendered with suggestions:", suggestions);
   return (
     <div className="lg:flex-col lg:flex gap-2 grid grid-cols-2 md:grid-cols-3 md:gap-3 overflow-scroll pb-32 lg:pr-2">
       {suggestions.map((suggestion: any, index) => (

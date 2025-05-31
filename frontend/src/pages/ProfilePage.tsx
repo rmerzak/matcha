@@ -5,7 +5,6 @@ import useAuthStore from "../store/useAuthStore";
 import Analytics from "../components/Analytics";
 import Bio from "../components/Bio";
 import Interests from "../components/Interests";
-import HybridLocationComponent from "../components/HybridLocationComponent";
 import ProfilePictures from "../components/ProfilePictures";
 import EditProfileButton from "../components/EditProfileButton";
 

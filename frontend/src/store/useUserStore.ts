@@ -80,6 +80,7 @@ export const useUserStore = create<UserStoreType>((set) => ({
       },
     };
     try {
+      console.log("updating profile with data", data);
       set({ loading: true });
       console.log("update profile", data)
       await axiosInstance.put("/users/update-profile", data, config);

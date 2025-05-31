@@ -42,6 +42,8 @@ function FillProfileForm() {
   const { checkAuth } = useAuthStore();
   const { loading, updateProfile } = useUserStore();
   const [location, setLocation] = useState<Location | null>(null);
+    const [, setError] = useState<string | null>(null);
+  
 
   const getGpsLocation = () => {
     if (navigator.geolocation) {
@@ -74,12 +76,13 @@ function FillProfileForm() {
 
         },
         (err: GeolocationPositionError) => {
+          setError(`GPS Error: ${err.message}`);
           // console.error("GPS Error:", err.message);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      setError("Geolocation is not supported by this browser.");
     }
   };
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, Star } from "lucide-react";
+import { LandPlot, MapPin, Star } from "lucide-react";
 
 export type User = {
   first_name: string;
@@ -12,6 +12,7 @@ export type User = {
   bio: string;
   fame_rating: number;
   age: number;
+  distance_km: number;
 };
 
 interface Props {
@@ -34,13 +35,20 @@ const Suggestion = ({ user }: Props) => {
         <span className="text-xl font-bold mb-1">
           {user?.first_name} {user?.last_name}
         </span>
-        <>age {user?.age}</>
         <div className="flex flex-col text-gray-700 text-sm">
+          <span className="font-semibold">Age: {user?.age}</span>
+        </div>
+        <div className="flex flex-col text-gray-700 text-sm">
+          <div className="flex space-x-1 items-center">
+            <LandPlot className="size-4"/>{""}
+            <span className="">Distance: {user.distance_km}</span>
+          </div>
           <div className="flex space-x-1 items-center">
             <MapPin className="size-4" /> <span>{user?.location}</span>
           </div>
           <div className="flex space-x-1 ">
-            <Star className="size-4" /> <span>Fame rating: {user?.fame_rating}</span>
+            <Star className="size-4" />{" "}
+            <span>Fame rating: {user?.fame_rating}</span>
           </div>
         </div>
         <div className="mt-2 flex flex-wrap gap-1">

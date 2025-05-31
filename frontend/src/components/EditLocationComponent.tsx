@@ -21,13 +21,11 @@ interface EditLocationProps {
 }
 
 const EditLocationComponent: React.FC<EditLocationProps> = ({
-  latitude,
-  longitude,
   setLatitude,
   setLongitude,
 }) => {
   const [location, setLocation] = useState<Location | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
     const { updateLocation } = useUserStore();
     const getGpsLocation = () => {
     if (navigator.geolocation) {

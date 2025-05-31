@@ -12,17 +12,17 @@ interface GpsLocation {
   method: "GPS";
 }
 
-// Define the full ip-api.com response type
-interface IpApiResponse {
-  status: "success" | "fail";
-  message?: string; // Present if status is "fail"
-  country: string;
-  regionName: string;
-  city: string;
-  lat: number;
-  lon: number;
-  [key: string]: any; // Allow extra fields (ip-api returns more, like "isp")
-}
+// // Define the full ip-api.com response type
+// interface IpApiResponse {
+//   status: "success" | "fail";
+//   message?: string; // Present if status is "fail"
+//   country: string;
+//   regionName: string;
+//   city: string;
+//   lat: number;
+//   lon: number;
+//   [key: string]: any; // Allow extra fields (ip-api returns more, like "isp")
+// }
 
 // Define the IpLocation type for state
 interface IpLocation {

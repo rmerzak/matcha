@@ -10,7 +10,6 @@ import ProfilePictureUpload from "./ProfilePictureUpload";
 import PicturesUpload from "./PicturesUpload";
 import SubmitButton from "./SubmitButton";
 import BirthDatePicker from "./BirthDatePicker";
-import UpdateLocation from "./UpdateLocation";
 import EmailInput from "./EmailInput";
 import FirstNameInput from "./FirstNameInput";
 import LastNameInput from "./LastNameInput";
@@ -20,7 +19,7 @@ function EditProfileForm() {
   const { authUser, checkAuth } = useAuthStore();
   const [profilePicture, setProfilePicture] = useState<
     string | ArrayBuffer | null
-  >(authUser?.profilePicture || "./avatar.png" || "");
+  >(authUser?.profilePicture || "");
   const [firstName, setFirstName] = useState(authUser?.firstName || "");
   const [lastName, setLastName] = useState(authUser?.lastName || "");
   const [email, setEmail] = useState(authUser?.email || "");
