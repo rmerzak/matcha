@@ -16,6 +16,9 @@ from app.services.implementation.blocks_interface_imp import BlocksServiceImp
 from app.services.implementation.message_interface_imp import MessageServiceImp
 from app.services.implementation.notification_interface_imp import NotificationServiceImp
 from app.services.implementation.fame_rating_imp import FameRatingServiceImp
+from app.services.implementation.report_interface_imp import ReportServiceImp
+from app.repository.report_repository import ReportRepository
+from app.services.geolocation_service import GeolocationService
 class Container(containers.DeclarativeContainer):
     sio = providers.Dependency()
     wiring_config = containers.WiringConfiguration(
@@ -24,7 +27,8 @@ class Container(containers.DeclarativeContainer):
             "app.api.v1.users",
             "app.api.v1.views",
             "app.socketio.socketio",
-            "app.api.v1.notification"
+            "app.api.v1.notification",
+            "app.api.v1.reports"
         ]
     )
 
@@ -37,7 +41,9 @@ class Container(containers.DeclarativeContainer):
     message_repository = providers.Factory(MessageRepository, db=db)
     user_views_repository = providers.Factory(UserViewsRepository, db=db)
     likes_repository = providers.Factory(LikesRepository, db=db)
+    report_repository = providers.Factory(ReportRepository, db=db)
     blocks_repository = providers.Factory(BlocksRepository, db=db)
+    geolocation_service = providers.Factory(GeolocationService)
     auth_service = providers.Factory(AuthServiceImp, user_repository=user_repository)
     socketio_manager = providers.Singleton(
         SocketIOManagerImp,
@@ -50,8 +56,9 @@ class Container(containers.DeclarativeContainer):
         FameRatingServiceImp,
         user_repository=user_repository,
     )
+    report_service = providers.Factory(ReportServiceImp, report_repository=report_repository)
     cloudinary = providers.Factory(CloudinaryService)
-    user_service = providers.Factory(UserServiceImp, user_repository=user_repository, cloudinary_service=cloudinary, blocks_repository=blocks_repository)
+    user_service = providers.Factory(UserServiceImp, user_repository=user_repository, cloudinary_service=cloudinary, blocks_repository=blocks_repository, geolocation_service=geolocation_service)
     notification_service = providers.Factory(NotificationServiceImp, notification_repository=notification_repository, socketio_manager=socketio_manager, user_service=user_service)
     user_views_service = providers.Factory(UserViewsServiceImp, user_views_repository=user_views_repository, user_repository=user_repository, socketio_manager=socketio_manager, blocks_repository=blocks_repository, notification_service=notification_service, fame_rating_service=fame_rating_service)
     likes_service = providers.Factory(LikesServiceImp, user_repository=user_repository, likes_repository=likes_repository, notification_service=notification_service, fame_rating_service=fame_rating_service)

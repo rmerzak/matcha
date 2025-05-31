@@ -71,6 +71,7 @@ class ExternalSettings(BaseSettings):
     SMTP_HOST: str = config("SMTP_HOST", default="6379")
     SMTP_USERNAME: str = config("SMTP_USERNAME", default="Abdou")
     SMTP_PASSWORD: str = config("SMTP_PASSWORD", default="your app password")
+    GEOAPIFY_API_KEY: str = config("GEOAPIFY_API_KEY", default="abe884a6e7714912a9b12df56beedee0")
 
     @property
     def Categories(self):
